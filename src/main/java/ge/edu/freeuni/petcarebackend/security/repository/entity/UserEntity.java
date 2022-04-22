@@ -13,12 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
-@Table(name = "app_user")
-@Entity
 @Getter
 @Setter
+@Entity
+@Table(name = "app_user")
 public class UserEntity {
 
     @Id
@@ -26,18 +29,27 @@ public class UserEntity {
     @SequenceGenerator(name = "user", sequenceName = "seq_user", allocationSize = 1)
     private Long id;
 
+    @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")
     private String username;
 
+    @NotNull
     private String password;
 
+    @NotNull
+    @Size(min = 2, max = 32)
     private String firstname;
 
+    @NotNull
+    @Size(min = 2, max = 32)
     private String lastname;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
     @Column(name = "phone_number")
+    @Pattern(regexp = "^5[0-9]{8}$")
     private String phoneNumber;
 
     @Column(name = "profile_image")
@@ -54,7 +66,7 @@ public class UserEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 31;
     }
 
 }
