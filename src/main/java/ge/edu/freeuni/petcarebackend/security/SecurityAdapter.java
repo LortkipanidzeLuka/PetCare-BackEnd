@@ -27,17 +27,13 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityAdapter extends WebSecurityConfigurerAdapter {
 
-
     @Value("${allowed.origins}")
     private String[] allowedOrigins;
 
     private final AuthenticationFilter filter;
 
-    private final UserDetailsService userDetailsService;
-
-    public SecurityAdapter(AuthenticationFilter filter, UserDetailsService userDetailsService) {
+    public SecurityAdapter(AuthenticationFilter filter) {
         this.filter = filter;
-        this.userDetailsService = userDetailsService;
     }
 
 
@@ -52,6 +48,7 @@ public class SecurityAdapter extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests(configurer -> configurer
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .antMatchers("/swagger/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
                         .anyRequest()
                         .authenticated()
@@ -71,13 +68,6 @@ public class SecurityAdapter extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
-    }
-
-    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
