@@ -4,26 +4,32 @@ import ge.edu.freeuni.petcarebackend.security.RandomStringGenerator;
 import ge.edu.freeuni.petcarebackend.security.repository.OtpRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.OtpEntity;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
+import ge.edu.freeuni.petcarebackend.service.MailSenderService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class OtpService {
 
     private final OtpRepository repository;
 
     private final RandomStringGenerator codeGenerator = new RandomStringGenerator(6, new SecureRandom(), RandomStringGenerator.DIGITS);
 
-    public OtpService(OtpRepository repository) {
+    private final MailSenderService mailSenderService;
+
+    public OtpService(OtpRepository repository, MailSenderService mailSenderService) {
         this.repository = repository;
+        this.mailSenderService = mailSenderService;
     }
 
     public void createAndSendOtp(UserEntity user) {
         OtpEntity otp = createOtp(user);
-//        TODO: send via mail sender service
+        mailSenderService.sendMail(user.getUsername(), "ერთჯერადი კოდი", "ერთჯერადი კოდი: %s \n ვადა: 60 წამი\n".formatted(otp.getCode()));
     }
 
     private OtpEntity createOtp(UserEntity user) {
