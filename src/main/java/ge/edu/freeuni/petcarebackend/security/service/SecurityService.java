@@ -1,6 +1,7 @@
 package ge.edu.freeuni.petcarebackend.security.service;
 
 import com.nulabinc.zxcvbn.Zxcvbn;
+import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.LoginDTO;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.OtpDTO;
@@ -41,14 +42,14 @@ public class SecurityService {
 
     public void register(UserEntity user) {
         if (new Zxcvbn().measure(user.getPassword()).getScore() < ZXCVBN_PASSWORD_STRENGTH) {
-            throw new RuntimeException("weak_password"); // TODO: change to custom exception
+            throw new BusinessException("weak_password");
         }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         try {
             user = repository.saveAndFlush(user);
 
         } catch (DataIntegrityViolationException ex) {
-            throw new RuntimeException("email_used"); // TODO: change to custom exception
+            throw new BusinessException("email_used");
         }
     }
 
@@ -57,7 +58,7 @@ public class SecurityService {
         if (user.isPresent() && new BCryptPasswordEncoder().matches(loginDTO.password(), user.get().getPassword())) {
             return tokenService.generateTokens(user.get());
         }
-        throw new RuntimeException("invalid username or password"); // TODO: change
+        throw new BusinessException("invalid_credentials");
     }
 
     public AuthorizationTokensDTO authenticateWithRefreshToken(String refreshToken) {
@@ -68,18 +69,18 @@ public class SecurityService {
                 return tokenService.generateTokens(user.get());
             }
         }
-        throw new RuntimeException("invalid refresh token"); // TODO: change
+        throw new BusinessException("invalid_refresh_token");
     }
 
     public void verifyOtpCode(OtpDTO otp) {
         boolean correctOtp = otpService.verifyOtpCode(otp.getCode(), lookupCurrentUser());
-        if(correctOtp){
+        if (correctOtp) {
             UserEntity user = lookupCurrentUser();
             user.setVerified(true);
             repository.save(user);
             return;
         }
-        throw new RuntimeException("invalid_otp"); // TODO: change
+        throw new BusinessException("invalid_otp");
     }
 
     public void resendCode() {

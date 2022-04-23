@@ -1,5 +1,6 @@
 package ge.edu.freeuni.petcarebackend.security.service;
 
+import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.security.RandomStringGenerator;
 import ge.edu.freeuni.petcarebackend.security.repository.OtpRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.OtpEntity;
@@ -55,7 +56,7 @@ public class OtpService {
     public void resendOtpCode(UserEntity user) {
         long countUnusedOtpsWithin5Minutes = repository.countByUserAndUsedAndCreateTsIsAfter(user, false, LocalDateTime.now().minusMinutes(5));
         if (countUnusedOtpsWithin5Minutes >= 3) {
-            throw new RuntimeException("otp_retries_exceeded");
+            throw new BusinessException("otp_retries_exceeded");
         }
         createAndSendOtp(user);
     }
