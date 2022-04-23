@@ -39,6 +39,10 @@ public class JwtTokenService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public boolean extractIsVerified(String token) {
+        return extractAllClaims(token).get("is_verified", Boolean.class);
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -66,6 +70,7 @@ public class JwtTokenService {
                     put("full_name", "%s %s".formatted(user.getFirstname(), user.getLastname()));
                     put("azp", "petcare");
                     put("typ", "Bearer");
+                    put("is_verified", user.isVerified());
                 }},
                 user.getUsername(),
                 accessTokenExpiration

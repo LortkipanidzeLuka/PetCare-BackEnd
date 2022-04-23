@@ -37,11 +37,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails user = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(token, user)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (jwtUtil.extractIsVerified(token) || isVerifyRequest(request, token)) {
+                UserDetails user = userDetailsService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(token, user)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
         }
         filterChain.doFilter(request, response);
@@ -50,5 +52,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return request.getRequestURI().equals("swagger/**") && request.getMethod().equals("GET");
+    }
+
+    private boolean isVerifyRequest(HttpServletRequest request, String token) {
+        return !jwtUtil.extractIsVerified(token) &&
+                (
+                        (request.getRequestURI().equals("/auth/verify") && request.getMethod().equals("POST")) ||
+                                (request.getRequestURI().equals("/auth/verify/resend") && request.getMethod().equals("POST"))
+                );
     }
 }

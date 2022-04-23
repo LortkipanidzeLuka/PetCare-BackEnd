@@ -3,6 +3,7 @@ package ge.edu.freeuni.petcarebackend.security.service;
 import com.nulabinc.zxcvbn.Zxcvbn;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.LoginDTO;
+import ge.edu.freeuni.petcarebackend.security.controller.dto.OtpDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.AuthUserDetails;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
@@ -19,16 +20,19 @@ import java.util.Optional;
 @Transactional
 public class SecurityService {
 
-    private final UserRepository repository;
-
     private final JwtTokenService tokenService;
+
+    private final OtpService otpService;
+
+    private final UserRepository repository;
 
     @Value("${zxcvbn.password.strength}")
     private int ZXCVBN_PASSWORD_STRENGTH;
 
-    public SecurityService(UserRepository repository, JwtTokenService tokenService) {
+    public SecurityService(UserRepository repository, JwtTokenService tokenService, OtpService otpService) {
         this.repository = repository;
         this.tokenService = tokenService;
+        this.otpService = otpService;
     }
 
     public UserEntity lookupCurrentUser() {
@@ -41,7 +45,8 @@ public class SecurityService {
         }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         try {
-            repository.saveAndFlush(user);
+            user = repository.saveAndFlush(user);
+
         } catch (DataIntegrityViolationException ex) {
             throw new RuntimeException("email_used"); // TODO: change to custom exception
         }
@@ -64,5 +69,20 @@ public class SecurityService {
             }
         }
         throw new RuntimeException("invalid refresh token"); // TODO: change
+    }
+
+    public void verifyOtpCode(OtpDTO otp) {
+        boolean correctOtp = otpService.verifyOtpCode(otp.getCode(), lookupCurrentUser());
+        if(correctOtp){
+            UserEntity user = lookupCurrentUser();
+            user.setVerified(true);
+            repository.save(user);
+            return;
+        }
+        throw new RuntimeException("invalid_otp"); // TODO: change
+    }
+
+    public void resendCode() {
+        otpService.resendOtpCode(lookupCurrentUser());
     }
 }

@@ -17,9 +17,26 @@ create table app_user
     password      varchar(64) not null,
     sex           varchar(16),
     phone_number  varchar(16),
-    profile_image varchar
+    profile_image varchar,
+    is_verified   bit         not null
 );
 
 grant select , insert , update, delete on app_user to pcapp;
 create sequence seq_user start 1;
 grant update on seq_user to pcapp;
+
+create table otp
+(
+    id          bigint     not null primary key,
+    user_id     bigint     not null,
+    code        varchar(6) not null,
+    create_ts   timestamp  not null,
+    valid_until timestamp  not null,
+    used        boolean    not null
+);
+alter table otp
+    add constraint fk_otp_user_id foreign key (user_id) references app_user (id);
+
+grant select, insert, update on otp to pcapp;
+create sequence seq_otp start 1;
+grant update on seq_otp to pcapp;

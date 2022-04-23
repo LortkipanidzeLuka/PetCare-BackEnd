@@ -52,7 +52,7 @@ public class SecurityAdapter extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests(configurer -> configurer
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .antMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

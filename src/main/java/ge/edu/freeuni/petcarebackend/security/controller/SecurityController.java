@@ -2,6 +2,7 @@ package ge.edu.freeuni.petcarebackend.security.controller;
 
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.LoginDTO;
+import ge.edu.freeuni.petcarebackend.security.controller.dto.OtpDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,16 @@ public class SecurityController {
     @PostMapping("refresh")
     public ResponseEntity<AuthorizationTokensDTO> refreshAccess(@RequestBody AuthorizationTokensDTO refreshToken) {
         return ResponseEntity.ok(service.authenticateWithRefreshToken(refreshToken.refreshToken()));
+    }
+
+    @PostMapping("verify")
+    public void verify(@RequestBody OtpDTO otp) {
+        service.verifyOtpCode(otp);
+    }
+
+    @PostMapping("verify/resend")
+    public void resendCode(){
+        service.resendCode();
     }
 
 }
