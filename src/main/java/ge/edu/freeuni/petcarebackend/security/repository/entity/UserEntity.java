@@ -1,0 +1,77 @@
+package ge.edu.freeuni.petcarebackend.security.repository.entity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Objects;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "app_user")
+public class UserEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user")
+    @SequenceGenerator(name = "user", sequenceName = "seq_user", allocationSize = 1)
+    private Long id;
+
+    @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")
+    private String username;
+
+    @NotNull
+    private String password;
+
+    @NotNull
+    @Size(min = 2, max = 32)
+    private String firstname;
+
+    @NotNull
+    @Size(min = 2, max = 32)
+    private String lastname;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
+    @Column(name = "phone_number")
+    @Pattern(regexp = "^5[0-9]{8}$")
+    private String phoneNumber;
+
+    @Column(name = "profile_image")
+    @Lob
+    private String profileImage;
+
+    @Column(name = "is_verified")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean isVerified;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity user = (UserEntity) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
+    }
+
+}
