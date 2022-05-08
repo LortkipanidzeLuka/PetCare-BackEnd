@@ -1,5 +1,6 @@
-package ge.edu.freeuni.petcarebackend.security.repository.entity;
+package ge.edu.freeuni.petcarebackend.repository.entity;
 
+import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

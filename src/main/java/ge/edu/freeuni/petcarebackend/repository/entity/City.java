@@ -1,4 +1,4 @@
-package ge.edu.freeuni.petcarebackend.security.repository.entity;
+package ge.edu.freeuni.petcarebackend.repository.entity;
 
 public enum City {
     TBILISI("თბილისი"),
