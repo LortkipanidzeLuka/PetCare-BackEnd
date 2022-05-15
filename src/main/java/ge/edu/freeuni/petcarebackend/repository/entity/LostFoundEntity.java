@@ -16,9 +16,7 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
 @Entity

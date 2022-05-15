@@ -1,8 +1,11 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -26,6 +29,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+@SuperBuilder
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
