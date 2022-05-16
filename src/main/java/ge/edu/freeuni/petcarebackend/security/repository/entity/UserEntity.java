@@ -1,5 +1,6 @@
 package ge.edu.freeuni.petcarebackend.security.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class UserEntity {
     private String username;
 
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotNull
@@ -53,12 +55,8 @@ public class UserEntity {
     @Pattern(regexp = "^5[0-9]{8}$")
     private String phoneNumber;
 
-    @Column(name = "profile_image")
-    @Lob
-    private String profileImage;
-
     @Column(name = "is_verified")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
     private boolean isVerified;
 
     @Override

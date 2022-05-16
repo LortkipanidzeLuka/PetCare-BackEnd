@@ -1,6 +1,6 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
+import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
@@ -8,7 +8,6 @@ import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.repository.entity.Type;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.LostFoundService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,10 +27,11 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("advertisement/{type}")
+@RequestMapping("advertisement/{type}") // TODO: change requests to dtos
 public class LostFoundController {
 
     private final LostFoundService service;
@@ -43,6 +43,11 @@ public class LostFoundController {
     @GetMapping("{id}")
     public LostFoundEntity getById(@PathVariable Type type, @PathVariable Long id) {
         return service.lookup(type, id);
+    }
+
+    @GetMapping("{id}/images")
+    public List<AdvertisementImageEntity> getImagesById(@PathVariable Type type, @PathVariable Long id) {
+        return service.lookupImages(type, id);
     }
 
     @GetMapping
@@ -60,7 +65,7 @@ public class LostFoundController {
             @RequestParam(name = "city") Optional<City> city
     ) {
         return service.search(
-                type, page, size, orderBy.orElse(null), ascending, search.orElse(null),
+                type, page, size, orderBy.orElse(null), ascending, search.orElse(""),
                 petType.orElse(null), color.orElse(null), sex.orElse(null),
                 ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
         );
@@ -70,7 +75,7 @@ public class LostFoundController {
     public ResponseEntity createLostFoundAdvertisement(
             HttpServletRequest request,
             @PathVariable Type type, @Valid @RequestBody LostFoundEntity lostFoundEntity
-    ) { // TODO: change to form-data cause of images?
+    ) {
         Long createdId = service.createAdvertisement(type, lostFoundEntity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
@@ -84,7 +89,7 @@ public class LostFoundController {
     public void updateLostFoundAdvertisement(
             @PathVariable Type type,
             @PathVariable Long id,
-            @Valid @RequestBody LostFoundEntity lostFoundEntity // TODO: change to form-data cause of images?
+            @Valid @RequestBody LostFoundEntity lostFoundEntity
     ) {
         service.updateAdvertisement(type, id, lostFoundEntity);
     }

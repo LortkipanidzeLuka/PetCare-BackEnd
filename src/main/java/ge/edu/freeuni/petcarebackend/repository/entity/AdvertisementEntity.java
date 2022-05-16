@@ -1,11 +1,13 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -19,12 +21,15 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,12 +50,10 @@ public class AdvertisementEntity {
     @NotBlank
     private String header;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "creator_user")
     private UserEntity creatorUser;
 
-    @NotNull
     @Column(name = "create_date")
     private LocalDate createDate;
 
@@ -68,6 +71,11 @@ public class AdvertisementEntity {
     @CollectionTable(name = "tags", joinColumns = @JoinColumn(name = "advertisement_id"))
     @Column(name = "value")
     private List<String> tags;
+
+    @Size(max = 10)
+    @OneToMany(mappedBy = "advertisement", cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<AdvertisementImageEntity> images = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

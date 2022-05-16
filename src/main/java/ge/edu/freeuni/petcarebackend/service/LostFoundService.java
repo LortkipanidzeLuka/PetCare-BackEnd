@@ -2,7 +2,9 @@ package ge.edu.freeuni.petcarebackend.service;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
+import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
+import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,15 +25,23 @@ public class LostFoundService {
 
     private final LostFoundRepository repository;
 
+    private final AdvertisementImageRepository imageRepository;
+
     private final SecurityService securityService;
 
-    public LostFoundService(LostFoundRepository repository, SecurityService securityService) {
+    public LostFoundService(LostFoundRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
         this.repository = repository;
+        this.imageRepository = imageRepository;
         this.securityService = securityService;
     }
 
     public LostFoundEntity lookup(Type type, Long id) {
         return repository.findByTypeAndId(type, id).orElseThrow(BusinessException::new);
+    }
+
+    public List<AdvertisementImageEntity> lookupImages(Type type, Long id) {
+        LostFoundEntity lostFoundEntity = lookup(type, id);
+        return imageRepository.findByAdvertisement(lostFoundEntity);
     }
 
     public SearchResultDTO<LostFoundEntity> search(
@@ -50,6 +61,10 @@ public class LostFoundService {
         UserEntity currentUser = securityService.lookupCurrentUser();
         lostFoundEntity.setCreateDate(LocalDate.now());
         lostFoundEntity.setCreatorUser(currentUser);
+        if (lostFoundEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
+            throw new BusinessException("need_one_primary_image");
+        }
+        lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(lostFoundEntity));
         return repository.save(lostFoundEntity).getId();
     }
 
@@ -70,6 +85,13 @@ public class LostFoundService {
         lostFoundEntity.setLatitude(lostFoundDTO.getLatitude());
         lostFoundEntity.setLongitude(lostFoundDTO.getLongitude());
         lostFoundEntity.setTags(lostFoundDTO.getTags());
+
+        if (lostFoundDTO.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
+            throw new BusinessException("need_one_primary_image");
+        }
+        lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(null));
+        lostFoundEntity.getImages().clear();
+        lostFoundEntity.setImages(lostFoundDTO.getImages());
 
         repository.save(lostFoundEntity);
     }
