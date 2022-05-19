@@ -31,7 +31,7 @@ grant select, insert, update, delete on tags to pcapp;
 create table lost_found_advertisement
 (
     id        bigint not null,
-    petType   varchar(32),
+    pet_type   varchar(32),
     color     varchar(32),
     age_from  smallint,
     age_until smallint,

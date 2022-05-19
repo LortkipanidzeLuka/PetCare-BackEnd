@@ -39,6 +39,10 @@ public class LostFoundEntity extends AdvertisementEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    private Type type;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Sex sex;
 
     private String breed;
