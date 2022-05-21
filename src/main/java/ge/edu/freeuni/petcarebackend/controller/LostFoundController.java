@@ -1,5 +1,8 @@
-package ge.edu.freeuni.petcarebackend.controller.dto;
+package ge.edu.freeuni.petcarebackend.controller;
 
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
@@ -31,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("advertisement/{type}") // TODO: change requests to dtos
+@RequestMapping("advertisements/lostfound/{type}") // TODO: change requests to dtos
 public class LostFoundController {
 
     private final LostFoundService service;
@@ -41,8 +44,8 @@ public class LostFoundController {
     }
 
     @GetMapping("{id}")
-    public LostFoundEntity getById(@PathVariable Type type, @PathVariable Long id) {
-        return service.lookup(type, id);
+    public LostFoundDTO getById(@PathVariable Type type, @PathVariable Long id) {
+        return service.lookupAdvertisement(type, id);
     }
 
     @GetMapping("{id}/images")
@@ -51,7 +54,7 @@ public class LostFoundController {
     }
 
     @GetMapping
-    public SearchResultDTO<LostFoundEntity> search(
+    public SearchResultDTO<AdvertisementDTO> search(
             @PathVariable Type type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
