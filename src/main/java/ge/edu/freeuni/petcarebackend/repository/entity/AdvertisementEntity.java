@@ -67,6 +67,11 @@ public class AdvertisementEntity {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    @NotNull
+    private AdvertisementType advertisementType;
+
     @ElementCollection
     @CollectionTable(name = "tags", joinColumns = @JoinColumn(name = "advertisement_id"))
     @Column(name = "value")

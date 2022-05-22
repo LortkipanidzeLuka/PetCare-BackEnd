@@ -1,5 +1,6 @@
 package ge.edu.freeuni.petcarebackend.repository;
 
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long>, JpaSpecificationExecutor<LostFoundEntity> {
@@ -32,7 +34,7 @@ public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long
     Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
 
 
-    default SearchResultDTO<LostFoundEntity> search(
+    default SearchResultDTO<AdvertisementDTO> search(
             int page, int size, String orderBy, boolean asc, String search,
             Type type, PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
@@ -68,7 +70,7 @@ public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long
         Page<LostFoundEntity> result = this.findAll(specification, pageAndOrder);
 
         return new SearchResultDTO<>(
-                result.toList(),
+                result.toList().stream().map(ad -> new AdvertisementDTO(ad, true)).collect(Collectors.toList()),
                 result.getTotalElements()
         );
     }
