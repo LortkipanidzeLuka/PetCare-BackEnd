@@ -1,4 +1,4 @@
-package ge.edu.freeuni.petcarebackend.repository;
+package ge.edu.freeuni.petcarebackend.repository.repo;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;

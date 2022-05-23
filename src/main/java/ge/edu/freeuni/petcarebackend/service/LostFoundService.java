@@ -2,8 +2,8 @@ package ge.edu.freeuni.petcarebackend.service;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
-import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
+import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
+import ge.edu.freeuni.petcarebackend.repository.repo.LostFoundRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;

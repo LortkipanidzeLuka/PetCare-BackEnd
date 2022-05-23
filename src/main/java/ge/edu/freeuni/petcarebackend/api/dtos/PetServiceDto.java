@@ -1,33 +1,32 @@
-package ge.edu.freeuni.petcarebackend.repository.entity;
+package ge.edu.freeuni.petcarebackend.api.dtos;
 
+import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Table;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PetServiceDto {
 
-@Getter
-@Setter
-@Entity
-@Table(name = "lost_found_advertisement")
-public class LostFoundEntity extends AdvertisementEntity {
+    //TODO
+//    @NotNull
+//    private List<PetType> applicablePetList;
 
     @NotNull
-    private PetType petType;
-
     @Enumerated(EnumType.STRING)
-    private Color color;
+    private PetServiceType type;
 
     @Min(0)
     @Column(name = "age_from")
@@ -37,18 +36,15 @@ public class LostFoundEntity extends AdvertisementEntity {
     @Column(name = "age_until")
     private Short ageUntil;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private Sex applicableSex;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
-
-    private String breed;
+    //TODO
+//    private List<String> applicableBreedList;
 
     @AssertTrue
     private boolean isValidAge() {
         return ageFrom == null || ageUntil == null || ageUntil >= ageFrom;
     }
 }
+

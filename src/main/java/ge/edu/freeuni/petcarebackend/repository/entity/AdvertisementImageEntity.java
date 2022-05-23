@@ -44,5 +44,4 @@ public class AdvertisementImageEntity {
     @JoinColumn(name = "advertisement_id")
     @JsonIgnore
     private AdvertisementEntity advertisement;
-
 }

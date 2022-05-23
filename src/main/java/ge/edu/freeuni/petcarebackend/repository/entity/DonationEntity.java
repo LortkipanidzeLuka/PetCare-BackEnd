@@ -7,24 +7,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
-
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "lost_found_advertisement")
-public class LostFoundEntity extends AdvertisementEntity {
+@Table(name = "donation_advertisement")
+public class DonationEntity extends AdvertisementEntity {
+
+    //TODO
+//    @NotNull
+//    private List<PetType> applicablePetList;
 
     @NotNull
-    private PetType petType;
+    @Enumerated(EnumType.STRING)
+    private DonationAdvertisementType type;
 
     @Enumerated(EnumType.STRING)
     private Color color;
@@ -37,15 +41,11 @@ public class LostFoundEntity extends AdvertisementEntity {
     @Column(name = "age_until")
     private Short ageUntil;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private Sex applicableSex;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
-
-    private String breed;
+    //TODO
+//    private List<String> applicableBreedList;
 
     @AssertTrue
     private boolean isValidAge() {
