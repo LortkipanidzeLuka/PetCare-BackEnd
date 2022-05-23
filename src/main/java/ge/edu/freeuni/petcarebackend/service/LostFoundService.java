@@ -1,10 +1,13 @@
 package ge.edu.freeuni.petcarebackend.service;
 
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.repo.LostFoundRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
+import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
@@ -35,6 +38,10 @@ public class LostFoundService {
         this.securityService = securityService;
     }
 
+    public LostFoundDTO lookupAdvertisement(Type type, Long id) {
+        return repository.findByTypeAndId(type, id).map(ad -> new LostFoundDTO(ad, false)).orElseThrow(BusinessException::new);
+    }
+
     public LostFoundEntity lookup(Type type, Long id) {
         return repository.findByTypeAndId(type, id).orElseThrow(BusinessException::new);
     }
@@ -44,7 +51,7 @@ public class LostFoundService {
         return imageRepository.findByAdvertisement(lostFoundEntity);
     }
 
-    public SearchResultDTO<LostFoundEntity> search(
+    public SearchResultDTO<AdvertisementDTO> search(
             Type type, int page, int size, String orderBy, boolean asc, String search, // header or description
             PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
@@ -61,6 +68,7 @@ public class LostFoundService {
         UserEntity currentUser = securityService.lookupCurrentUser();
         lostFoundEntity.setCreateDate(LocalDate.now());
         lostFoundEntity.setCreatorUser(currentUser);
+        lostFoundEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
         if (lostFoundEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
