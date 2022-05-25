@@ -66,4 +66,8 @@ public class UserService {
         userRepository.save(currentUser);
     }
 
+//    TODO: password change
+
+//    TODO: password recover
+
 }
