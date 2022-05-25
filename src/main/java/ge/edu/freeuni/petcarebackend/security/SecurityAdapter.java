@@ -50,7 +50,7 @@ public class SecurityAdapter extends WebSecurityConfigurerAdapter {
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .antMatchers("/swagger/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
-                        .antMatchers(HttpMethod.GET, "/advertisement/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/advertisements/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )
