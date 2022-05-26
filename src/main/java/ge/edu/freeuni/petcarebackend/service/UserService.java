@@ -1,7 +1,7 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;

@@ -1,8 +1,11 @@
 package ge.edu.freeuni.petcarebackend.api.controller;
 
-import ge.edu.freeuni.petcarebackend.api.dtos.DonationDto;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.api.dtos.PetServiceDto;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.mapper.AdvertisementMapper;
+import ge.edu.freeuni.petcarebackend.api.mapper.PetServiceMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.PetServiceService;
@@ -28,21 +31,25 @@ public class PetServiceController {
     @Autowired
     private PetServiceService petServiceService;
 
+    @Autowired
+    private PetServiceMapper petServiceMapper;
+
+    @Autowired
+    private AdvertisementMapper advertisementMapper;
+
     @GetMapping("{id}")
     public ResponseEntity<PetServiceDto> getDonationById(@PathVariable long id) {
         PetServiceEntity petServiceEntity = petServiceService.getPetServiceById(id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(petServiceMapper.petServiceDto(petServiceEntity));
     }
 
     @GetMapping("{id}/images")
-    public List<AdvertisementImageEntity> getImagesById(@PathVariable Long id) {
-        //   return service.lookupImages(type, id);
-        return null;
+    public List<AdvertisementImageDTO> getImagesById(@PathVariable Long id) {
+        return advertisementMapper.advertisementImageDtoList(petServiceService.lookupImages(id));
     }
 
     @GetMapping
-    public SearchResultDTO<PetServiceDto> search(
-            @PathVariable Type type,
+    public SearchResultDTO<AdvertisementDTO> search(
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
@@ -54,12 +61,11 @@ public class PetServiceController {
             @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<City> city
     ) {
-//        return petServiceService.search(
-//                type, page, size, orderBy.orElse(null), ascending, search.orElse(""),
-//                petType.orElse(null), color.orElse(null), sex.orElse(null),
-//                ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
-//        );
-        return null;
+        return petServiceService.search(
+                page, size, orderBy.orElse(null), ascending, search.orElse(""),
+                petType.orElse(null), color.orElse(null), sex.orElse(null),
+                ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
+        );
     }
 
     @PostMapping
@@ -67,7 +73,7 @@ public class PetServiceController {
             HttpServletRequest request,
             @Valid @RequestBody PetServiceDto petService
     ) {
-        PetServiceEntity petServiceEntity = new PetServiceEntity();
+        PetServiceEntity petServiceEntity = petServiceMapper.petServiceEntity(petService);
         Long createdId = petServiceService.createAdvertisement(petServiceEntity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
@@ -81,7 +87,7 @@ public class PetServiceController {
     public void updatePetServiceAdvertisement(
             @Valid @RequestBody PetServiceDto petService
     ) {
-        PetServiceEntity petServiceEntity = new PetServiceEntity();
+        PetServiceEntity petServiceEntity = petServiceMapper.petServiceEntity(petService);
         petServiceService.updateAdvertisement(petServiceEntity);
     }
 

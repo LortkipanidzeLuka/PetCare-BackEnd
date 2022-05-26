@@ -1,16 +1,18 @@
-package ge.edu.freeuni.petcarebackend.controller.dto;
+package ge.edu.freeuni.petcarebackend.api.dtos;
 
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.repository.entity.Type;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 
-@Getter
-@Setter
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LostFoundDTO extends AdvertisementDTO {
 
     private PetType petType;

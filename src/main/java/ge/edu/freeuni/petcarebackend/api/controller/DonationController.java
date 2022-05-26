@@ -1,9 +1,10 @@
 package ge.edu.freeuni.petcarebackend.api.controller;
 
 import ge.edu.freeuni.petcarebackend.api.dtos.*;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.mapper.AdvertisementMapper;
+import ge.edu.freeuni.petcarebackend.api.mapper.DonationMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,15 +28,21 @@ public class DonationController {
     @Autowired
     private DonationService donationService;
 
+    @Autowired
+    private DonationMapper donationMapper;
+
+    @Autowired
+    private AdvertisementMapper advertisementMapper;
+
     @GetMapping("{id}")
     public ResponseEntity<DonationDto> getDonationById(@PathVariable long id) {
         DonationEntity donationEntity = donationService.getDonationById(id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(donationMapper.donationDto(donationEntity));
     }
 
     @GetMapping("{id}/images")
-    public List<AdvertisementImageEntity> getImagesById(@PathVariable Long id) {
-           return donationService.lookupImages(id);
+    public List<AdvertisementImageDTO> getImagesById(@PathVariable Long id) {
+        return advertisementMapper.advertisementImageDtoList(donationService.lookupImages(id));
     }
 
     @GetMapping
@@ -51,8 +58,7 @@ public class DonationController {
             @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
             @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
             @RequestParam(name = "breed") Optional<String> breed,
-            @RequestParam(name = "city") Optional<CityDto> city)
-    {
+            @RequestParam(name = "city") Optional<CityDto> city) {
 //        return donationService.search(
 //                type, page, size, orderBy.orElse(null), ascending, search.orElse(""),
 //           //     petType.orElse(null), color.orElse(null), sex.orElse(null),
@@ -69,7 +75,7 @@ public class DonationController {
             HttpServletRequest request,
             @Valid @RequestBody DonationDto donation
     ) {
-        DonationEntity donationEntity = new DonationEntity();
+        DonationEntity donationEntity = donationMapper.donationEntity(donation);
         Long createdId = donationService.createAdvertisement(donationEntity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
@@ -82,9 +88,9 @@ public class DonationController {
     @PutMapping("{id}")
     public void updateDonation(
             @PathVariable Long id,
-            @Valid @RequestBody DonationDto donationDto) {
-                DonationEntity donation = new DonationEntity();
-        donationService.updateAdvertisement(donation);
+            @Valid @RequestBody DonationDto donation) {
+        DonationEntity donationEntity = donationMapper.donationEntity(donation);
+        donationService.updateAdvertisement(donationEntity);
     }
 
     @DeleteMapping("{id}")

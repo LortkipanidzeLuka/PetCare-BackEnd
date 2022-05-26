@@ -1,8 +1,8 @@
-package ge.edu.freeuni.petcarebackend.controller;
+package ge.edu.freeuni.petcarebackend.api.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;

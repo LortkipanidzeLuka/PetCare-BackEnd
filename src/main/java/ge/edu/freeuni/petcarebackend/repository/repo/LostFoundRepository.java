@@ -1,7 +1,7 @@
 package ge.edu.freeuni.petcarebackend.repository.repo;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;

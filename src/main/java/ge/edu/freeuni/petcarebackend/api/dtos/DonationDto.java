@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DonationDto extends AdvertisementDto{
+public class DonationDto extends AdvertisementDTO {
 
     //TODO
 //    @NotNull

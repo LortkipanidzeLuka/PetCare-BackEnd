@@ -1,4 +1,4 @@
-package ge.edu.freeuni.petcarebackend.controller.dto;
+package ge.edu.freeuni.petcarebackend.api.dtos;
 
 import java.util.List;
 

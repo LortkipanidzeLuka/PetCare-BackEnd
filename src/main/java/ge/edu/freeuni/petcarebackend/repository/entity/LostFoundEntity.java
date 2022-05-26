@@ -20,6 +20,9 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "lost_found_advertisement")
 public class LostFoundEntity extends AdvertisementEntity {
 

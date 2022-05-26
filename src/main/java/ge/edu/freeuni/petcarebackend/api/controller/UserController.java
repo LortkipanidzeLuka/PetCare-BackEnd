@@ -1,6 +1,6 @@
-package ge.edu.freeuni.petcarebackend.controller;
+package ge.edu.freeuni.petcarebackend.api.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

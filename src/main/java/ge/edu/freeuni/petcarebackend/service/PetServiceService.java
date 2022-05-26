@@ -1,6 +1,7 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
@@ -12,6 +13,7 @@ import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -27,7 +29,7 @@ public class PetServiceService {
     private SecurityService securityService;
 
     public PetServiceEntity getPetServiceById(long id) throws BusinessException {
-        return petServiceRepository.findById(id).orElseThrow(this::getDonationDoesNotExistEx);
+        return petServiceRepository.findById(id).orElseThrow(this::getPetServiceDoesNotExistEx);
     }
 
     public List<AdvertisementImageEntity> lookupImages(Long id) {
@@ -35,68 +37,61 @@ public class PetServiceService {
         return imageRepository.findByAdvertisement(petServiceEntity);
     }
 
-    public SearchResultDTO<PetServiceEntity> search(
-            Type type, int page, int size, String orderBy, boolean asc, String search, // header or description
+    public SearchResultDTO<AdvertisementDTO> search(
+            int page, int size, String orderBy, boolean asc, String search, // header or description
             PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
-//        return donationRepository.search(
-//                page, size, orderBy, asc, search,
-//                type, petType, color, sex,
-//                ageFrom, ageUntil, breed, city
-//        );
-        return null;
+        return petServiceRepository.search(
+                page, size, orderBy, asc, search,
+                petType, color, sex,
+                ageFrom, ageUntil, breed, city
+        );
     }
 
     public Long createAdvertisement(PetServiceEntity petServiceEntity) {
 //        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
-//        (LocalDate.now());
-//        donationEntity.setCreatorUser(currentUser);
-//        if (donationEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-//            throw new BusinessException("need_one_primary_image");
-//        }
-//        lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(lostFoundEntity));
-//        return repository.save(lostFoundEntity).getId();
-        return null;
+        petServiceEntity.setCreateDate(LocalDate.now());
+        petServiceEntity.setCreatorUser(currentUser);
+        if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
+            throw new BusinessException("need_one_primary_image");
+        }
+        petServiceEntity.getImages().forEach(i -> i.setAdvertisement(petServiceEntity));
+        return petServiceRepository.save(petServiceEntity).getId();
     }
 
     public void updateAdvertisement(PetServiceEntity petServiceEntity) {
 //        TODO set type explicitly, dto wont have type
-//        UserEntity currentUser = securityService.lookupCurrentUser();
-//        LostFoundEntity lostFoundEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(BusinessException::new);
-//
-//        lostFoundEntity.setAgeFrom(lostFoundDTO.getAgeFrom());
-//        lostFoundEntity.setAgeUntil(lostFoundDTO.getAgeUntil());
-//        lostFoundEntity.setCity(lostFoundDTO.getCity());
-//        lostFoundEntity.setDescription(lostFoundDTO.getDescription());
-//        lostFoundEntity.setBreed(lostFoundDTO.getBreed());
-//        lostFoundEntity.setColor(lostFoundDTO.getColor());
-//        lostFoundEntity.setSex(lostFoundDTO.getSex());
-//        lostFoundEntity.setPetType(lostFoundDTO.getPetType());
-//        lostFoundEntity.setHeader(lostFoundEntity.getHeader());
-//        lostFoundEntity.setLatitude(lostFoundDTO.getLatitude());
-//        lostFoundEntity.setLongitude(lostFoundDTO.getLongitude());
-//        lostFoundEntity.setTags(lostFoundDTO.getTags());
-//
-//        if (lostFoundDTO.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-//            throw new BusinessException("need_one_primary_image");
-//        }
-//        lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(null));
-//        lostFoundEntity.getImages().clear();
-//        lostFoundEntity.setImages(lostFoundDTO.getImages());
-        return;
-        //     repository.save(lostFoundEntity);
+        UserEntity currentUser = securityService.lookupCurrentUser();
+        PetServiceEntity existing = petServiceRepository.findByCreatorUserAndId(currentUser, petServiceEntity.getId())
+                .orElseThrow(BusinessException::new);
+
+        existing.setAgeFrom(petServiceEntity.getAgeFrom());
+        existing.setAgeUntil(petServiceEntity.getAgeUntil());
+        existing.setCity(petServiceEntity.getCity());
+        existing.setDescription(petServiceEntity.getDescription());
+        existing.setHeader(petServiceEntity.getHeader());
+        existing.setLatitude(petServiceEntity.getLatitude());
+        existing.setLongitude(petServiceEntity.getLongitude());
+        existing.setTags(petServiceEntity.getTags());
+
+        if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
+            throw new BusinessException("need_one_primary_image");
+        }
+        existing.getImages().forEach(i -> i.setAdvertisement(null));
+        existing.getImages().clear();
+        existing.setImages(petServiceEntity.getImages());
+        petServiceRepository.save(existing);
     }
 
     public void deleteAdvertisement(Long id) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        //   donationRepository.deleteByCreatorUserAndTypeAndId(currentUser, type, id);
-        return;
+        petServiceRepository.deleteByCreatorUserAndId(currentUser, id);
     }
 
 
-    private BusinessException getDonationDoesNotExistEx() {
-        return new BusinessException(ExceptionKeys.DONATION_DOES_NOT_EXIST);
+    private BusinessException getPetServiceDoesNotExistEx() {
+        return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST);
     }
 }
