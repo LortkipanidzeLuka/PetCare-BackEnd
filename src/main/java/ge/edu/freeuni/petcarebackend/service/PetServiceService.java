@@ -50,19 +50,18 @@ public class PetServiceService {
     }
 
     public Long createAdvertisement(PetServiceEntity petServiceEntity) {
-//        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
         petServiceEntity.setCreateDate(LocalDate.now());
         petServiceEntity.setCreatorUser(currentUser);
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
+        petServiceEntity.setAdvertisementType(AdvertisementType.PET_SERVICE);
         petServiceEntity.getImages().forEach(i -> i.setAdvertisement(petServiceEntity));
         return petServiceRepository.save(petServiceEntity).getId();
     }
 
     public void updateAdvertisement(PetServiceEntity petServiceEntity) {
-//        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
         PetServiceEntity existing = petServiceRepository.findByCreatorUserAndId(currentUser, petServiceEntity.getId())
                 .orElseThrow(BusinessException::new);
@@ -75,6 +74,9 @@ public class PetServiceService {
         existing.setLatitude(petServiceEntity.getLatitude());
         existing.setLongitude(petServiceEntity.getLongitude());
         existing.setTags(petServiceEntity.getTags());
+        existing.setApplicableSex(petServiceEntity.getApplicableSex());
+        existing.setType(petServiceEntity.getType());
+
 
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");

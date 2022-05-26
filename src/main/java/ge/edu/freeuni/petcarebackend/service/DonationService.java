@@ -50,10 +50,10 @@ public class DonationService {
     }
 
     public Long createAdvertisement(DonationEntity donationEntity) {
-//        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
         donationEntity.setCreateDate(LocalDate.now());
         donationEntity.setCreatorUser(currentUser);
+        donationEntity.setAdvertisementType(AdvertisementType.DONATION);
         if (donationEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
@@ -62,7 +62,6 @@ public class DonationService {
     }
 
     public void updateAdvertisement(DonationEntity donationEntity) {
-//        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
         DonationEntity existing = donationRepository.findByCreatorUserAndId(currentUser,donationEntity.getId())
                 .orElseThrow(BusinessException::new);
@@ -76,6 +75,10 @@ public class DonationService {
         existing.setLatitude(donationEntity.getLatitude());
         existing.setLongitude(donationEntity.getLongitude());
         existing.setTags(donationEntity.getTags());
+        existing.setColor(donationEntity.getColor());
+        existing.setType(donationEntity.getType());
+        existing.setApplicableSex(donationEntity.getApplicableSex());
+
 
         if (donationEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
