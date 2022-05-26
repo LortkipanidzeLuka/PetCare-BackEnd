@@ -11,6 +11,4 @@ public interface EmailChangeOtpRepository extends JpaRepository<EmailChangeOtpEn
 
     Optional<EmailChangeOtpEntity> findByUserAndCodeAndEmail(UserEntity user, String code, String email);
 
-    long countByUserAndUsedAndCreateTsIsAfterAndEmail(UserEntity user, boolean b, LocalDateTime minusMinutes, String email);
-
 }

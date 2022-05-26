@@ -55,10 +55,7 @@ public class OtpService {
     }
 
     public boolean verifyEmailChangeOtpCode(String code, UserEntity user, String email) {
-        long countUnusedOtpsWithin5Minutes = emailChangeOtpRepository.countByUserAndUsedAndCreateTsIsAfterAndEmail(user, false, LocalDateTime.now().minusMinutes(5), email);
-        if (countUnusedOtpsWithin5Minutes >= 3) {
-            throw new BusinessException("otp_retries_exceeded");
-        }
+        preventOtpAttack(user);
         Optional<EmailChangeOtpEntity> otp = emailChangeOtpRepository.findByUserAndCodeAndEmail(user, code, email);
         boolean isValid = otp.isPresent() && !otp.get().isUsed() && otp.get().getValidUntil().isAfter(LocalDateTime.now());
         if (isValid) {
@@ -66,6 +63,13 @@ public class OtpService {
             return true;
         }
         return false;
+    }
+
+    private void preventOtpAttack(UserEntity user) {
+        long countUnusedOtpsWithin5Minutes = repository.countByUserAndUsedAndCreateTsIsAfter(user, false, LocalDateTime.now().minusMinutes(5));
+        if (countUnusedOtpsWithin5Minutes >= 3) {
+            throw new BusinessException("otp_retries_exceeded");
+        }
     }
 
     private OtpEntity createOtp(UserEntity user) {
@@ -89,10 +93,7 @@ public class OtpService {
     }
 
     public void resendOtpCode(UserEntity user) {
-        long countUnusedOtpsWithin5Minutes = repository.countByUserAndUsedAndCreateTsIsAfter(user, false, LocalDateTime.now().minusMinutes(5));
-        if (countUnusedOtpsWithin5Minutes >= 3) {
-            throw new BusinessException("otp_retries_exceeded");
-        }
+        preventOtpAttack(user);
         createAndSendOtp(user);
     }
 }
