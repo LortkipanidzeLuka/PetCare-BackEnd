@@ -40,7 +40,7 @@ public class OtpService {
 
     public void createAndSendEmailChangeOtp(UserEntity user, String email) {
         EmailChangeOtpEntity otp = createEmailChangeOtp(user, email);
-        mailSenderService.sendMail(email, "ერთჯერადი კოდი", "ერთჯერადი კოდი: %s \n ვადა: 60 წამი\n".formatted(otp.getCode()));
+        mailSenderService.sendMail(email, "ერთჯერადი კოდი", "მეილის შეცვლისთვის გამოიყენეთ ერთჯერადი კოდი: %s \n ვადა: 60 წამი\n".formatted(otp.getCode()));
     }
 
     private EmailChangeOtpEntity createEmailChangeOtp(UserEntity user, String email) {
@@ -55,6 +55,10 @@ public class OtpService {
     }
 
     public boolean verifyEmailChangeOtpCode(String code, UserEntity user, String email) {
+        long countUnusedOtpsWithin5Minutes = emailChangeOtpRepository.countByUserAndUsedAndCreateTsIsAfterAndEmail(user, false, LocalDateTime.now().minusMinutes(5), email);
+        if (countUnusedOtpsWithin5Minutes >= 3) {
+            throw new BusinessException("otp_retries_exceeded");
+        }
         Optional<EmailChangeOtpEntity> otp = emailChangeOtpRepository.findByUserAndCodeAndEmail(user, code, email);
         boolean isValid = otp.isPresent() && !otp.get().isUsed() && otp.get().getValidUntil().isAfter(LocalDateTime.now());
         if (isValid) {

@@ -41,13 +41,9 @@ public class SecurityService {
     }
 
     public void register(UserEntity user) {
-        if (new Zxcvbn().measure(user.getPassword()).getScore() < ZXCVBN_PASSWORD_STRENGTH) {
-            throw new BusinessException("weak_password");
-        }
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setPassword(encodePassword(user.getPassword()));
         try {
-            user = repository.saveAndFlush(user);
-
+            repository.saveAndFlush(user);
         } catch (DataIntegrityViolationException ex) {
             throw new BusinessException("email_used");
         }
@@ -55,8 +51,8 @@ public class SecurityService {
 
     public AuthorizationTokensDTO login(LoginDTO loginDTO) {
         Optional<UserEntity> user = repository.findByUsername(loginDTO.username());
-        if (user.isPresent() && new BCryptPasswordEncoder().matches(loginDTO.password(), user.get().getPassword())) {
-            return tokenService.generateTokens(user.get());
+        if (user.isPresent() && validateUserPassword(user.get(), loginDTO.password())) {
+            return generateTokens(user.get());
         }
         throw new BusinessException("invalid_credentials");
     }
@@ -86,4 +82,20 @@ public class SecurityService {
     public void resendCode() {
         otpService.resendOtpCode(lookupCurrentUser());
     }
+
+    public boolean validateUserPassword(UserEntity user, String password) {
+        return new BCryptPasswordEncoder().matches(password, user.getPassword());
+    }
+
+    public String encodePassword(String password) {
+        if (new Zxcvbn().measure(password).getScore() < ZXCVBN_PASSWORD_STRENGTH) {
+            throw new BusinessException("weak_password");
+        }
+        return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public AuthorizationTokensDTO generateTokens(UserEntity user) {
+        return tokenService.generateTokens(user);
+    }
+
 }

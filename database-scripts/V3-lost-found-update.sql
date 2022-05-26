@@ -8,7 +8,7 @@ create table advertisement_images
 (
     id               bigint primary key not null,
     title            varchar(64)        not null,
-    is_primary       bit                not null,
+    is_primary       boolean            not null,
     content          varchar            not null,
     advertisement_id bigint             not null
 );

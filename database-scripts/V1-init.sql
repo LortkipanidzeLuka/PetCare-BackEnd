@@ -18,7 +18,7 @@ create table app_user
     sex           varchar(16),
     phone_number  varchar(16),
     profile_image varchar,
-    is_verified   bit         not null
+    is_verified   boolean         not null
 );
 
 grant select , insert , update, delete on app_user to pcapp;

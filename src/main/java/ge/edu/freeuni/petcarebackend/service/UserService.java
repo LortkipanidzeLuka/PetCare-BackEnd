@@ -1,9 +1,12 @@
 package ge.edu.freeuni.petcarebackend.service;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
+import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
+import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
@@ -55,19 +58,31 @@ public class UserService {
 
     public void changeUserEmailSendCode(String email) {
         UserEntity currentUser = securityService.lookupCurrentUser();
+        if(email.equals(currentUser.getUsername())){
+            throw new BusinessException("invalid_email");
+        }
         otpService.createAndSendEmailChangeOtp(currentUser, email);
     }
 
-    public void changeUserEmailVerify(String email, String otpCode) {
+    public AuthorizationTokensDTO changeUserEmailVerify(String email, String otpCode) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         if (otpService.verifyEmailChangeOtpCode(otpCode, currentUser, email)) {
             currentUser.setUsername(email);
+            userRepository.save(currentUser);
+            return securityService.generateTokens(currentUser);
+        } else {
+            throw new BusinessException("invalid_otp");
         }
-        userRepository.save(currentUser);
     }
 
-//    TODO: password change
-
-//    TODO: password recover
+    public void changePassword(PasswordChangeDTO passwordChangeDTO) {
+        UserEntity user = securityService.lookupCurrentUser();
+        if (securityService.validateUserPassword(user, passwordChangeDTO.getOldPassword())) {
+            user.setPassword(securityService.encodePassword(passwordChangeDTO.getNewPassword()));
+            userRepository.save(user);
+        } else {
+            throw new BusinessException("invalid_old_password");
+        }
+    }
 
 }
