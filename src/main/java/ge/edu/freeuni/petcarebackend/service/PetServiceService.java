@@ -14,11 +14,13 @@ import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class PetServiceService {
 
     @Autowired

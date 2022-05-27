@@ -9,13 +9,16 @@ import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class DonationService {
 
     @Autowired
@@ -46,6 +49,18 @@ public class DonationService {
         }
         donationEntity.getImages().forEach(i -> i.setAdvertisement(donationEntity));
         return donationRepository.save(donationEntity).getId();
+    }
+
+    public SearchResultDTO<AdvertisementDTO> search(Type type, int page, int size, String orderBy, boolean asc,
+                                                    String search, DonationAdvertisementTypeDto donationAdvertisementType,
+                                                    ColorDto color, SexDto applicableSex, Integer ageFrom, Integer ageUntil,
+                                                    CityDto city) {
+
+        return donationRepository.search(
+                page, size, orderBy, asc, search,
+                type, donationAdvertisementType, color, applicableSex,
+                ageFrom, ageUntil, city
+        );
     }
 
     public void updateAdvertisement(DonationEntity donationEntity) {
@@ -84,17 +99,5 @@ public class DonationService {
 
     private BusinessException getDonationDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.DONATION_DOES_NOT_EXIST);
-    }
-
-    public SearchResultDTO<AdvertisementDTO> search(Type type, int page, int size, String orderBy, boolean asc,
-                                               String search, DonationAdvertisementTypeDto donationAdvertisementType,
-                                               ColorDto color, SexDto applicableSex, Integer ageFrom, Integer ageUntil,
-                                               CityDto city) {
-
-        return donationRepository.search(
-                page, size, orderBy, asc, search,
-                type, donationAdvertisementType, color, applicableSex,
-                ageFrom, ageUntil, city
-        );
     }
 }
