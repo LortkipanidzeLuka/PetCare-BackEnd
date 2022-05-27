@@ -28,7 +28,7 @@ public class DonationEntity extends AdvertisementEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private DonationAdvertisementType type;
+    private DonationAdvertisementType donationAdvertisementType;
 
     @Enumerated(EnumType.STRING)
     private Color color;

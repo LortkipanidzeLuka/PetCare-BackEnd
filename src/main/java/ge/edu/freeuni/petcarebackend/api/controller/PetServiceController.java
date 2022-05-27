@@ -1,9 +1,6 @@
 package ge.edu.freeuni.petcarebackend.api.controller;
 
-import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementImageDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.PetServiceDto;
-import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.*;
 import ge.edu.freeuni.petcarebackend.api.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.api.mapper.PetServiceMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
@@ -54,16 +51,17 @@ public class PetServiceController {
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
-            @RequestParam(name = "petType") Optional<PetType> petType,
+            @RequestParam(name = "petServiceType") Optional<PetServiceTypeDto> petServiceType,
             @RequestParam(name = "color") Optional<Color> color,
-            @RequestParam(name = "sex") Optional<Sex> sex,
-            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom, @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
+            @RequestParam(name = "applicableSex") Optional<SexDto> applicableSex,
+            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
+            @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
             @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<City> city
     ) {
         return petServiceService.search(
                 page, size, orderBy.orElse(null), ascending, search.orElse(""),
-                petType.orElse(null), color.orElse(null), sex.orElse(null),
+                petServiceType.orElse(null), color.orElse(null), applicableSex.orElse(null),
                 ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
         );
     }
@@ -83,7 +81,7 @@ public class PetServiceController {
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping()
     public void updatePetServiceAdvertisement(
             @Valid @RequestBody PetServiceDto petService
     ) {

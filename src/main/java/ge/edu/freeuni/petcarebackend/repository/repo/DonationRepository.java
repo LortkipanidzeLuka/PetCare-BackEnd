@@ -1,7 +1,6 @@
 package ge.edu.freeuni.petcarebackend.repository.repo;
 
-import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.*;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.GenericSpecification;
@@ -24,21 +23,22 @@ import java.util.stream.Stream;
 
 @Repository
 public interface DonationRepository extends JpaRepository<DonationEntity, Long> , JpaSpecificationExecutor<DonationEntity> {
-    Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
+    Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>();
 
-    default SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search,
-            Type type, PetType petType, Color color, Sex sex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
-    ) {
+    Optional<DonationEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
+
+    void deleteByCreatorUserAndId(UserEntity creator, Long id);
+
+    default SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc, String search, Type type,
+                                        DonationAdvertisementTypeDto donationAdvertisementType, ColorDto color,
+                                        SexDto applicableSex, Integer ageFrom, Integer ageUntil, CityDto city){
         GenericSpecification<DonationEntity> specification = new GenericSpecification<DonationEntity>()
                 .add("type", type, SearchOperation.EQUAL)
-                .add("petType", petType, SearchOperation.EQUAL)
+                .add("donationAdvertisementType", donationAdvertisementType, SearchOperation.EQUAL)
                 .add("color", color, SearchOperation.EQUAL)
-                .add("sex", sex, SearchOperation.EQUAL)
+                .add("applicableSex", applicableSex, SearchOperation.EQUAL)
                 .add("ageFrom", ageFrom, SearchOperation.GREATER_THAN_EQUAL)
                 .add("ageUntil", ageUntil, SearchOperation.LESS_THAN_EQUAL)
-                .add("breed", breed, SearchOperation.LIKE)
                 .add("city", city, SearchOperation.EQUAL)
                 .add((root, query, builder) -> Stream.of("header", "description")
                         .map(key -> builder.like(builder.lower(root.get(key)), "%" + search.toLowerCase() + "%"))
@@ -65,9 +65,7 @@ public interface DonationRepository extends JpaRepository<DonationEntity, Long> 
                 result.toList().stream().map(ad -> new AdvertisementDTO(ad, true)).collect(Collectors.toList()),
                 result.getTotalElements()
         );
+
     }
 
-    Optional<DonationEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
-
-    void deleteByCreatorUserAndId(UserEntity creator, Long id);
 }

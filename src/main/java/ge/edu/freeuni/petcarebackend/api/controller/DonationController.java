@@ -46,28 +46,23 @@ public class DonationController {
     }
 
     @GetMapping
-    public SearchResultDTO<DonationDto> search(
+    public SearchResultDTO<AdvertisementDTO> search(
             @PathVariable Type type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
-            @RequestParam(name = "petType") Optional<PetTypeDto> petType,
+            @RequestParam(name="type", required = false) Optional<DonationAdvertisementTypeDto> donationAdvertisementTypeDto,
             @RequestParam(name = "color") Optional<ColorDto> color,
-            @RequestParam(name = "sex") Optional<SexDto> sex,
+            @RequestParam(name = "applicableSex") Optional<SexDto> applicableSex,
             @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
             @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
-            @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<CityDto> city) {
-//        return donationService.search(
-//                type, page, size, orderBy.orElse(null), ascending, search.orElse(""),
-//           //     petType.orElse(null), color.orElse(null), sex.orElse(null),
-//                null, null, null,
-//                ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null),
-//                null
-//                //city.orElse(null)
-//        );
-        return null;
+        return donationService.search(
+                type, page, size, orderBy.orElse(null), ascending, search.orElse(""),
+                donationAdvertisementTypeDto.orElse(null), color.orElse(null), applicableSex.orElse(null),
+                ageFrom.orElse(null), ageUntil.orElse(null), city.orElse(null)
+        );
     }
 
     @PostMapping
@@ -85,9 +80,8 @@ public class DonationController {
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping()
     public void updateDonation(
-            @PathVariable Long id,
             @Valid @RequestBody DonationDto donation) {
         DonationEntity donationEntity = donationMapper.donationEntity(donation);
         donationService.updateAdvertisement(donationEntity);

@@ -26,7 +26,7 @@ public class PetServiceDto {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private PetServiceType type;
+    private PetServiceTypeDto petServiceType;
 
     @Min(0)
     @Column(name = "age_from")

@@ -28,7 +28,7 @@ public class DonationDto extends AdvertisementDTO {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private DonationAdvertisementTypeDto type;
+    private DonationAdvertisementTypeDto donationAdvertisementType;
 
     @Enumerated(EnumType.STRING)
     private ColorDto color;

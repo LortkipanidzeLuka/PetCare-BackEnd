@@ -1,7 +1,9 @@
 package ge.edu.freeuni.petcarebackend.service;
 
 import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.PetServiceTypeDto;
 import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.api.dtos.SexDto;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
@@ -38,13 +40,13 @@ public class PetServiceService {
     }
 
     public SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search, // header or description
-            PetType petType, Color color, Sex sex,
+            int page, int size, String orderBy, boolean asc, String search,
+            PetServiceTypeDto petServiceType, Color color, SexDto applicableSex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
         return petServiceRepository.search(
                 page, size, orderBy, asc, search,
-                petType, color, sex,
+                petServiceType, color, applicableSex,
                 ageFrom, ageUntil, breed, city
         );
     }
@@ -75,7 +77,7 @@ public class PetServiceService {
         existing.setLongitude(petServiceEntity.getLongitude());
         existing.setTags(petServiceEntity.getTags());
         existing.setApplicableSex(petServiceEntity.getApplicableSex());
-        existing.setType(petServiceEntity.getType());
+        existing.setPetServiceType(petServiceEntity.getPetServiceType());
 
 
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {

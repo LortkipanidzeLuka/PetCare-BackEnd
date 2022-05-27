@@ -1,7 +1,5 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
-
-import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +8,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -21,16 +17,13 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "pet_service_advertisement")
-public class PetServiceEntity extends AdvertisementEntity {
-
-    //TODO
-//    @NotNull
-//    private List<PetType> applicablePetList;
-
+@Table(name = "adoption_advertisement")
+public class AdoptionEntity extends AdvertisementEntity {
     @NotNull
+    private PetType petType;
+
     @Enumerated(EnumType.STRING)
-    private PetServiceType petServiceType;
+    private Color color;
 
     @Min(0)
     @Column(name = "age_from")
@@ -40,14 +33,9 @@ public class PetServiceEntity extends AdvertisementEntity {
     @Column(name = "age_until")
     private Short ageUntil;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private Sex applicableSex;
+    private Sex sex;
 
-    //TODO
-//    private List<String> applicableBreedList;
-
-    @AssertTrue
-    private boolean isValidAge() {
-        return ageFrom == null || ageUntil == null || ageUntil >= ageFrom;
-    }
+    private String breed;
 }
