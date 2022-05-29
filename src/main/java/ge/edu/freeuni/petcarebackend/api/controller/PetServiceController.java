@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/pet-service")
+@RequestMapping("api/pet-service") // TODO: rename advertisements/petservice, server.prefix=api ?
 public class PetServiceController {
 
     @Autowired

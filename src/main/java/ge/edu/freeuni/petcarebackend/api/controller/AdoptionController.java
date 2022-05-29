@@ -68,7 +68,7 @@ public class AdoptionController {
     }
 
     @PostMapping
-    public ResponseEntity<DonationDto> createLostFoundAdvertisement(
+    public ResponseEntity<DonationDto> createLostFoundAdvertisement( // todo:DonationDto?
             HttpServletRequest request,
             @Valid @RequestBody AdoptionDto adoption
     ) {

@@ -24,7 +24,7 @@ import java.util.List;
 public class AdoptionService {
 
     @Autowired
-    private AdvertisementImageRepository imageRepository;
+    private AdvertisementImageRepository imageRepository; // todo: constructionBasedBeanInjection
 
     @Autowired
     private SecurityService securityService;
@@ -33,7 +33,7 @@ public class AdoptionService {
     private AdoptionRepository adoptionRepository;
 
     public AdoptionEntity lookup(Long id) {
-        return adoptionRepository.findById(id).orElseThrow(BusinessException::new);
+        return adoptionRepository.findById(id).orElseThrow(BusinessException::new); // todo: this::donationDoesntExist
     }
 
     public List<AdvertisementImageEntity> lookupImages(Long id) {

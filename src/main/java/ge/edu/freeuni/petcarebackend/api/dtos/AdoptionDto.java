@@ -14,7 +14,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Data
+@Data // todo: data?
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor

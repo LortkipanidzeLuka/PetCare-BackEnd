@@ -1,6 +1,6 @@
 package ge.edu.freeuni.petcarebackend.api.dtos;
 
-public enum  CityDto {
+public enum  CityDto { // todo: DTO? გვაქვს უკვე ეს ენამი
     TBILISI,
     BATUMI,
     RUSTAVI,

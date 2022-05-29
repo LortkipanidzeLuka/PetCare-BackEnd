@@ -87,7 +87,7 @@ public class PetServiceService {
         }
         existing.getImages().forEach(i -> i.setAdvertisement(null));
         existing.getImages().clear();
-        existing.setImages(petServiceEntity.getImages());
+        existing.setImages(petServiceEntity.getImages()); // todo: image.setAdvertisement(existing)
         petServiceRepository.save(existing);
     }
 
@@ -98,6 +98,6 @@ public class PetServiceService {
 
 
     private BusinessException getPetServiceDoesNotExistEx() {
-        return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST);
+        return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST); // todo: error_code
     }
 }
