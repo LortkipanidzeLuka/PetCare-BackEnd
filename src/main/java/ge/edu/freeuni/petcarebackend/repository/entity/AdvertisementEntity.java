@@ -94,4 +94,12 @@ public class AdvertisementEntity {
     public int hashCode() {
         return 31;
     }
+
+    public void setImages(List<AdvertisementImageEntity> images) {
+        this.images.clear();
+        if (images != null) {
+            images.forEach(advertisementImageEntity -> advertisementImageEntity.setAdvertisement(this));
+            this.images.addAll(images);
+        }
+    }
 }

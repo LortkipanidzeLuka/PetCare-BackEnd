@@ -89,7 +89,7 @@ public class LostFoundService {
         lostFoundEntity.setColor(lostFoundDTO.getColor());
         lostFoundEntity.setSex(lostFoundDTO.getSex());
         lostFoundEntity.setPetType(lostFoundDTO.getPetType());
-        lostFoundEntity.setHeader(lostFoundEntity.getHeader());
+        lostFoundEntity.setHeader(lostFoundDTO.getHeader());
         lostFoundEntity.setLatitude(lostFoundDTO.getLatitude());
         lostFoundEntity.setLongitude(lostFoundDTO.getLongitude());
         lostFoundEntity.setTags(lostFoundDTO.getTags());
