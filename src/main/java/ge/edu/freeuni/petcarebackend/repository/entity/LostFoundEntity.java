@@ -1,11 +1,8 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,7 +36,7 @@ public class LostFoundEntity extends AdvertisementEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private LostFoundType type;
 
     @NotNull
     @Enumerated(EnumType.STRING)

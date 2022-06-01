@@ -3,7 +3,7 @@ package ge.edu.freeuni.petcarebackend.controller.dto;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.Type;
+import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ public class LostFoundDTO extends AdvertisementDTO {
 
     private Short ageUntil;
 
-    private Type type;
+    private LostFoundType type;
 
     private Sex sex;
 

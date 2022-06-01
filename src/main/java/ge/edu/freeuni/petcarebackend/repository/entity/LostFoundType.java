@@ -1,6 +1,6 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
-public enum Type {
+public enum LostFoundType {
 
     LOST,
     FOUND

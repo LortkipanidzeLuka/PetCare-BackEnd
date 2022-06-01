@@ -2,10 +2,12 @@ package ge.edu.freeuni.petcarebackend.service;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
+import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
@@ -14,6 +16,7 @@ import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,10 +39,13 @@ public class UserService {
         this.otpService = otpService;
     }
 
-    public List<AdvertisementDTO> getMyAdvertisements() {
+    public SearchResultDTO<AdvertisementDTO> getMyAdvertisements(
+            int page, int size,
+            String orderBy, boolean ascending,
+            String search, AdvertisementType type
+    ) {
         UserEntity user = securityService.lookupCurrentUser();
-        List<AdvertisementEntity> userAdvertisements = advertisementRepository.findByCreatorUser(user);
-        return userAdvertisements.stream().map(ad -> new AdvertisementDTO(ad, true)).collect(Collectors.toList());
+        return advertisementRepository.search(page, size, orderBy, ascending, search, type, user);
     }
 
     public UserDTO getUserInfo() {
@@ -58,7 +64,7 @@ public class UserService {
 
     public void changeUserEmailSendCode(String email) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        if(email.equals(currentUser.getUsername())){
+        if (email.equals(currentUser.getUsername())) {
             throw new BusinessException("invalid_email");
         }
         otpService.createAndSendEmailChangeOtp(currentUser, email);
