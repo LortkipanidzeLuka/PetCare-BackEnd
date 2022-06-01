@@ -8,7 +8,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.Type;
+import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.LostFoundService;
 import org.springframework.http.HttpStatus;
@@ -44,18 +44,18 @@ public class LostFoundController {
     }
 
     @GetMapping("{id}")
-    public LostFoundDTO getById(@PathVariable Type type, @PathVariable Long id) {
+    public LostFoundDTO getById(@PathVariable LostFoundType type, @PathVariable Long id) {
         return service.lookupAdvertisement(type, id);
     }
 
     @GetMapping("{id}/images")
-    public List<AdvertisementImageEntity> getImagesById(@PathVariable Type type, @PathVariable Long id) {
+    public List<AdvertisementImageEntity> getImagesById(@PathVariable LostFoundType type, @PathVariable Long id) {
         return service.lookupImages(type, id);
     }
 
     @GetMapping
     public SearchResultDTO<AdvertisementDTO> search(
-            @PathVariable Type type,
+            @PathVariable LostFoundType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
@@ -77,7 +77,7 @@ public class LostFoundController {
     @PostMapping
     public ResponseEntity createLostFoundAdvertisement(
             HttpServletRequest request,
-            @PathVariable Type type, @Valid @RequestBody LostFoundEntity lostFoundEntity
+            @PathVariable LostFoundType type, @Valid @RequestBody LostFoundEntity lostFoundEntity
     ) {
         Long createdId = service.createAdvertisement(type, lostFoundEntity);
         try {
@@ -90,7 +90,7 @@ public class LostFoundController {
 
     @PutMapping("{id}")
     public void updateLostFoundAdvertisement(
-            @PathVariable Type type,
+            @PathVariable LostFoundType type,
             @PathVariable Long id,
             @Valid @RequestBody LostFoundEntity lostFoundEntity
     ) {
@@ -99,7 +99,7 @@ public class LostFoundController {
 
     @DeleteMapping("{id}")
     public void deleteLostFoundAdvertisement(
-            @PathVariable Type type,
+            @PathVariable LostFoundType type,
             @PathVariable Long id
     ) {
         service.deleteAdvertisement(type, id);

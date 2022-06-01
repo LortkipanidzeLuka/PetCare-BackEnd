@@ -12,7 +12,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.Type;
+import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
@@ -38,21 +38,21 @@ public class LostFoundService {
         this.securityService = securityService;
     }
 
-    public LostFoundDTO lookupAdvertisement(Type type, Long id) {
+    public LostFoundDTO lookupAdvertisement(LostFoundType type, Long id) {
         return repository.findByTypeAndId(type, id).map(ad -> new LostFoundDTO(ad, false)).orElseThrow(BusinessException::new);
     }
 
-    public LostFoundEntity lookup(Type type, Long id) {
+    public LostFoundEntity lookup(LostFoundType type, Long id) {
         return repository.findByTypeAndId(type, id).orElseThrow(BusinessException::new);
     }
 
-    public List<AdvertisementImageEntity> lookupImages(Type type, Long id) {
+    public List<AdvertisementImageEntity> lookupImages(LostFoundType type, Long id) {
         LostFoundEntity lostFoundEntity = lookup(type, id);
         return imageRepository.findByAdvertisement(lostFoundEntity);
     }
 
     public SearchResultDTO<AdvertisementDTO> search(
-            Type type, int page, int size, String orderBy, boolean asc, String search, // header or description
+            LostFoundType type, int page, int size, String orderBy, boolean asc, String search, // header or description
             PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
@@ -63,7 +63,7 @@ public class LostFoundService {
         );
     }
 
-    public Long createAdvertisement(Type type, LostFoundEntity lostFoundEntity) {
+    public Long createAdvertisement(LostFoundType type, LostFoundEntity lostFoundEntity) {
 //        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
         lostFoundEntity.setCreateDate(LocalDate.now());
@@ -76,7 +76,7 @@ public class LostFoundService {
         return repository.save(lostFoundEntity).getId();
     }
 
-    public void updateAdvertisement(Type type, Long id, LostFoundEntity lostFoundDTO) {
+    public void updateAdvertisement(LostFoundType type, Long id, LostFoundEntity lostFoundDTO) {
 //        TODO set type explicitly, dto wont have type
         UserEntity currentUser = securityService.lookupCurrentUser();
         LostFoundEntity lostFoundEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(BusinessException::new);
@@ -104,7 +104,7 @@ public class LostFoundService {
         repository.save(lostFoundEntity);
     }
 
-    public void deleteAdvertisement(Type type, Long id) {
+    public void deleteAdvertisement(LostFoundType type, Long id) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         repository.deleteByCreatorUserAndTypeAndId(currentUser, type, id);
     }

@@ -7,7 +7,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.Type;
+import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.GenericSpecification;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.SearchOperation;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
@@ -27,16 +27,16 @@ import java.util.stream.Stream;
 
 public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long>, JpaSpecificationExecutor<LostFoundEntity> {
 
-    Optional<LostFoundEntity> findByTypeAndId(Type type, Long id);
+    Optional<LostFoundEntity> findByTypeAndId(LostFoundType type, Long id);
 
-    void deleteByCreatorUserAndTypeAndId(UserEntity creator, Type type, Long id);
+    void deleteByCreatorUserAndTypeAndId(UserEntity creator, LostFoundType type, Long id);
 
     Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
 
 
     default SearchResultDTO<AdvertisementDTO> search(
             int page, int size, String orderBy, boolean asc, String search,
-            Type type, PetType petType, Color color, Sex sex,
+            LostFoundType type, PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
         GenericSpecification<LostFoundEntity> specification = new GenericSpecification<LostFoundEntity>()
