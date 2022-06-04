@@ -1,8 +1,10 @@
 package ge.edu.freeuni.petcarebackend.service;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementImageMapper;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,23 +35,26 @@ public class LostFoundService {
 
     private final SecurityService securityService;
 
-    public LostFoundService(LostFoundRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
+    private final AdvertisementImageMapper advertisementImageMapper;
+
+    public LostFoundService(LostFoundRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementImageMapper advertisementImageMapper) {
         this.repository = repository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
+        this.advertisementImageMapper = advertisementImageMapper;
     }
 
-    public LostFoundDTO lookupAdvertisement(LostFoundType type, Long id) {
-        return repository.findByTypeAndId(type, id).map(ad -> new LostFoundDTO(ad, false)).orElseThrow(BusinessException::new);
+    public LostFoundDTO lookupAdvertisement(Long id) {
+        return repository.findById(id).map(ad -> new LostFoundDTO(ad, false)).orElseThrow(BusinessException::new);
     }
 
-    public LostFoundEntity lookup(LostFoundType type, Long id) {
-        return repository.findByTypeAndId(type, id).orElseThrow(BusinessException::new);
+    public LostFoundEntity lookup(Long id) {
+        return repository.findById(id).orElseThrow(BusinessException::new);
     }
 
-    public List<AdvertisementImageEntity> lookupImages(LostFoundType type, Long id) {
-        LostFoundEntity lostFoundEntity = lookup(type, id);
-        return imageRepository.findByAdvertisement(lostFoundEntity);
+    public List<AdvertisementImageDTO> lookupImages(Long id) {
+        LostFoundEntity lostFoundEntity = lookup(id);
+        return imageRepository.findByAdvertisement(lostFoundEntity).stream().map(AdvertisementImageDTO::new).collect(Collectors.toList());
     }
 
     public SearchResultDTO<AdvertisementDTO> search(
@@ -63,8 +69,7 @@ public class LostFoundService {
         );
     }
 
-    public Long createAdvertisement(LostFoundType type, LostFoundEntity lostFoundEntity) {
-//        TODO set type explicitly, dto wont have type
+    public Long createAdvertisement(LostFoundEntity lostFoundEntity) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         lostFoundEntity.setCreateDate(LocalDate.now());
         lostFoundEntity.setCreatorUser(currentUser);
@@ -76,8 +81,7 @@ public class LostFoundService {
         return repository.save(lostFoundEntity).getId();
     }
 
-    public void updateAdvertisement(LostFoundType type, Long id, LostFoundEntity lostFoundDTO) {
-//        TODO set type explicitly, dto wont have type
+    public void updateAdvertisement(Long id, LostFoundDTO lostFoundDTO) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         LostFoundEntity lostFoundEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(BusinessException::new);
 
@@ -94,19 +98,19 @@ public class LostFoundService {
         lostFoundEntity.setLongitude(lostFoundDTO.getLongitude());
         lostFoundEntity.setTags(lostFoundDTO.getTags());
 
-        if (lostFoundDTO.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
+        if (lostFoundDTO.getImages().stream().filter(AdvertisementImageDTO::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
         lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(null));
         lostFoundEntity.getImages().clear();
-        lostFoundEntity.setImages(lostFoundDTO.getImages());
+        lostFoundEntity.setImages(lostFoundDTO.getImages().stream().map(advertisementImageMapper::dtoToEntity).collect(Collectors.toList()));
 
         repository.save(lostFoundEntity);
     }
 
-    public void deleteAdvertisement(LostFoundType type, Long id) {
+    public void deleteAdvertisement(Long id) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        repository.deleteByCreatorUserAndTypeAndId(currentUser, type, id);
+        repository.deleteByCreatorUserAndId(currentUser, id);
     }
 
 }

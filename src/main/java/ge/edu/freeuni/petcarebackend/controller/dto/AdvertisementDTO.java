@@ -1,42 +1,62 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+@SuperBuilder
+@NoArgsConstructor
 @Getter
 @Setter
 public class AdvertisementDTO {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
+    @NotBlank
     private String header;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate createDate;
 
     private BigDecimal longitude;
 
     private BigDecimal latitude;
 
+    @NotNull
     private City city;
 
     private String description;
 
     private List<String> tags;
 
+    @NotNull
     private AdvertisementType advertisementType;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private AdvertisementImageDTO primaryImage;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserInfoDTO userInfo;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<AdvertisementImageDTO> images = new ArrayList<>();
 
     public AdvertisementDTO(AdvertisementEntity advertisement, boolean needPrimaryImage) {
         this.id = advertisement.getId();

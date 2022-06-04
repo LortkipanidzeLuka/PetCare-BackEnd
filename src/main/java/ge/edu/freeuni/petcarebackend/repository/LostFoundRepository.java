@@ -27,9 +27,7 @@ import java.util.stream.Stream;
 
 public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long>, JpaSpecificationExecutor<LostFoundEntity> {
 
-    Optional<LostFoundEntity> findByTypeAndId(LostFoundType type, Long id);
-
-    void deleteByCreatorUserAndTypeAndId(UserEntity creator, LostFoundType type, Long id);
+    void deleteByCreatorUserAndId(UserEntity creator, Long id);
 
     Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
 
