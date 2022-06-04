@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 public class LostFoundEntity extends AdvertisementEntity {
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
