@@ -43,7 +43,7 @@ public class UserController {
             @RequestParam(name = "type") AdvertisementType type
     ) {
         return service.getMyAdvertisements(
-                page, size, orderBy.orElse(null), ascending, search.orElse(null), type
+                page, size, orderBy.orElse(null), ascending, search.orElse(""), type
         );
     }
 
