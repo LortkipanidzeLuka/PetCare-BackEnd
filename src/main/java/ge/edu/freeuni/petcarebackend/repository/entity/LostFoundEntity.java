@@ -1,8 +1,12 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +17,8 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
+@SuperBuilder
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity

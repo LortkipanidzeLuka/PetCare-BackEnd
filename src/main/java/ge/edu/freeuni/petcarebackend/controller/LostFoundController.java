@@ -1,8 +1,10 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.controller.mapper.LostFoundMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
@@ -34,26 +36,29 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("advertisements/lostfound/{type}") // TODO: change requests to dtos
+@RequestMapping("advertisements/lostfound")
 public class LostFoundController {
 
     private final LostFoundService service;
 
-    public LostFoundController(LostFoundService service) {
+    private final LostFoundMapper mapper;
+
+    public LostFoundController(LostFoundService service, LostFoundMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping("{id}")
-    public LostFoundDTO getById(@PathVariable LostFoundType type, @PathVariable Long id) {
-        return service.lookupAdvertisement(type, id);
+    public LostFoundDTO getById(@PathVariable Long id) {
+        return service.lookupAdvertisement(id);
     }
 
     @GetMapping("{id}/images")
-    public List<AdvertisementImageEntity> getImagesById(@PathVariable LostFoundType type, @PathVariable Long id) {
-        return service.lookupImages(type, id);
+    public List<AdvertisementImageDTO> getImagesById(@PathVariable Long id) {
+        return service.lookupImages(id);
     }
 
-    @GetMapping
+    @GetMapping("{type}")
     public SearchResultDTO<AdvertisementDTO> search(
             @PathVariable LostFoundType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
@@ -76,10 +81,10 @@ public class LostFoundController {
 
     @PostMapping
     public ResponseEntity createLostFoundAdvertisement(
-            HttpServletRequest request,
-            @PathVariable LostFoundType type, @Valid @RequestBody LostFoundEntity lostFoundEntity
+            HttpServletRequest request, @Valid @RequestBody LostFoundDTO lostFoundDTO
     ) {
-        Long createdId = service.createAdvertisement(type, lostFoundEntity);
+        LostFoundEntity entity = mapper.dtoToEntity(lostFoundDTO);
+        Long createdId = service.createAdvertisement(entity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
                     .header("Access-Control-Expose-Headers", "location").build();
@@ -90,19 +95,17 @@ public class LostFoundController {
 
     @PutMapping("{id}")
     public void updateLostFoundAdvertisement(
-            @PathVariable LostFoundType type,
             @PathVariable Long id,
-            @Valid @RequestBody LostFoundEntity lostFoundEntity
+            @Valid @RequestBody LostFoundDTO lostFoundDTO
     ) {
-        service.updateAdvertisement(type, id, lostFoundEntity);
+        service.updateAdvertisement(id, lostFoundDTO);
     }
 
     @DeleteMapping("{id}")
     public void deleteLostFoundAdvertisement(
-            @PathVariable LostFoundType type,
             @PathVariable Long id
     ) {
-        service.deleteAdvertisement(type, id);
+        service.deleteAdvertisement(id);
     }
 
 }

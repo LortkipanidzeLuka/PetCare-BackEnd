@@ -1,12 +1,13 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class AdvertisementImageDTO {
 
     private String title;
