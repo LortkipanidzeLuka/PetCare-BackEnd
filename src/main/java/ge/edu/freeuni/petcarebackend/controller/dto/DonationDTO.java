@@ -2,6 +2,7 @@ package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
+import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -21,9 +23,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class DonationDTO extends AdvertisementDTO {
 
-    //TODO
-//    @NotNull
-//    private List<PetType> applicablePetList;
+    @NotNull
+    private List<PetType> applicablePetList;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -42,9 +43,6 @@ public class DonationDTO extends AdvertisementDTO {
 
     @Enumerated(EnumType.STRING)
     private Sex applicableSex;
-
-    //TODO
-//    private List<String> applicableBreedList;
 
     @AssertTrue
     private boolean isValidAge() {

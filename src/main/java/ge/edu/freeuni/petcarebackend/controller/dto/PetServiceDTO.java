@@ -2,18 +2,18 @@ package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
+import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,9 +24,8 @@ public class PetServiceDTO extends AdvertisementDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    //TODO
-//    @NotNull
-//    private List<PetType> applicablePetList;
+    @NotNull
+    private List<PetType> applicablePetList;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -42,9 +41,6 @@ public class PetServiceDTO extends AdvertisementDTO {
 
     @Enumerated(EnumType.STRING)
     private Sex applicableSex;
-
-    //TODO
-//    private List<String> applicableBreedList;
 
     @AssertTrue
     private boolean isValidAge() {

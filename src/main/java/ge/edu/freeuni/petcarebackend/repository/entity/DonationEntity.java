@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -21,9 +22,11 @@ import javax.validation.constraints.NotNull;
 @Table(name = "donation_advertisement")
 public class DonationEntity extends AdvertisementEntity {
 
-    //TODO
-//    @NotNull
-//    private List<PetType> applicablePetList;
+    @NotNull
+    @CollectionTable
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = PetType.class)
+    private List<PetType> applicablePetList;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -42,9 +45,6 @@ public class DonationEntity extends AdvertisementEntity {
 
     @Enumerated(EnumType.STRING)
     private Sex applicableSex;
-
-    //TODO
-//    private List<String> applicableBreedList;
 
     @AssertTrue
     private boolean isValidAge() {
