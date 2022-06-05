@@ -98,6 +98,6 @@ public class PetServiceService {
 
 
     private BusinessException getPetServiceDoesNotExistEx() {
-        return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST); // todo: error_code
+        return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST);
     }
 }

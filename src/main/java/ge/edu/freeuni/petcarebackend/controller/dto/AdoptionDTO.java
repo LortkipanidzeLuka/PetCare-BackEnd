@@ -13,7 +13,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Data // todo: data?
+@Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
