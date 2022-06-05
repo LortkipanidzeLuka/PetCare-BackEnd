@@ -25,14 +25,17 @@ import java.util.Optional;
 @RequestMapping("api/adoptions")
 public class AdoptionController {
 
-    @Autowired
-    private AdoptionService adoptionService;
+    private final AdoptionService adoptionService;
 
-    @Autowired
-    private AdoptionMapper adoptionMapper;
+    private final AdoptionMapper adoptionMapper;
 
-    @Autowired
-    private AdvertisementMapper advertisementMapper;
+    private final AdvertisementMapper advertisementMapper;
+
+    public AdoptionController(AdoptionService adoptionService, AdoptionMapper adoptionMapper, AdvertisementMapper advertisementMapper) {
+        this.adoptionService = adoptionService;
+        this.adoptionMapper = adoptionMapper;
+        this.advertisementMapper = advertisementMapper;
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<AdoptionDTO> getDonationById(@PathVariable long id) {
@@ -66,7 +69,7 @@ public class AdoptionController {
     }
 
     @PostMapping
-    public ResponseEntity<DonationDTO> createLostFoundAdvertisement( // todo:DonationDto?
+    public ResponseEntity<AdoptionDTO> createAdoptionAdvertisement(
                                                                      HttpServletRequest request,
                                                                      @Valid @RequestBody AdoptionDTO adoption
     ) {

@@ -25,14 +25,17 @@ import java.util.Optional;
 @RequestMapping("api/donations")
 public class DonationController {
 
-    @Autowired
-    private DonationService donationService;
+    private final DonationService donationService;
 
-    @Autowired
-    private DonationMapper donationMapper;
+    private final DonationMapper donationMapper;
 
-    @Autowired
-    private AdvertisementMapper advertisementMapper;
+    private final AdvertisementMapper advertisementMapper;
+
+    public DonationController(DonationService donationService, DonationMapper donationMapper, AdvertisementMapper advertisementMapper) {
+        this.donationService = donationService;
+        this.donationMapper = donationMapper;
+        this.advertisementMapper = advertisementMapper;
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<DonationDTO> getDonationById(@PathVariable long id) {
@@ -51,7 +54,7 @@ public class DonationController {
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
-            @RequestParam(name="type", required = false) Optional<DonationAdvertisementTypeDTO> donationAdvertisementTypeDto,
+            @RequestParam(name="type", required = false) Optional<DonationAdvertisementType> donationAdvertisementTypeDto,
             @RequestParam(name = "color") Optional<Color> color,
             @RequestParam(name = "applicableSex") Optional<Sex> applicableSex,
             @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,

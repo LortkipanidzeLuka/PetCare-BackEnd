@@ -1,6 +1,7 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class DonationDTO extends AdvertisementDTO {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private DonationAdvertisementTypeDTO donationAdvertisementType;
+    private DonationAdvertisementType donationAdvertisementType;
 
     @Enumerated(EnumType.STRING)
     private Color color;

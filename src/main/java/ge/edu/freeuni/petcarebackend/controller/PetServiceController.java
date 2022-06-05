@@ -25,14 +25,17 @@ import java.util.Optional;
 @RequestMapping("api/pet-service") // TODO: rename advertisements/petservice, server.prefix=api ?
 public class PetServiceController {
 
-    @Autowired
-    private PetServiceService petServiceService;
+    private final PetServiceService petServiceService;
 
-    @Autowired
-    private PetServiceMapper petServiceMapper;
+    private final PetServiceMapper petServiceMapper;
 
-    @Autowired
-    private AdvertisementMapper advertisementMapper;
+    private final AdvertisementMapper advertisementMapper;
+
+    public PetServiceController(PetServiceService petServiceService, PetServiceMapper petServiceMapper, AdvertisementMapper advertisementMapper) {
+        this.petServiceService = petServiceService;
+        this.petServiceMapper = petServiceMapper;
+        this.advertisementMapper = advertisementMapper;
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<PetServiceDTO> getDonationById(@PathVariable long id) {

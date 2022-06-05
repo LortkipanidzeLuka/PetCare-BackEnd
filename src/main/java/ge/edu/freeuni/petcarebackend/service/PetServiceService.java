@@ -21,14 +21,17 @@ import java.util.List;
 @Transactional
 public class PetServiceService {
 
-    @Autowired
-    private PetServiceRepository petServiceRepository;
+    private final PetServiceRepository petServiceRepository;
 
-    @Autowired
-    private AdvertisementImageRepository imageRepository;
+    private final AdvertisementImageRepository imageRepository;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
+
+    public PetServiceService(PetServiceRepository petServiceRepository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
+        this.petServiceRepository = petServiceRepository;
+        this.imageRepository = imageRepository;
+        this.securityService = securityService;
+    }
 
     public PetServiceEntity getPetServiceById(long id) throws BusinessException {
         return petServiceRepository.findById(id).orElseThrow(this::getPetServiceDoesNotExistEx);

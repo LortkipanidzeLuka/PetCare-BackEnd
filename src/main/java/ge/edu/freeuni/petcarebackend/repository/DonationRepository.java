@@ -30,7 +30,7 @@ public interface DonationRepository extends JpaRepository<DonationEntity, Long> 
     void deleteByCreatorUserAndId(UserEntity creator, Long id);
 
     default SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc, String search,
-                                                     DonationAdvertisementTypeDTO donationAdvertisementType, Color color,
+                                                     DonationAdvertisementType donationAdvertisementType, Color color,
                                                      Sex applicableSex, Integer ageFrom, Integer ageUntil, City city){
         GenericSpecification<DonationEntity> specification = new GenericSpecification<DonationEntity>()
                 .add("donationAdvertisementType", donationAdvertisementType, SearchOperation.EQUAL)

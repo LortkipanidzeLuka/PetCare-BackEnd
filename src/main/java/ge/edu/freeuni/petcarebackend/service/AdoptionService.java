@@ -21,17 +21,20 @@ import java.util.List;
 @Transactional
 public class AdoptionService {
 
-    @Autowired
-    private AdvertisementImageRepository imageRepository; // todo: constructionBasedBeanInjection
+    private final AdvertisementImageRepository imageRepository;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
-    @Autowired
-    private AdoptionRepository adoptionRepository;
+    private final AdoptionRepository adoptionRepository;
+
+    public AdoptionService(AdvertisementImageRepository imageRepository, SecurityService securityService, AdoptionRepository adoptionRepository) {
+        this.imageRepository = imageRepository;
+        this.securityService = securityService;
+        this.adoptionRepository = adoptionRepository;
+    }
 
     public AdoptionEntity lookup(Long id) {
-        return adoptionRepository.findById(id).orElseThrow(BusinessException::new); // todo: this::donationDoesntExist
+        return adoptionRepository.findById(id).orElseThrow(this::getAdoptionDoesNotExistEx);
     }
 
     public List<AdvertisementImageEntity> lookupImages(Long id) {
@@ -97,6 +100,6 @@ public class AdoptionService {
     }
 
     private BusinessException getAdoptionDoesNotExistEx() {
-        return new BusinessException(ExceptionKeys.DONATION_DOES_NOT_EXIST);
+        return new BusinessException(ExceptionKeys.ADOPTION_DOES_NOT_EXIST);
     }
 }

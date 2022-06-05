@@ -20,14 +20,17 @@ import java.util.List;
 @Transactional
 public class DonationService {
 
-    @Autowired
-    private DonationRepository donationRepository;
+    private final DonationRepository donationRepository;
 
-    @Autowired
-    private AdvertisementImageRepository imageRepository;
+    private final AdvertisementImageRepository imageRepository;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
+
+    public DonationService(DonationRepository donationRepository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
+        this.donationRepository = donationRepository;
+        this.imageRepository = imageRepository;
+        this.securityService = securityService;
+    }
 
     public DonationEntity getDonationById(long id) throws BusinessException{
         return donationRepository.findById(id).orElseThrow(this::getDonationDoesNotExistEx);
@@ -51,7 +54,7 @@ public class DonationService {
     }
 
     public SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc,
-                                                    String search, DonationAdvertisementTypeDTO donationAdvertisementType,
+                                                    String search, DonationAdvertisementType donationAdvertisementType,
                                                     Color color, Sex applicableSex, Integer ageFrom, Integer ageUntil,
                                                     City city) {
 
