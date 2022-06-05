@@ -22,7 +22,6 @@ import javax.validation.constraints.NotNull;
 public class LostFoundDTO extends AdvertisementDTO {
 
     @NotNull
-
     private PetType petType;
 
     private Color color;

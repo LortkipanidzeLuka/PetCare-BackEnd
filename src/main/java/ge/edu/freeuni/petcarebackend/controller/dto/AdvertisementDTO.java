@@ -46,7 +46,7 @@ public class AdvertisementDTO {
 
     private List<String> tags;
 
-    @NotNull
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private AdvertisementType advertisementType;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -55,7 +55,6 @@ public class AdvertisementDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserInfoDTO userInfo;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<AdvertisementImageDTO> images = new ArrayList<>();
 
     public AdvertisementDTO(AdvertisementEntity advertisement, boolean needPrimaryImage) {
