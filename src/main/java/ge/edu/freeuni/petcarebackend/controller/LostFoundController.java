@@ -1,28 +1,16 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.LostFoundMapper;
-import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
+import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.LostFoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

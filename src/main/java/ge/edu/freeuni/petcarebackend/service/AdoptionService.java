@@ -3,14 +3,13 @@ package ge.edu.freeuni.petcarebackend.service;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.repository.AdoptionRepository;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
+import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

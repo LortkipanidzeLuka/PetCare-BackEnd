@@ -2,15 +2,12 @@ package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
+import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.AssertTrue;

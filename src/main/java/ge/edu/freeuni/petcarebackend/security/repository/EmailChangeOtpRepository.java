@@ -4,7 +4,6 @@ import ge.edu.freeuni.petcarebackend.security.repository.entity.EmailChangeOtpEn
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface EmailChangeOtpRepository extends JpaRepository<EmailChangeOtpEntity, Long> {

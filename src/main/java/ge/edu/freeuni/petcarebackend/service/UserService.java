@@ -1,11 +1,11 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
+import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;

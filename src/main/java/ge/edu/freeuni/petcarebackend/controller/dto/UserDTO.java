@@ -2,7 +2,6 @@ package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

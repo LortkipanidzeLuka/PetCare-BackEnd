@@ -1,7 +1,10 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

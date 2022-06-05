@@ -1,20 +1,14 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
-import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
+import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;

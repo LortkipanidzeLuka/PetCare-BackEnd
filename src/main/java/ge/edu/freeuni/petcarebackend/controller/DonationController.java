@@ -1,12 +1,17 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.*;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.controller.mapper.DonationMapper;
-import ge.edu.freeuni.petcarebackend.repository.entity.*;
+import ge.edu.freeuni.petcarebackend.repository.entity.City;
+import ge.edu.freeuni.petcarebackend.repository.entity.Color;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.DonationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
