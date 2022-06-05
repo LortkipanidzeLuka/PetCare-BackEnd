@@ -1,5 +1,6 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PetServiceDTO {
+public class PetServiceDTO extends AdvertisementDTO {
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
 
     //TODO
 //    @NotNull

@@ -89,10 +89,11 @@ public class PetServiceController {
         }
     }
 
-    @PutMapping()
+    @PutMapping("{id}")
     public void updatePetServiceAdvertisement(
-            @Valid @RequestBody PetServiceDTO petService
-    ) {
+            @Valid @RequestBody PetServiceDTO petService,
+            @PathVariable Long id) {
+        petService.setId(id);
         PetServiceEntity petServiceEntity = petServiceMapper.petServiceEntity(petService);
         petServiceService.updateAdvertisement(petServiceEntity);
     }

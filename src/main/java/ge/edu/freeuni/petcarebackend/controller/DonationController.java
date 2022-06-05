@@ -87,9 +87,11 @@ public class DonationController {
         }
     }
 
-    @PutMapping()
+    @PutMapping("{id}")
     public void updateDonation(
+            @PathVariable Long id,
             @Valid @RequestBody DonationDTO donation) {
+        donation.setId(id);
         DonationEntity donationEntity = donationMapper.donationEntity(donation);
         donationService.updateAdvertisement(donationEntity);
     }

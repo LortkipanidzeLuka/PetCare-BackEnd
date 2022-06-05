@@ -88,9 +88,11 @@ public class AdoptionController {
         }
     }
 
-    @PutMapping()
-    public void updateDonation(
+    @PutMapping("{id}")
+    public void updateAdoption(
+            @PathVariable Long id,
             @Valid @RequestBody AdoptionDTO adoption) {
+        adoption.setId(id);
         AdoptionEntity adoptionEntity = adoptionMapper.adoptionEntity(adoption);
         adoptionService.updateAdvertisement(adoptionEntity);
     }
