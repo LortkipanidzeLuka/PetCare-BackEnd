@@ -2,6 +2,7 @@ package ge.edu.freeuni.petcarebackend.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -75,7 +76,7 @@ public class AdvertisementEntity {
     @ElementCollection
     @CollectionTable(name = "tags", joinColumns = @JoinColumn(name = "advertisement_id"))
     @Column(name = "value")
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
     @Size(max = 10)
     @OneToMany(mappedBy = "advertisement", cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -93,5 +94,13 @@ public class AdvertisementEntity {
     @Override
     public int hashCode() {
         return 31;
+    }
+
+    public void setImages(List<AdvertisementImageEntity> images) {
+        this.images.clear();
+        if (images != null) {
+            images.forEach(advertisementImageEntity -> advertisementImageEntity.setAdvertisement(this));
+            this.images.addAll(images);
+        }
     }
 }

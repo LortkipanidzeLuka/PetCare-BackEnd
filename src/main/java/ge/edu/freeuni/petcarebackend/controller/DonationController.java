@@ -1,0 +1,95 @@
+package ge.edu.freeuni.petcarebackend.controller;
+
+import ge.edu.freeuni.petcarebackend.controller.dto.*;
+import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
+import ge.edu.freeuni.petcarebackend.controller.mapper.DonationMapper;
+import ge.edu.freeuni.petcarebackend.repository.entity.*;
+import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
+import ge.edu.freeuni.petcarebackend.service.DonationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("api/donations")
+public class DonationController {
+
+    @Autowired
+    private DonationService donationService;
+
+    @Autowired
+    private DonationMapper donationMapper;
+
+    @Autowired
+    private AdvertisementMapper advertisementMapper;
+
+    @GetMapping("{id}")
+    public ResponseEntity<DonationDTO> getDonationById(@PathVariable long id) {
+        DonationEntity donationEntity = donationService.getDonationById(id);
+        return ResponseEntity.ok(donationMapper.donationDto(donationEntity));
+    }
+
+    @GetMapping("{id}/images")
+    public List<AdvertisementImageDTO> getImagesById(@PathVariable Long id) {
+        return advertisementMapper.advertisementImageDtoList(donationService.lookupImages(id));
+    }
+
+    @GetMapping
+    public SearchResultDTO<AdvertisementDTO> search(
+            @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
+            @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
+            @RequestParam(name = "asc", required = false) boolean ascending,
+            @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
+            @RequestParam(name="type", required = false) Optional<DonationAdvertisementTypeDTO> donationAdvertisementTypeDto,
+            @RequestParam(name = "color") Optional<Color> color,
+            @RequestParam(name = "applicableSex") Optional<Sex> applicableSex,
+            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
+            @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
+            @RequestParam(name = "city") Optional<City> city) {
+        return donationService.search(
+                page, size, orderBy.orElse(null), ascending, search.orElse(""),
+                donationAdvertisementTypeDto.orElse(null), color.orElse(null), applicableSex.orElse(null),
+                ageFrom.orElse(null), ageUntil.orElse(null), city.orElse(null)
+        );
+    }
+
+    @PostMapping
+    public ResponseEntity<DonationDTO> createLostFoundAdvertisement(
+            HttpServletRequest request,
+            @Valid @RequestBody DonationDTO donation
+    ) {
+        DonationEntity donationEntity = donationMapper.donationEntity(donation);
+        Long createdId = donationService.createAdvertisement(donationEntity);
+        try {
+            return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
+                    .header("Access-Control-Expose-Headers", "location").build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping()
+    public void updateDonation(
+            @Valid @RequestBody DonationDTO donation) {
+        DonationEntity donationEntity = donationMapper.donationEntity(donation);
+        donationService.updateAdvertisement(donationEntity);
+    }
+
+    @DeleteMapping("{id}")
+    public void deleteDonation(
+            @PathVariable Long id
+    ) {
+        donationService.deleteAdvertisement(id);
+    }
+}

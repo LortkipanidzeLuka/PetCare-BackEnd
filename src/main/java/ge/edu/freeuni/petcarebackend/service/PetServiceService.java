@@ -1,13 +1,11 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.PetServiceTypeDto;
-import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.SexDto;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
-import ge.edu.freeuni.petcarebackend.repository.repo.PetServiceRepository;
+import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
+import ge.edu.freeuni.petcarebackend.repository.PetServiceRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
@@ -43,7 +41,7 @@ public class PetServiceService {
 
     public SearchResultDTO<AdvertisementDTO> search(
             int page, int size, String orderBy, boolean asc, String search,
-            PetServiceTypeDto petServiceType, Color color, SexDto applicableSex,
+            PetServiceType petServiceType, Color color, Sex applicableSex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
         return petServiceRepository.search(

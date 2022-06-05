@@ -16,7 +16,6 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
 @Getter
 @Setter
 @Entity
@@ -27,6 +26,7 @@ import javax.validation.constraints.NotNull;
 public class LostFoundEntity extends AdvertisementEntity {
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
@@ -42,7 +42,7 @@ public class LostFoundEntity extends AdvertisementEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private LostFoundType type;
 
     @NotNull
     @Enumerated(EnumType.STRING)

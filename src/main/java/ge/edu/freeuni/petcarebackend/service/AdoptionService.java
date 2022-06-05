@@ -1,13 +1,11 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ch.qos.logback.core.joran.spi.NoAutoStart;
-import ge.edu.freeuni.petcarebackend.api.dtos.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.LostFoundDTO;
-import ge.edu.freeuni.petcarebackend.api.dtos.SearchResultDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.repository.repo.AdoptionRepository;
-import ge.edu.freeuni.petcarebackend.repository.repo.AdvertisementImageRepository;
+import ge.edu.freeuni.petcarebackend.repository.AdoptionRepository;
+import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
