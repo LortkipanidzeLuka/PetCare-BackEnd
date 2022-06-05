@@ -42,16 +42,9 @@ public class AdoptionService {
         return imageRepository.findByAdvertisement(adoptionEntity);
     }
 
-    public SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search, // header or description
-            PetType petType, Color color, Sex sex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
-    ) {
-        return adoptionRepository.search(
-                page, size, orderBy, asc, search,
-                petType, color, sex,
-                ageFrom, ageUntil, breed, city
-        );
+    public SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc, String search, // header or description
+                                                    PetType petType, Color color, Sex sex, Integer ageFrom, Integer ageUntil, String breed, City city) {
+        return adoptionRepository.search(page, size, orderBy, asc, search, petType, color, sex, ageFrom, ageUntil, breed, city);
     }
 
     public Long createAdvertisement(AdoptionEntity adoptionEntity) {
@@ -68,8 +61,7 @@ public class AdoptionService {
 
     public void updateAdvertisement(AdoptionEntity adoptionEntity) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        AdoptionEntity existing = adoptionRepository.findByCreatorUserAndId(currentUser, adoptionEntity.getId())
-                .orElseThrow(this::getAdoptionDoesNotExistEx);
+        AdoptionEntity existing = adoptionRepository.findByCreatorUserAndId(currentUser, adoptionEntity.getId()).orElseThrow(this::getAdoptionDoesNotExistEx);
 
         existing.setAgeFrom(adoptionEntity.getAgeFrom());
         existing.setAgeUntil(adoptionEntity.getAgeUntil());

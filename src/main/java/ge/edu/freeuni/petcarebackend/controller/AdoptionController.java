@@ -70,8 +70,8 @@ public class AdoptionController {
 
     @PostMapping
     public ResponseEntity<AdoptionDTO> createAdoptionAdvertisement(
-                                                                     HttpServletRequest request,
-                                                                     @Valid @RequestBody AdoptionDTO adoption
+            HttpServletRequest request,
+            @Valid @RequestBody AdoptionDTO adoption
     ) {
         AdoptionEntity adoptionEntity = adoptionMapper.adoptionEntity(adoption);
         Long createdId = adoptionService.createAdvertisement(adoptionEntity);

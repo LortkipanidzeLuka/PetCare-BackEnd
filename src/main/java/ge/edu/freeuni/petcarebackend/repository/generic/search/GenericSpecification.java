@@ -35,13 +35,18 @@ public class GenericSpecification<T> implements Specification<T> {
 
         for (SearchCriteria<T> criteria : list.stream().filter(c -> c.getValue() != null || c.getCustomCriteria() != null).toList()) {
             switch (criteria.getOperation()) {
-                case GREATER_THAN -> predicates.add(builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString()));
-                case LESS_THAN -> predicates.add(builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString()));
-                case GREATER_THAN_EQUAL -> predicates.add(builder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString()));
-                case LESS_THAN_EQUAL -> predicates.add(builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString()));
+                case GREATER_THAN ->
+                        predicates.add(builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString()));
+                case LESS_THAN ->
+                        predicates.add(builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString()));
+                case GREATER_THAN_EQUAL ->
+                        predicates.add(builder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString()));
+                case LESS_THAN_EQUAL ->
+                        predicates.add(builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString()));
                 case NOT_EQUAL -> predicates.add(builder.notEqual(root.get(criteria.getKey()), criteria.getValue()));
                 case EQUAL -> predicates.add(builder.equal(root.get(criteria.getKey()), criteria.getValue()));
-                case LIKE -> predicates.add(builder.like(builder.lower(root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%"));
+                case LIKE ->
+                        predicates.add(builder.like(builder.lower(root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%"));
                 case IN -> predicates.add(root.get(criteria.getKey()).in(criteria.getValue()));
                 case NOT_IN -> predicates.add(root.get(criteria.getKey()).in(criteria.getValue()).not());
                 case CUSTOM_CRITERIA -> predicates.add(criteria.getCustomCriteria().apply(root, query, builder));

@@ -19,7 +19,7 @@ public class MailSenderService {
     }
 
     @Async
-    public void sendMail(String to, String subject, String text){
+    public void sendMail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);

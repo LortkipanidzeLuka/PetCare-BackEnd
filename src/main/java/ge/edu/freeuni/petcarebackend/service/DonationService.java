@@ -32,11 +32,11 @@ public class DonationService {
         this.securityService = securityService;
     }
 
-    public DonationEntity getDonationById(long id) throws BusinessException{
+    public DonationEntity getDonationById(long id) throws BusinessException {
         return donationRepository.findById(id).orElseThrow(this::getDonationDoesNotExistEx);
     }
 
-    public List<AdvertisementImageEntity> lookupImages( Long id) {
+    public List<AdvertisementImageEntity> lookupImages(Long id) {
         DonationEntity donationEntity = getDonationById(id);
         return imageRepository.findByAdvertisement(donationEntity);
     }
@@ -67,7 +67,7 @@ public class DonationService {
 
     public void updateAdvertisement(DonationEntity donationEntity) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        DonationEntity existing = donationRepository.findByCreatorUserAndId(currentUser,donationEntity.getId())
+        DonationEntity existing = donationRepository.findByCreatorUserAndId(currentUser, donationEntity.getId())
                 .orElseThrow(BusinessException::new);
 
         existing.setAgeFrom(donationEntity.getAgeFrom());

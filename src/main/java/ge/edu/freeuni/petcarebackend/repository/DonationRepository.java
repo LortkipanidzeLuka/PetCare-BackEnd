@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
-public interface DonationRepository extends JpaRepository<DonationEntity, Long> , JpaSpecificationExecutor<DonationEntity> {
+public interface DonationRepository extends JpaRepository<DonationEntity, Long>, JpaSpecificationExecutor<DonationEntity> {
     Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>();
 
     Optional<DonationEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
@@ -31,7 +31,7 @@ public interface DonationRepository extends JpaRepository<DonationEntity, Long> 
 
     default SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc, String search,
                                                      DonationAdvertisementType donationAdvertisementType, Color color,
-                                                     Sex applicableSex, Integer ageFrom, Integer ageUntil, City city){
+                                                     Sex applicableSex, Integer ageFrom, Integer ageUntil, City city) {
         GenericSpecification<DonationEntity> specification = new GenericSpecification<DonationEntity>()
                 .add("donationAdvertisementType", donationAdvertisementType, SearchOperation.EQUAL)
                 .add("color", color, SearchOperation.EQUAL)

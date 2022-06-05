@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
-public interface PetServiceRepository extends JpaRepository<PetServiceEntity, Long> ,  JpaSpecificationExecutor<PetServiceEntity> {
+public interface PetServiceRepository extends JpaRepository<PetServiceEntity, Long>, JpaSpecificationExecutor<PetServiceEntity> {
     Map<String, String> PET_SERVICE_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy
 
     default SearchResultDTO<AdvertisementDTO> search(
