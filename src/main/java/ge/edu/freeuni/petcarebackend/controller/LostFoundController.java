@@ -58,7 +58,7 @@ public class LostFoundController {
         return service.lookupImages(id);
     }
 
-    @GetMapping("{type}")
+    @GetMapping("/search/{type}")
     public SearchResultDTO<AdvertisementDTO> search(
             @PathVariable LostFoundType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
