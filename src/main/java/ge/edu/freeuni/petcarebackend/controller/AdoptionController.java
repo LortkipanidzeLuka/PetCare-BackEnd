@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/adoptions")
+@RequestMapping("adoptions")
 public class AdoptionController {
 
     private final AdoptionService adoptionService;

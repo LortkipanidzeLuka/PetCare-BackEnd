@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("advertisements/lostfound")
+@RequestMapping("lostfound")
 public class LostFoundController {
 
     private final LostFoundService service;
