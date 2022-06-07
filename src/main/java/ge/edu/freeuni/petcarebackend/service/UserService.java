@@ -6,19 +6,16 @@ import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Min;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -67,6 +64,9 @@ public class UserService {
         if (email.equals(currentUser.getUsername())) {
             throw new BusinessException("invalid_email");
         }
+        if (userRepository.existsByUsername(email)) {
+            throw new BusinessException("email_used");
+        }
         otpService.createAndSendEmailChangeOtp(currentUser, email);
     }
 
@@ -74,7 +74,11 @@ public class UserService {
         UserEntity currentUser = securityService.lookupCurrentUser();
         if (otpService.verifyEmailChangeOtpCode(otpCode, currentUser, email)) {
             currentUser.setUsername(email);
-            userRepository.save(currentUser);
+            try {
+                userRepository.saveAndFlush(currentUser);
+            } catch (DataIntegrityViolationException ex) {
+                throw new BusinessException("email_used");
+            }
             return securityService.generateTokens(currentUser);
         } else {
             throw new BusinessException("invalid_otp");
