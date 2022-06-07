@@ -24,13 +24,15 @@ import java.util.List;
 public class PetServiceEntity extends AdvertisementEntity {
 
     @NotNull
-    @CollectionTable
+    @Column(name = "value")
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = PetType.class)
+    @CollectionTable(name = "pet_types", joinColumns = @JoinColumn(name = "advertisement_id"))
     private List<PetType> applicablePetList;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "pet_service_type")
     private PetServiceType petServiceType;
 
     @Min(0)
@@ -42,6 +44,7 @@ public class PetServiceEntity extends AdvertisementEntity {
     private Short ageUntil;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "applicable_sex")
     private Sex applicableSex;
 
     @AssertTrue

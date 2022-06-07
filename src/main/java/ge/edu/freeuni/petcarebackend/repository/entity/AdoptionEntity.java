@@ -19,7 +19,9 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "adoption_advertisement")
 public class AdoptionEntity extends AdvertisementEntity {
+
     @NotNull
+    @Column(name = "pet_type")
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
