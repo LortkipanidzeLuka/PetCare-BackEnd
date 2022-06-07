@@ -11,6 +11,8 @@ create table donation_advertisement
 alter table donation_advertisement
     add constraint fk_donation_id_advertisement_id foreign key (id) references advertisement (id);
 
+grant select, insert, update, delete on donation_advertisement to pcapp;
+
 create table pet_service_advertisement
 (
     id        bigint not null,
@@ -22,6 +24,8 @@ create table pet_service_advertisement
 
 alter table pet_service_advertisement
     add constraint fk_pet_service_id_advertisement_id foreign key (id) references advertisement (id);
+
+grant select, insert, update, delete on pet_service_advertisement to pcapp;
 
 create table adoption_advertisement
 (
@@ -37,6 +41,8 @@ create table adoption_advertisement
 alter table adoption_advertisement
     add constraint fk_pet_service_id_advertisement_id foreign key (id) references advertisement (id);
 
+grant select, insert, update, delete on adoption_advertisement to pcapp;
+
 create table pet_types
 (
     value            varchar(32) not null,
@@ -46,3 +52,5 @@ create table pet_types
 alter table pet_types
     add constraint fk_pet_types_advertisement_id foreign key (advertisement_id) references advertisement (id),
     add constraint uk_pet_types_value_advertisement_id unique (value, advertisement_id);
+
+grant select, insert, update, delete on pet_types to pcapp;
