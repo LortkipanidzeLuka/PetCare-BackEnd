@@ -70,9 +70,10 @@ class LostFoundControllerTest {
 
     @Test
     public void givenFilledTable_whenSearch_thenSuccess() throws Exception {
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST);
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.FOUND);
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST);
+        UserEntity creatorUser = testUtils.createAndPersistDummyUser();
+        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
+        createAndPersistDummyLostFoundAdvertisement(LostFoundType.FOUND, creatorUser);
+        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/advertisements/lostfound/search/LOST")
                         .param("page", "1")
@@ -114,9 +115,10 @@ class LostFoundControllerTest {
     @Test
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenUpdate_thenBusinessException() throws Exception {
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST);
+        UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
+        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
         LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
-        UserEntity invalidUser = testUtils.createAndPersistDummyUser();
+        UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/advertisements/lostfound/" + lostFoundEntity.getId())
@@ -129,7 +131,8 @@ class LostFoundControllerTest {
     @Test
     @WithMockUser
     public void givenValidData_whenUpdate_thenSuccess() throws Exception {
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST);
+        UserEntity creatorUser = testUtils.createAndPersistDummyUser();
+        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
         LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
         mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
 
@@ -142,9 +145,10 @@ class LostFoundControllerTest {
     @Test
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenDelete_thenDoNothing() throws Exception {
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST);
+        UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
+        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
         LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
-        UserEntity invalidUser = testUtils.createAndPersistDummyUser();
+        UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/advertisements/lostfound/" + lostFoundEntity.getId())
@@ -157,7 +161,8 @@ class LostFoundControllerTest {
     @Test
     @WithMockUser
     public void givenValidData_whenDelete_thenSuccess() throws Exception {
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST);
+        UserEntity creatorUser = testUtils.createAndPersistDummyUser();
+        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
         LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
         mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
 
@@ -184,7 +189,7 @@ class LostFoundControllerTest {
                 .build();
     }
 
-    private LostFoundEntity createAndPersistDummyLostFoundAdvertisement(LostFoundType type) {
+    private LostFoundEntity createAndPersistDummyLostFoundAdvertisement(LostFoundType type, UserEntity creatorUser) {
         LostFoundEntity lostFoundEntity = new LostFoundEntity();
         lostFoundEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
         lostFoundEntity.setHeader("test header");
@@ -193,7 +198,7 @@ class LostFoundControllerTest {
         lostFoundEntity.setPetType(PetType.CAT);
         lostFoundEntity.setType(type);
         lostFoundEntity.setSex(Sex.MALE);
-        lostFoundEntity.setCreatorUser(testUtils.createAndPersistDummyUser());
+        lostFoundEntity.setCreatorUser(creatorUser);
         lostFoundEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(lostFoundEntity, true)));
         return repository.saveAndFlush(lostFoundEntity);
     }

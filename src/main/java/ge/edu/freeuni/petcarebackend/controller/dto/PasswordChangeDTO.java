@@ -23,6 +23,6 @@ public class PasswordChangeDTO {
     @AssertTrue
     @JsonIgnore
     public boolean isValid() {
-        return newPassword.equals(repeatNewPassword);
+        return newPassword.equals(repeatNewPassword) && !oldPassword.equals(newPassword);
     }
 }
