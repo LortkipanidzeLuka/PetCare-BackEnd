@@ -36,7 +36,6 @@ public class UserEntity {
     private String username;
 
     @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotNull
