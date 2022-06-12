@@ -295,6 +295,22 @@ public class UserControllerTests {
 
     @WithMockUser
     @Test
+    public void givenInvalidNewPassword_whenChangePassword_thenBadRequest() throws Exception {
+        UserEntity user = testUtils.createAndPersistDummyUser();
+        mockSecurityServiceLookupCurrentUser(user);
+        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO();
+        passwordChangeDTO.setOldPassword("test1234");
+        passwordChangeDTO.setNewPassword("test1234");
+        passwordChangeDTO.setRepeatNewPassword("test1234");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordChangeDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser
+    @Test
     public void givenValidData_whenChangePassword_thenSuccess() throws Exception {
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockSecurityServiceLookupCurrentUser(user);
