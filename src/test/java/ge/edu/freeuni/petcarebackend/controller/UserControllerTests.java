@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ge.edu.freeuni.petcarebackend.TestUtils;
 import ge.edu.freeuni.petcarebackend.controller.dto.EmailChangeDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.EmailChangeOtpDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.security.repository.OtpRepository;
@@ -258,7 +259,57 @@ public class UserControllerTests {
         assertEquals("test2@gmail.com", testUtils.getUserById(user.getId()).getUsername());
     }
 
-//    TODO: changePassword and myAdvertisements test
+    @WithMockUser
+    @Test
+    public void givenInvalidOldPassword_whenChangePassword_thenBusinessException() throws Exception {
+        UserEntity user = testUtils.createAndPersistDummyUser();
+        mockSecurityServiceLookupCurrentUser(user);
+        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO();
+        passwordChangeDTO.setOldPassword("test12345"); // actual is "test1234"
+        passwordChangeDTO.setNewPassword("test12345");
+        passwordChangeDTO.setRepeatNewPassword("test12345");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordChangeDTO)))
+                .andExpect(status().isConflict())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
+                .andExpect(result -> assertEquals("invalid_old_password", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @WithMockUser
+    @Test
+    public void givenInvalidRepeatPassword_whenChangePassword_thenBadRequest() throws Exception {
+        UserEntity user = testUtils.createAndPersistDummyUser();
+        mockSecurityServiceLookupCurrentUser(user);
+        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO();
+        passwordChangeDTO.setOldPassword("test1234");
+        passwordChangeDTO.setNewPassword("test123456");
+        passwordChangeDTO.setRepeatNewPassword("test12345");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordChangeDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser
+    @Test
+    public void givenValidData_whenChangePassword_thenSuccess() throws Exception {
+        UserEntity user = testUtils.createAndPersistDummyUser();
+        mockSecurityServiceLookupCurrentUser(user);
+        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO();
+        passwordChangeDTO.setOldPassword("test1234");
+        passwordChangeDTO.setNewPassword("StrongPassword!");
+        passwordChangeDTO.setRepeatNewPassword("StrongPassword!");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(passwordChangeDTO)))
+                .andExpect(status().isOk());
+
+        assertTrue(securityService.validateUserPassword(testUtils.getUserById(user.getId()), "StrongPassword!"));
+    }
 
     public EmailChangeOtpEntity createAndPersistEmailChangeOtp(String code, String email, LocalDateTime validTil, boolean isUsed, Long userId) {
         EmailChangeOtpEntity otpEntity = new EmailChangeOtpEntity();

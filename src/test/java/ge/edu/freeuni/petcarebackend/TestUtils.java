@@ -1,9 +1,9 @@
 package ge.edu.freeuni.petcarebackend;
 
-import ge.edu.freeuni.petcarebackend.security.repository.EmailChangeOtpRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -25,7 +25,7 @@ public class TestUtils {
     public UserEntity createAndPersistDummyUser(String username) {
         UserEntity user = new UserEntity();
         user.setUsername(username);
-        user.setPassword("test1234");
+        user.setPassword(new BCryptPasswordEncoder().encode("test1234"));
         user.setFirstname("test");
         user.setLastname("test");
         user.setSex(Sex.MALE);
