@@ -266,8 +266,8 @@ public class UserControllerTests {
         mockSecurityServiceLookupCurrentUser(user);
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO();
         passwordChangeDTO.setOldPassword("test12345"); // actual is "test1234"
-        passwordChangeDTO.setNewPassword("test12345");
-        passwordChangeDTO.setRepeatNewPassword("test12345");
+        passwordChangeDTO.setNewPassword("test123456");
+        passwordChangeDTO.setRepeatNewPassword("test123456");
 
         mockMvc.perform(MockMvcRequestBuilders.put("/user/password")
                         .contentType(MediaType.APPLICATION_JSON)
