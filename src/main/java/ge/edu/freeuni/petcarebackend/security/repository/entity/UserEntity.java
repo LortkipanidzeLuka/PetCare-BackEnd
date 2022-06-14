@@ -1,7 +1,6 @@
 package ge.edu.freeuni.petcarebackend.security.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
