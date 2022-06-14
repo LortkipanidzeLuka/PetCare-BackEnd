@@ -12,6 +12,7 @@ import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,6 +63,9 @@ public class UserService {
         if (email.equals(currentUser.getUsername())) {
             throw new BusinessException("invalid_email");
         }
+        if (userRepository.existsByUsername(email)) {
+            throw new BusinessException("email_used");
+        }
         otpService.createAndSendEmailChangeOtp(currentUser, email);
     }
 
@@ -69,7 +73,11 @@ public class UserService {
         UserEntity currentUser = securityService.lookupCurrentUser();
         if (otpService.verifyEmailChangeOtpCode(otpCode, currentUser, email)) {
             currentUser.setUsername(email);
-            userRepository.save(currentUser);
+            try {
+                userRepository.saveAndFlush(currentUser);
+            } catch (DataIntegrityViolationException ex) {
+                throw new BusinessException("email_used");
+            }
             return securityService.generateTokens(currentUser);
         } else {
             throw new BusinessException("invalid_otp");

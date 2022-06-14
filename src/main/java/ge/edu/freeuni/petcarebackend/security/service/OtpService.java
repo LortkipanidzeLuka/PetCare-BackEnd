@@ -19,6 +19,8 @@ import java.util.Optional;
 @Transactional
 public class OtpService {
 
+    public static final int OTP_RETRIES_LIMIT = 3;
+
     private final OtpRepository repository;
 
     private final EmailChangeOtpRepository emailChangeOtpRepository;
@@ -39,6 +41,7 @@ public class OtpService {
     }
 
     public void createAndSendEmailChangeOtp(UserEntity user, String email) {
+        preventOtpAttack(user);
         EmailChangeOtpEntity otp = createEmailChangeOtp(user, email);
         mailSenderService.sendMail(email, "ერთჯერადი კოდი", "მეილის შეცვლისთვის გამოიყენეთ ერთჯერადი კოდი: %s \n ვადა: 60 წამი\n".formatted(otp.getCode()));
     }
@@ -55,7 +58,6 @@ public class OtpService {
     }
 
     public boolean verifyEmailChangeOtpCode(String code, UserEntity user, String email) {
-        preventOtpAttack(user);
         Optional<EmailChangeOtpEntity> otp = emailChangeOtpRepository.findByUserAndCodeAndEmail(user, code, email);
         boolean isValid = otp.isPresent() && !otp.get().isUsed() && otp.get().getValidUntil().isAfter(LocalDateTime.now());
         if (isValid) {
@@ -67,7 +69,7 @@ public class OtpService {
 
     private void preventOtpAttack(UserEntity user) {
         long countUnusedOtpsWithin5Minutes = repository.countByUserAndUsedAndCreateTsIsAfter(user, false, LocalDateTime.now().minusMinutes(5));
-        if (countUnusedOtpsWithin5Minutes >= 3) {
+        if (countUnusedOtpsWithin5Minutes >= OTP_RETRIES_LIMIT) {
             throw new BusinessException("otp_retries_exceeded");
         }
     }
