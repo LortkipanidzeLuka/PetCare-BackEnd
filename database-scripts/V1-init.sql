@@ -6,7 +6,11 @@ all objects are created in the public schema of the database
 for security reasons we revoke public schema privileges from public role and grant them individually
 */
 REVOKE ALL ON schema public FROM public;
-grant usage on schema public to pcapp;
+grant
+usage
+on
+schema
+public to pcapp;
 
 create table app_user
 (
@@ -18,7 +22,7 @@ create table app_user
     sex           varchar(16),
     phone_number  varchar(16),
     profile_image varchar,
-    is_verified   boolean         not null
+    is_verified   boolean     not null
 );
 
 grant select , insert , update, delete on app_user to pcapp;

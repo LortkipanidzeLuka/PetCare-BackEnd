@@ -2,7 +2,8 @@ alter table lost_found_advertisement
     add type varchar(32) not null;
 
 alter table app_user
-    drop column profile_image;
+drop
+column profile_image;
 
 create table advertisement_images
 (

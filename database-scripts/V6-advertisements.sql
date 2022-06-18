@@ -1,11 +1,11 @@
 create table donation_advertisement
 (
-    id        bigint not null,
-    donation_advertisement_type   varchar(32),
-    color     varchar(32),
-    age_from  smallint,
-    age_until smallint,
-    applicable_sex varchar(32)
+    id                          bigint not null,
+    donation_advertisement_type varchar(32),
+    color                       varchar(32),
+    age_from                    smallint,
+    age_until                   smallint,
+    applicable_sex              varchar(32)
 );
 
 alter table donation_advertisement
@@ -15,11 +15,11 @@ grant select, insert, update, delete on donation_advertisement to pcapp;
 
 create table pet_service_advertisement
 (
-    id        bigint not null,
-    pet_service_type   varchar(32),
-    age_from  smallint,
-    age_until smallint,
-    applicable_sex       varchar(32)
+    id               bigint not null,
+    pet_service_type varchar(32),
+    age_from         smallint,
+    age_until        smallint,
+    applicable_sex   varchar(32)
 );
 
 alter table pet_service_advertisement
@@ -30,7 +30,7 @@ grant select, insert, update, delete on pet_service_advertisement to pcapp;
 create table adoption_advertisement
 (
     id        bigint not null,
-    pet_type   varchar(32),
+    pet_type  varchar(32),
     color     varchar(32),
     age_from  smallint,
     age_until smallint,

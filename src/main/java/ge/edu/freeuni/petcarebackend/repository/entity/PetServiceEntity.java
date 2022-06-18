@@ -23,7 +23,6 @@ import java.util.List;
 @Table(name = "pet_service_advertisement")
 public class PetServiceEntity extends AdvertisementEntity {
 
-    @NotNull
     @Column(name = "value")
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = PetType.class)
