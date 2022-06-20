@@ -11,7 +11,7 @@ public class MailSenderService {
 
     private final JavaMailSender emailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${MAIL_FROM}")
     private String from;
 
     public MailSenderService(JavaMailSender emailSender) {
