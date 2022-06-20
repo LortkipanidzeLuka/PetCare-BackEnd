@@ -51,12 +51,13 @@ class LostFoundControllerTest {
     @Autowired
     private LostFoundRepository repository;
 
+
+    public static final String LOST_FOUND_ENDPOINT = "/advertisements/lostfound/";
+    public static final String LOST_FOUND_SEARCH_ENDPOINT = LOST_FOUND_ENDPOINT + "search/LOST";
+
     @Test
     public void givenEmptyTable_whenSearch_thenEmptyResult() throws Exception {
-        UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        mockCurrentUserLookup(creatorUser);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/lostfound/search/LOST")
+        mockMvc.perform(MockMvcRequestBuilders.get(LOST_FOUND_SEARCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -67,13 +68,12 @@ class LostFoundControllerTest {
     @Test
     public void givenFilledTable_whenSearch_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        mockCurrentUserLookup(creatorUser);
 
         createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
         createAndPersistDummyLostFoundAdvertisement(LostFoundType.FOUND, creatorUser);
         createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lostfound/search/LOST")
+        mockMvc.perform(MockMvcRequestBuilders.get(LOST_FOUND_SEARCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -88,7 +88,7 @@ class LostFoundControllerTest {
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/lostfound")
+        mockMvc.perform(MockMvcRequestBuilders.post(LOST_FOUND_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(lostFound)))
                 .andExpect(status().isCreated());
@@ -102,7 +102,7 @@ class LostFoundControllerTest {
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/lostfound")
+        mockMvc.perform(MockMvcRequestBuilders.post(LOST_FOUND_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(lostFound)))
                 .andExpect(status().isConflict())
@@ -119,7 +119,7 @@ class LostFoundControllerTest {
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/lostfound/" + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
                 .andExpect(status().isConflict())
@@ -134,7 +134,7 @@ class LostFoundControllerTest {
         LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
         mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/lostfound/" + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
                 .andExpect(status().isOk());
@@ -149,7 +149,7 @@ class LostFoundControllerTest {
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/lostfound/" + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
                 .andExpect(status().isOk());
@@ -164,7 +164,7 @@ class LostFoundControllerTest {
         LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
         mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/lostfound/" + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
                 .andExpect(status().isOk());

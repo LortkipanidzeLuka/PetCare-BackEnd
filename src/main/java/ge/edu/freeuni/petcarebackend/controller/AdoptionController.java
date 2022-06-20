@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("adoptions")
+@RequestMapping("/advertisements/adoptions")
 public class AdoptionController {
 
     private final AdoptionService adoptionService;
@@ -53,7 +53,7 @@ public class AdoptionController {
         return advertisementMapper.advertisementImageDtoList(adoptionService.lookupImages(id));
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public SearchResultDTO<AdvertisementDTO> search(
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
@@ -62,7 +62,8 @@ public class AdoptionController {
             @RequestParam(name = "petType") Optional<PetType> petType,
             @RequestParam(name = "color") Optional<Color> color,
             @RequestParam(name = "sex") Optional<Sex> sex,
-            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom, @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
+            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
+            @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
             @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<City> city
     ) {

@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class PetServiceControllerTest {
 
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -53,14 +52,14 @@ public class PetServiceControllerTest {
     @Autowired
     private PetServiceRepository repository;
 
-    public static final String PET_SERVICE_ENDPOINT = "/pet-service/";
+    public static final String PET_SERVICE_ENDPOINT = "/advertisements/petservice/";
     public static final String SEARCH_ENDPOINT = PET_SERVICE_ENDPOINT + "search/";
+
+    public static final String SEARCH_PET_WATCH_ENDPOINT = SEARCH_ENDPOINT + "PET_WATCH";
 
     @Test
     public void givenEmptyTable_whenSearch_thenEmptyResult() throws Exception {
-        UserEntity user = testUtils.createAndPersistDummyUser();
-        mockCurrentUserLookup(user);
-        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_PET_WATCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -71,12 +70,11 @@ public class PetServiceControllerTest {
     @Test
     public void givenFilledTable_whenSearch_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        mockCurrentUserLookup(creatorUser);
         createAndPersistDummyPetServiceAdvertisement(PetServiceType.PET_WATCH, creatorUser);
         createAndPersistDummyPetServiceAdvertisement(PetServiceType.PET_WATCH, creatorUser);
         createAndPersistDummyPetServiceAdvertisement(PetServiceType.GROOMING, creatorUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_PET_WATCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())

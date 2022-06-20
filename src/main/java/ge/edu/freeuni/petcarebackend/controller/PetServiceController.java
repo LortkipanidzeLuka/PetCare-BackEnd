@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("pet-service") // TODO: rename advertisements/petservice, server.prefix=api ?
+@RequestMapping("/advertisements/petservice")
 public class PetServiceController {
 
     private final PetServiceService petServiceService;
@@ -53,13 +53,13 @@ public class PetServiceController {
         return advertisementMapper.advertisementImageDtoList(petServiceService.lookupImages(id));
     }
 
-    @GetMapping
+    @GetMapping("/search/{type}")
     public SearchResultDTO<AdvertisementDTO> search(
+            @PathVariable PetServiceType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
-            @RequestParam(name = "petServiceType") Optional<PetServiceType> petServiceType,
             @RequestParam(name = "color") Optional<Color> color,
             @RequestParam(name = "applicableSex") Optional<Sex> applicableSex,
             @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
@@ -69,7 +69,7 @@ public class PetServiceController {
     ) {
         return petServiceService.search(
                 page, size, orderBy.orElse(null), ascending, search.orElse(""),
-                petServiceType.orElse(null), color.orElse(null), applicableSex.orElse(null),
+                type, color.orElse(null), applicableSex.orElse(null),
                 ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
         );
     }

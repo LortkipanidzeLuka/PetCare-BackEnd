@@ -52,13 +52,11 @@ public class AdoptionControllerTest {
     @Autowired
     private AdoptionRepository repository;
 
-    public static final String ADOPTION_ENDPOINT = "/adoptions/";
+    public static final String ADOPTION_ENDPOINT = "/advertisements/adoptions/";
     public static final String SEARCH_ENDPOINT = ADOPTION_ENDPOINT + "search/";
 
     @Test
     public void givenEmptyTable_whenSearch_thenEmptyResult() throws Exception {
-        UserEntity user = testUtils.createAndPersistDummyUser();
-        mockCurrentUserLookup(user);
         mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
@@ -80,7 +78,7 @@ public class AdoptionControllerTest {
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items").isNotEmpty())
-                .andExpect(jsonPath("$.totalCount").value("2"));
+                .andExpect(jsonPath("$.totalCount").value("3"));
     }
 
     @Test

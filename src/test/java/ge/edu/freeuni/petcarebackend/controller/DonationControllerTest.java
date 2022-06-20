@@ -53,14 +53,14 @@ public class DonationControllerTest {
     @Autowired
     private DonationRepository repository;
 
-    public static final String DONATION_ENDPOINT = "/donations/";
+    public static final String DONATION_ENDPOINT = "/advertisements/donations/";
     public static final String SEARCH_ENDPOINT = DONATION_ENDPOINT + "search/";
+
+    public static final String SEARCH_NEED_DONATION_ENDPOINT = SEARCH_ENDPOINT + "NEED_DONATION";
 
     @Test
     public void givenEmptyTable_whenSearch_thenEmptyResult() throws Exception {
-        UserEntity user = testUtils.createAndPersistDummyUser();
-        mockCurrentUserLookup(user);
-        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_NEED_DONATION_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -76,7 +76,7 @@ public class DonationControllerTest {
         createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.ABLE_TO_DONATE, creatorUser);
         createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_NEED_DONATION_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
