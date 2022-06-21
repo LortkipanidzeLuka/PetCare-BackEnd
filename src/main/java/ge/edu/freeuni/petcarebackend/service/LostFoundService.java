@@ -4,17 +4,11 @@ import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
-import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementImageMapper;
+import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
-import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
+import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
@@ -35,13 +29,13 @@ public class LostFoundService {
 
     private final SecurityService securityService;
 
-    private final AdvertisementImageMapper advertisementImageMapper;
+    private final AdvertisementMapper advertisementMapper;
 
-    public LostFoundService(LostFoundRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementImageMapper advertisementImageMapper) {
+    public LostFoundService(LostFoundRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementMapper advertisementMapper) {
         this.repository = repository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
-        this.advertisementImageMapper = advertisementImageMapper;
+        this.advertisementMapper = advertisementMapper;
     }
 
     public LostFoundDTO lookupAdvertisement(Long id) {
@@ -103,7 +97,7 @@ public class LostFoundService {
         }
         lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(null));
         lostFoundEntity.getImages().clear();
-        lostFoundEntity.setImages(lostFoundDTO.getImages().stream().map(advertisementImageMapper::dtoToEntity).collect(Collectors.toList()));
+        lostFoundEntity.setImages(lostFoundDTO.getImages().stream().map(advertisementMapper::advertisementImageEntity).collect(Collectors.toList()));
 
         repository.save(lostFoundEntity);
     }

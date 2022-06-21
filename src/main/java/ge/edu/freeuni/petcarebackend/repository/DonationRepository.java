@@ -3,7 +3,10 @@ package ge.edu.freeuni.petcarebackend.repository;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.entity.*;
+import ge.edu.freeuni.petcarebackend.repository.entity.City;
+import ge.edu.freeuni.petcarebackend.repository.entity.Color;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.GenericSpecification;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.SearchOperation;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,26 +25,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long>, JpaSpecificationExecutor<LostFoundEntity> {
+@Repository
+public interface DonationRepository extends JpaRepository<DonationEntity, Long>, JpaSpecificationExecutor<DonationEntity> {
+    Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>();
+
+    Optional<DonationEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
 
     void deleteByCreatorUserAndId(UserEntity creator, Long id);
 
-    Map<String, String> LOST_FOUND_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
-
-
-    default SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search,
-            LostFoundType type, PetType petType, Color color, Sex sex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
-    ) {
-        GenericSpecification<LostFoundEntity> specification = new GenericSpecification<LostFoundEntity>()
-                .add("type", type, SearchOperation.EQUAL)
-                .add("petType", petType, SearchOperation.EQUAL)
+    default SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc, String search,
+                                                     DonationAdvertisementType donationAdvertisementType, Color color,
+                                                     Sex applicableSex, Integer ageFrom, Integer ageUntil, City city) {
+        GenericSpecification<DonationEntity> specification = new GenericSpecification<DonationEntity>()
+                .add("donationAdvertisementType", donationAdvertisementType, SearchOperation.EQUAL)
                 .add("color", color, SearchOperation.EQUAL)
-                .add("sex", sex, SearchOperation.EQUAL)
+                .add("applicableSex", applicableSex, SearchOperation.EQUAL)
                 .add("ageFrom", ageFrom, SearchOperation.GREATER_THAN_EQUAL)
                 .add("ageUntil", ageUntil, SearchOperation.LESS_THAN_EQUAL)
-                .add("breed", breed, SearchOperation.LIKE)
                 .add("city", city, SearchOperation.EQUAL)
                 .add((root, query, builder) -> Stream.of("header", "description")
                         .map(key -> builder.like(builder.lower(root.get(key)), "%" + search.toLowerCase() + "%"))
@@ -61,14 +62,13 @@ public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long
 
         Pageable pageAndOrder = PageRequest.of(page - 1, size, Sort.by(asc ? Sort.Direction.ASC : Sort.Direction.DESC, orderByString));
 
-        Page<LostFoundEntity> result = this.findAll(specification, pageAndOrder);
+        Page<DonationEntity> result = this.findAll(specification, pageAndOrder);
 
         return new SearchResultDTO<>(
                 result.toList().stream().map(ad -> new AdvertisementDTO(ad, true)).collect(Collectors.toList()),
                 result.getTotalElements()
         );
-    }
 
-    Optional<LostFoundEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
+    }
 
 }

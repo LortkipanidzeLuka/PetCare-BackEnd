@@ -3,9 +3,9 @@ package ge.edu.freeuni.petcarebackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ge.edu.freeuni.petcarebackend.TestUtils;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
+import ge.edu.freeuni.petcarebackend.repository.DonationRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class LostFoundControllerTest {
+public class DonationControllerTest {
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,15 +51,16 @@ class LostFoundControllerTest {
     private TestUtils testUtils;
 
     @Autowired
-    private LostFoundRepository repository;
+    private DonationRepository repository;
 
+    public static final String DONATION_ENDPOINT = "/advertisements/donations/";
+    public static final String SEARCH_ENDPOINT = DONATION_ENDPOINT + "search/";
 
-    public static final String LOST_FOUND_ENDPOINT = "/advertisements/lostfound/";
-    public static final String LOST_FOUND_SEARCH_ENDPOINT = LOST_FOUND_ENDPOINT + "search/LOST";
+    public static final String SEARCH_NEED_DONATION_ENDPOINT = SEARCH_ENDPOINT + "NEED_DONATION";
 
     @Test
     public void givenEmptyTable_whenSearch_thenEmptyResult() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(LOST_FOUND_SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_NEED_DONATION_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -68,12 +71,12 @@ class LostFoundControllerTest {
     @Test
     public void givenFilledTable_whenSearch_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
+        mockCurrentUserLookup(creatorUser);
+        createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
+        createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.ABLE_TO_DONATE, creatorUser);
+        createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
 
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.FOUND, creatorUser);
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-
-        mockMvc.perform(MockMvcRequestBuilders.get(LOST_FOUND_SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_NEED_DONATION_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -83,28 +86,28 @@ class LostFoundControllerTest {
 
     @Test
     @WithMockUser
-    public void givenValidLostAdvertisement_whenCreate_thenSuccess() throws Exception {
-        LostFoundDTO lostFound = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
+    public void givenValidDonationAdvertisement_whenCreate_thenSuccess() throws Exception {
+        DonationDTO donation = createDummyDonationAdvertisementDTO(DonationAdvertisementType.NEED_DONATION);
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(LOST_FOUND_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.post(DONATION_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFound)))
+                        .content(objectMapper.writeValueAsBytes(donation)))
                 .andExpect(status().isCreated());
     }
 
     @Test
     @WithMockUser
-    public void givenInvalidLostAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
-        LostFoundDTO lostFound = createDummyLostFoundAdvertisementDTO(LostFoundType.FOUND);
-        lostFound.setImages(Collections.emptyList());
+    public void givenInvalidDonationAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
+        DonationDTO donation = createDummyDonationAdvertisementDTO(DonationAdvertisementType.ABLE_TO_DONATE);
+        donation.setImages(Collections.emptyList());
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(LOST_FOUND_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.post(DONATION_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFound)))
+                        .content(objectMapper.writeValueAsBytes(donation)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
                 .andExpect(result -> assertEquals("need_one_primary_image", Objects.requireNonNull(result.getResolvedException()).getMessage()));
@@ -114,14 +117,14 @@ class LostFoundControllerTest {
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenUpdate_thenBusinessException() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
+        DonationEntity donationEntity = createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
+        DonationDTO donationDto = createDummyDonationAdvertisementDTO(DonationAdvertisementType.NEED_DONATION);
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.put(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put(DONATION_ENDPOINT + donationEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(donationDto)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException));
     }
@@ -130,13 +133,13 @@ class LostFoundControllerTest {
     @WithMockUser
     public void givenValidData_whenUpdate_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
-        mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
+        DonationEntity donationEntity = createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
+        DonationDTO donationDto = createDummyDonationAdvertisementDTO(DonationAdvertisementType.NEED_DONATION);
+        mockCurrentUserLookup(donationEntity.getCreatorUser());
 
-        mockMvc.perform(MockMvcRequestBuilders.put(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put(DONATION_ENDPOINT + donationEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(donationDto)))
                 .andExpect(status().isOk());
     }
 
@@ -144,69 +147,68 @@ class LostFoundControllerTest {
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenDelete_thenDoNothing() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
+        DonationEntity donationEntity = createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
+        DonationDTO donationDto = createDummyDonationAdvertisementDTO(DonationAdvertisementType.NEED_DONATION);
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(DONATION_ENDPOINT + donationEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(donationDto)))
                 .andExpect(status().isOk());
-        assertTrue(repository.existsById(lostFoundEntity.getId()));
+        assertTrue(repository.existsById(donationEntity.getId()));
     }
 
     @Test
     @WithMockUser
     public void givenValidData_whenDelete_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
-        mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
+        DonationEntity donationEntity = createAndPersistDummyDonationAdvertisement(DonationAdvertisementType.NEED_DONATION, creatorUser);
+        DonationDTO donationDto = createDummyDonationAdvertisementDTO(DonationAdvertisementType.NEED_DONATION);
+        mockCurrentUserLookup(donationEntity.getCreatorUser());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(DONATION_ENDPOINT + donationEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(donationDto)))
                 .andExpect(status().isOk());
-        assertFalse(repository.existsById(lostFoundEntity.getId()));
+        assertFalse(repository.existsById(donationEntity.getId()));
     }
 
     private void mockCurrentUserLookup(UserEntity user) {
         Mockito.doReturn(user).when(securityService).lookupCurrentUser();
     }
 
-    private LostFoundDTO createDummyLostFoundAdvertisementDTO(LostFoundType type) {
-        return LostFoundDTO.builder()
+    private DonationDTO createDummyDonationAdvertisementDTO(DonationAdvertisementType type) {
+        return DonationDTO.builder()
                 .header("test")
                 .city(City.RUSTAVI)
                 .description("test")
-                .petType(PetType.DOG)
-                .type(type)
-                .sex(Sex.MALE)
+                .applicablePetList(List.of(PetType.DOG))
+                .donationAdvertisementType(type)
+                .applicableSex(Sex.MALE)
                 .images(Collections.singletonList(new AdvertisementImageDTO("image.png", "test", true)))
                 .build();
     }
 
-    private LostFoundEntity createAndPersistDummyLostFoundAdvertisement(LostFoundType type, UserEntity creatorUser) {
-        LostFoundEntity lostFoundEntity = new LostFoundEntity();
-        lostFoundEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
-        lostFoundEntity.setHeader("test header");
-        lostFoundEntity.setCity(City.TBILISI);
-        lostFoundEntity.setDescription("test description");
-        lostFoundEntity.setPetType(PetType.CAT);
-        lostFoundEntity.setType(type);
-        lostFoundEntity.setSex(Sex.MALE);
-        lostFoundEntity.setCreatorUser(creatorUser);
-        lostFoundEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(lostFoundEntity, true)));
-        return repository.saveAndFlush(lostFoundEntity);
+    private DonationEntity createAndPersistDummyDonationAdvertisement(DonationAdvertisementType type, UserEntity creatorUser) {
+        DonationEntity donationEntity = new DonationEntity();
+        donationEntity.setAdvertisementType(AdvertisementType.DONATION);
+        donationEntity.setHeader("test header");
+        donationEntity.setCity(City.TBILISI);
+        donationEntity.setDescription("test description");
+        donationEntity.setDonationAdvertisementType(type);
+        donationEntity.setApplicableSex(Sex.MALE);
+        donationEntity.setCreatorUser(creatorUser);
+        donationEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(donationEntity, true)));
+        return repository.saveAndFlush(donationEntity);
     }
 
-    private AdvertisementImageEntity createAdvertisementImageEntity(LostFoundEntity lostFoundEntity, boolean isPrimary) {
+    private AdvertisementImageEntity createAdvertisementImageEntity(DonationEntity donationEntity, boolean isPrimary) {
         AdvertisementImageEntity primaryImage = new AdvertisementImageEntity();
         primaryImage.setIsPrimary(isPrimary);
         primaryImage.setTitle("test.png");
         primaryImage.setContent("test");
-        primaryImage.setAdvertisement(lostFoundEntity);
+        primaryImage.setAdvertisement(donationEntity);
         return primaryImage;
     }
 

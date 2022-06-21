@@ -11,19 +11,27 @@ import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
-@Getter
-@Setter
-@Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "lost_found_advertisement")
-public class LostFoundEntity extends AdvertisementEntity {
+@Getter
+@Setter
+@Entity
+@Table(name = "donation_advertisement")
+public class DonationEntity extends AdvertisementEntity {
+
+    @Column(name = "value")
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = PetType.class)
+    @CollectionTable(name = "pet_types", joinColumns = @JoinColumn(name = "advertisement_id"))
+    private List<PetType> applicablePetList;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private PetType petType;
+    @Column(name = "donation_advertisement_type")
+    private DonationAdvertisementType donationAdvertisementType;
 
     @Enumerated(EnumType.STRING)
     private Color color;
@@ -36,15 +44,9 @@ public class LostFoundEntity extends AdvertisementEntity {
     @Column(name = "age_until")
     private Short ageUntil;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private LostFoundType type;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
-
-    private String breed;
+    @Column(name = "applicable_sex")
+    private Sex applicableSex;
 
     @AssertTrue
     private boolean isValidAge() {

@@ -2,10 +2,10 @@ package ge.edu.freeuni.petcarebackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ge.edu.freeuni.petcarebackend.TestUtils;
+import ge.edu.freeuni.petcarebackend.controller.dto.AdoptionDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
+import ge.edu.freeuni.petcarebackend.repository.AdoptionRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
@@ -34,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class LostFoundControllerTest {
+public class AdoptionControllerTest {
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,15 +50,14 @@ class LostFoundControllerTest {
     private TestUtils testUtils;
 
     @Autowired
-    private LostFoundRepository repository;
+    private AdoptionRepository repository;
 
-
-    public static final String LOST_FOUND_ENDPOINT = "/advertisements/lostfound/";
-    public static final String LOST_FOUND_SEARCH_ENDPOINT = LOST_FOUND_ENDPOINT + "search/LOST";
+    public static final String ADOPTION_ENDPOINT = "/advertisements/adoptions/";
+    public static final String SEARCH_ENDPOINT = ADOPTION_ENDPOINT + "search/";
 
     @Test
     public void givenEmptyTable_whenSearch_thenEmptyResult() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(LOST_FOUND_SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -68,43 +68,43 @@ class LostFoundControllerTest {
     @Test
     public void givenFilledTable_whenSearch_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
+        mockCurrentUserLookup(creatorUser);
+        createAndPersistDummyAdoptionAdvertisement(creatorUser);
+        createAndPersistDummyAdoptionAdvertisement(creatorUser);
+        createAndPersistDummyAdoptionAdvertisement(creatorUser);
 
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.FOUND, creatorUser);
-        createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-
-        mockMvc.perform(MockMvcRequestBuilders.get(LOST_FOUND_SEARCH_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.get(SEARCH_ENDPOINT)
                         .param("page", "1")
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items").isNotEmpty())
-                .andExpect(jsonPath("$.totalCount").value("2"));
+                .andExpect(jsonPath("$.totalCount").value("3"));
     }
 
     @Test
     @WithMockUser
-    public void givenValidLostAdvertisement_whenCreate_thenSuccess() throws Exception {
-        LostFoundDTO lostFound = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
+    public void givenValidAdoptionAdvertisement_whenCreate_thenSuccess() throws Exception {
+        AdoptionDTO adoption = createDummyAdoptionAdvertisementDTO();
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(LOST_FOUND_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.post(ADOPTION_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFound)))
+                        .content(objectMapper.writeValueAsBytes(adoption)))
                 .andExpect(status().isCreated());
     }
 
     @Test
     @WithMockUser
-    public void givenInvalidLostAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
-        LostFoundDTO lostFound = createDummyLostFoundAdvertisementDTO(LostFoundType.FOUND);
-        lostFound.setImages(Collections.emptyList());
+    public void givenInvalidAdoptionAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
+        AdoptionDTO adoption = createDummyAdoptionAdvertisementDTO();
+        adoption.setImages(Collections.emptyList());
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(LOST_FOUND_ENDPOINT)
+        mockMvc.perform(MockMvcRequestBuilders.post(ADOPTION_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFound)))
+                        .content(objectMapper.writeValueAsBytes(adoption)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
                 .andExpect(result -> assertEquals("need_one_primary_image", Objects.requireNonNull(result.getResolvedException()).getMessage()));
@@ -114,14 +114,14 @@ class LostFoundControllerTest {
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenUpdate_thenBusinessException() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
+        AdoptionEntity adoptionEntity = createAndPersistDummyAdoptionAdvertisement(creatorUser);
+        AdoptionDTO adoptionDto = createDummyAdoptionAdvertisementDTO();
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.put(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put(ADOPTION_ENDPOINT + adoptionEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(adoptionDto)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException));
     }
@@ -130,13 +130,13 @@ class LostFoundControllerTest {
     @WithMockUser
     public void givenValidData_whenUpdate_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
-        mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
+        AdoptionEntity adoptionEntity = createAndPersistDummyAdoptionAdvertisement(creatorUser);
+        AdoptionDTO adoptionDto = createDummyAdoptionAdvertisementDTO();
+        mockCurrentUserLookup(adoptionEntity.getCreatorUser());
 
-        mockMvc.perform(MockMvcRequestBuilders.put(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put(ADOPTION_ENDPOINT + adoptionEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(adoptionDto)))
                 .andExpect(status().isOk());
     }
 
@@ -144,69 +144,69 @@ class LostFoundControllerTest {
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenDelete_thenDoNothing() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
+        AdoptionEntity adoptionEntity = createAndPersistDummyAdoptionAdvertisement(creatorUser);
+        AdoptionDTO adoptionDto = createDummyAdoptionAdvertisementDTO();
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(ADOPTION_ENDPOINT + adoptionEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(adoptionDto)))
                 .andExpect(status().isOk());
-        assertTrue(repository.existsById(lostFoundEntity.getId()));
+        assertTrue(repository.existsById(adoptionEntity.getId()));
     }
 
     @Test
     @WithMockUser
     public void givenValidData_whenDelete_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        LostFoundEntity lostFoundEntity = createAndPersistDummyLostFoundAdvertisement(LostFoundType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(LostFoundType.LOST);
-        mockCurrentUserLookup(lostFoundEntity.getCreatorUser());
+        AdoptionEntity adoptionEntity = createAndPersistDummyAdoptionAdvertisement(creatorUser);
+        AdoptionDTO adoptionDto = createDummyAdoptionAdvertisementDTO();
+        mockCurrentUserLookup(adoptionEntity.getCreatorUser());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(LOST_FOUND_ENDPOINT + lostFoundEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(ADOPTION_ENDPOINT + adoptionEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(adoptionDto)))
                 .andExpect(status().isOk());
-        assertFalse(repository.existsById(lostFoundEntity.getId()));
+        assertFalse(repository.existsById(adoptionEntity.getId()));
     }
 
     private void mockCurrentUserLookup(UserEntity user) {
         Mockito.doReturn(user).when(securityService).lookupCurrentUser();
     }
 
-    private LostFoundDTO createDummyLostFoundAdvertisementDTO(LostFoundType type) {
-        return LostFoundDTO.builder()
+    private AdoptionDTO createDummyAdoptionAdvertisementDTO() {
+        return AdoptionDTO.builder()
                 .header("test")
                 .city(City.RUSTAVI)
-                .description("test")
                 .petType(PetType.DOG)
-                .type(type)
+                .color(Color.BLACK)
                 .sex(Sex.MALE)
+                .description("test")
                 .images(Collections.singletonList(new AdvertisementImageDTO("image.png", "test", true)))
                 .build();
     }
 
-    private LostFoundEntity createAndPersistDummyLostFoundAdvertisement(LostFoundType type, UserEntity creatorUser) {
-        LostFoundEntity lostFoundEntity = new LostFoundEntity();
-        lostFoundEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
-        lostFoundEntity.setHeader("test header");
-        lostFoundEntity.setCity(City.TBILISI);
-        lostFoundEntity.setDescription("test description");
-        lostFoundEntity.setPetType(PetType.CAT);
-        lostFoundEntity.setType(type);
-        lostFoundEntity.setSex(Sex.MALE);
-        lostFoundEntity.setCreatorUser(creatorUser);
-        lostFoundEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(lostFoundEntity, true)));
-        return repository.saveAndFlush(lostFoundEntity);
+    private AdoptionEntity createAndPersistDummyAdoptionAdvertisement(UserEntity creatorUser) {
+        AdoptionEntity adoptionEntity = new AdoptionEntity();
+        adoptionEntity.setAdvertisementType(AdvertisementType.ADOPTION);
+        adoptionEntity.setHeader("test header");
+        adoptionEntity.setCity(City.TBILISI);
+        adoptionEntity.setDescription("test description");
+        adoptionEntity.setColor(Color.BLACK);
+        adoptionEntity.setPetType(PetType.DOG);
+        adoptionEntity.setSex(Sex.MALE);
+        adoptionEntity.setCreatorUser(creatorUser);
+        adoptionEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(adoptionEntity, true)));
+        return repository.saveAndFlush(adoptionEntity);
     }
 
-    private AdvertisementImageEntity createAdvertisementImageEntity(LostFoundEntity lostFoundEntity, boolean isPrimary) {
+    private AdvertisementImageEntity createAdvertisementImageEntity(AdoptionEntity adoptionEntity, boolean isPrimary) {
         AdvertisementImageEntity primaryImage = new AdvertisementImageEntity();
         primaryImage.setIsPrimary(isPrimary);
         primaryImage.setTitle("test.png");
         primaryImage.setContent("test");
-        primaryImage.setAdvertisement(lostFoundEntity);
+        primaryImage.setAdvertisement(adoptionEntity);
         return primaryImage;
     }
 

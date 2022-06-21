@@ -1,27 +1,15 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.EmailChangeDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.EmailChangeOtpDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.*;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.List;
 import java.util.Optional;
 
 @RestController

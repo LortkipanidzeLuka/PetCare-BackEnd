@@ -6,13 +6,11 @@ import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementImageEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -20,10 +18,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @SuperBuilder
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 public class AdvertisementDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

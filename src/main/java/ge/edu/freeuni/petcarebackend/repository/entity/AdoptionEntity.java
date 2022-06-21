@@ -8,21 +8,20 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "lost_found_advertisement")
-public class LostFoundEntity extends AdvertisementEntity {
+@Getter
+@Setter
+@Entity
+@Table(name = "adoption_advertisement")
+public class AdoptionEntity extends AdvertisementEntity {
 
     @NotNull
-    @Enumerated(EnumType.STRING)
+    @Column(name = "pet_type")
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
@@ -38,16 +37,7 @@ public class LostFoundEntity extends AdvertisementEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private LostFoundType type;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
     private Sex sex;
 
     private String breed;
-
-    @AssertTrue
-    private boolean isValidAge() {
-        return ageFrom == null || ageUntil == null || ageUntil >= ageFrom;
-    }
 }

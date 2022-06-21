@@ -44,7 +44,7 @@ public class SecurityController {
     }
 
     @PostMapping("verify/resend")
-    public void resendCode(){
+    public void resendCode() {
         service.resendCode();
     }
 

@@ -4,9 +4,10 @@ import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = {AdvertisementMapper.class})
+@Mapper
 public interface LostFoundMapper {
 
-    LostFoundEntity dtoToEntity(LostFoundDTO dto);
+    LostFoundEntity lostFoundEntity(LostFoundDTO lostFoundDTO);
 
+    LostFoundDTO lostFoundDTO(LostFoundEntity lostFoundEntity);
 }
