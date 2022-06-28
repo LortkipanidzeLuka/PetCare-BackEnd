@@ -7,7 +7,6 @@ import ge.edu.freeuni.petcarebackend.controller.dto.PetServiceDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.PetServiceRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import org.junit.jupiter.api.Test;
@@ -183,7 +182,6 @@ public class PetServiceControllerTest {
                 .description("test")
                 .applicablePetList(List.of(PetType.DOG))
                 .petServiceType(type)
-                .applicableSex(Sex.MALE)
                 .images(Collections.singletonList(new AdvertisementImageDTO("image.png", "test", true)))
                 .build();
     }
@@ -195,7 +193,6 @@ public class PetServiceControllerTest {
         petServiceEntity.setCity(City.TBILISI);
         petServiceEntity.setDescription("test description");
         petServiceEntity.setPetServiceType(type);
-        petServiceEntity.setApplicableSex(Sex.MALE);
         petServiceEntity.setCreatorUser(creatorUser);
         petServiceEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(petServiceEntity, true)));
         return repository.saveAndFlush(petServiceEntity);

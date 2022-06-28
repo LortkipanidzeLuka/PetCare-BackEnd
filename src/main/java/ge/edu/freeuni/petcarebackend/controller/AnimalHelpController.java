@@ -7,7 +7,7 @@ import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.LostFoundMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
-import ge.edu.freeuni.petcarebackend.service.LostFoundService;
+import ge.edu.freeuni.petcarebackend.service.AnimalHelpService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/advertisements/lostfound")
-public class LostFoundController {
+@RequestMapping("/advertisements/animalhelp")
+public class AnimalHelpController {
 
-    private final LostFoundService service;
+    private final AnimalHelpService service;
 
     private final LostFoundMapper mapper;
 
-    public LostFoundController(LostFoundService service, LostFoundMapper mapper) {
+    public AnimalHelpController(AnimalHelpService service, LostFoundMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -47,7 +47,7 @@ public class LostFoundController {
 
     @GetMapping("/search/{type}")
     public SearchResultDTO<AdvertisementDTO> search(
-            @PathVariable LostFoundType type,
+            @PathVariable AnimalHelpType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
@@ -67,10 +67,10 @@ public class LostFoundController {
     }
 
     @PostMapping
-    public ResponseEntity createLostFoundAdvertisement(
+    public ResponseEntity createAnimalHelpAdvertisement(
             HttpServletRequest request, @Valid @RequestBody LostFoundDTO lostFoundDTO
     ) {
-        LostFoundEntity entity = mapper.lostFoundEntity(lostFoundDTO);
+        AnimalHelpEntity entity = mapper.lostFoundEntity(lostFoundDTO);
         Long createdId = service.createAdvertisement(entity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
@@ -81,7 +81,7 @@ public class LostFoundController {
     }
 
     @PutMapping("{id}")
-    public void updateLostFoundAdvertisement(
+    public void updateAnimalHelpAdvertisement(
             @PathVariable Long id,
             @Valid @RequestBody LostFoundDTO lostFoundDTO
     ) {
@@ -89,7 +89,7 @@ public class LostFoundController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteLostFoundAdvertisement(
+    public void deleteAnimalHelpAdvertisement(
             @PathVariable Long id
     ) {
         service.deleteAdvertisement(id);

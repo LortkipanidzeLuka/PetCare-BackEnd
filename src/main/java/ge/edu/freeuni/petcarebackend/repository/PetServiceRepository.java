@@ -4,12 +4,10 @@ import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.GenericSpecification;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.SearchOperation;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,15 +29,10 @@ public interface PetServiceRepository extends JpaRepository<PetServiceEntity, Lo
 
     default SearchResultDTO<AdvertisementDTO> search(
             int page, int size, String orderBy, boolean asc, String search,
-            PetServiceType petServiceType, Color color, Sex applicableSex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
+            PetServiceType petServiceType, String breed, City city
     ) {
         GenericSpecification<PetServiceEntity> specification = new GenericSpecification<PetServiceEntity>()
                 .add("petServiceType", petServiceType, SearchOperation.EQUAL)
-                .add("color", color, SearchOperation.EQUAL)
-                .add("applicableSex", applicableSex, SearchOperation.EQUAL)
-                .add("ageFrom", ageFrom, SearchOperation.GREATER_THAN_EQUAL)
-                .add("ageUntil", ageUntil, SearchOperation.LESS_THAN_EQUAL)
                 .add("breed", breed, SearchOperation.LIKE)
                 .add("city", city, SearchOperation.EQUAL)
                 .add((root, query, builder) -> Stream.of("header", "description")

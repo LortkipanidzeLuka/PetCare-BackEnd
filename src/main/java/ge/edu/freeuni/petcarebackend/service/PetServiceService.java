@@ -6,7 +6,6 @@ import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.PetServiceRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
@@ -43,13 +42,11 @@ public class PetServiceService {
 
     public SearchResultDTO<AdvertisementDTO> search(
             int page, int size, String orderBy, boolean asc, String search,
-            PetServiceType petServiceType, Color color, Sex applicableSex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
+            PetServiceType petServiceType, String breed, City city
     ) {
         return petServiceRepository.search(
                 page, size, orderBy, asc, search,
-                petServiceType, color, applicableSex,
-                ageFrom, ageUntil, breed, city
+                petServiceType, breed, city
         );
     }
 
@@ -70,15 +67,12 @@ public class PetServiceService {
         PetServiceEntity existing = petServiceRepository.findByCreatorUserAndId(currentUser, petServiceEntity.getId())
                 .orElseThrow(BusinessException::new);
 
-        existing.setAgeFrom(petServiceEntity.getAgeFrom());
-        existing.setAgeUntil(petServiceEntity.getAgeUntil());
         existing.setCity(petServiceEntity.getCity());
         existing.setDescription(petServiceEntity.getDescription());
         existing.setHeader(petServiceEntity.getHeader());
         existing.setLatitude(petServiceEntity.getLatitude());
         existing.setLongitude(petServiceEntity.getLongitude());
         existing.setTags(petServiceEntity.getTags());
-        existing.setApplicableSex(petServiceEntity.getApplicableSex());
         existing.setPetServiceType(petServiceEntity.getPetServiceType());
 
 

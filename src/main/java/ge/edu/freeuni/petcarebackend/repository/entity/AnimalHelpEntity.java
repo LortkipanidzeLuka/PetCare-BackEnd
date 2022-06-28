@@ -8,20 +8,21 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "adoption_advertisement")
-public class AdoptionEntity extends AdvertisementEntity {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "animal_help_advertisement")
+public class AnimalHelpEntity extends AdvertisementEntity {
 
     @NotNull
-    @Column(name = "pet_type")
+    @Enumerated(EnumType.STRING)
     private PetType petType;
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +38,16 @@ public class AdoptionEntity extends AdvertisementEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    private AnimalHelpType type;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Sex sex;
 
     private String breed;
+
+    @AssertTrue
+    private boolean isValidAge() {
+        return ageFrom == null || ageUntil == null || ageUntil >= ageFrom;
+    }
 }

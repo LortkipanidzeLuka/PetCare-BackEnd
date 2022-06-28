@@ -7,7 +7,7 @@ import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
-import ge.edu.freeuni.petcarebackend.repository.LostFoundRepository;
+import ge.edu.freeuni.petcarebackend.repository.AnimalHelpRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class LostFoundService {
+public class AnimalHelpService {
 
-    private final LostFoundRepository repository;
+    private final AnimalHelpRepository repository;
 
     private final AdvertisementImageRepository imageRepository;
 
@@ -31,7 +31,7 @@ public class LostFoundService {
 
     private final AdvertisementMapper advertisementMapper;
 
-    public LostFoundService(LostFoundRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementMapper advertisementMapper) {
+    public AnimalHelpService(AnimalHelpRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementMapper advertisementMapper) {
         this.repository = repository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
@@ -42,17 +42,17 @@ public class LostFoundService {
         return repository.findById(id).map(ad -> new LostFoundDTO(ad, false)).orElseThrow(BusinessException::new);
     }
 
-    public LostFoundEntity lookup(Long id) {
+    public AnimalHelpEntity lookup(Long id) {
         return repository.findById(id).orElseThrow(BusinessException::new);
     }
 
     public List<AdvertisementImageDTO> lookupImages(Long id) {
-        LostFoundEntity lostFoundEntity = lookup(id);
-        return imageRepository.findByAdvertisement(lostFoundEntity).stream().map(AdvertisementImageDTO::new).collect(Collectors.toList());
+        AnimalHelpEntity animalHelpEntity = lookup(id);
+        return imageRepository.findByAdvertisement(animalHelpEntity).stream().map(AdvertisementImageDTO::new).collect(Collectors.toList());
     }
 
     public SearchResultDTO<AdvertisementDTO> search(
-            LostFoundType type, int page, int size, String orderBy, boolean asc, String search, // header or description
+            AnimalHelpType type, int page, int size, String orderBy, boolean asc, String search, // header or description
             PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
@@ -63,48 +63,47 @@ public class LostFoundService {
         );
     }
 
-    public Long createAdvertisement(LostFoundEntity lostFoundEntity) {
+    public Long createAdvertisement(AnimalHelpEntity animalHelpEntity) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        lostFoundEntity.setCreateDate(LocalDate.now());
-        lostFoundEntity.setCreatorUser(currentUser);
-        lostFoundEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
-        if (lostFoundEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
+        animalHelpEntity.setCreateDate(LocalDate.now());
+        animalHelpEntity.setCreatorUser(currentUser);
+        animalHelpEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
+        if (animalHelpEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
-        lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(lostFoundEntity));
-        return repository.save(lostFoundEntity).getId();
+        animalHelpEntity.getImages().forEach(i -> i.setAdvertisement(animalHelpEntity));
+        return repository.save(animalHelpEntity).getId();
     }
 
     public void updateAdvertisement(Long id, LostFoundDTO lostFoundDTO) {
         UserEntity currentUser = securityService.lookupCurrentUser();
-        LostFoundEntity lostFoundEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(BusinessException::new);
+        AnimalHelpEntity animalHelpEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(BusinessException::new);
 
-        lostFoundEntity.setAgeFrom(lostFoundDTO.getAgeFrom());
-        lostFoundEntity.setAgeUntil(lostFoundDTO.getAgeUntil());
-        lostFoundEntity.setCity(lostFoundDTO.getCity());
-        lostFoundEntity.setDescription(lostFoundDTO.getDescription());
-        lostFoundEntity.setBreed(lostFoundDTO.getBreed());
-        lostFoundEntity.setColor(lostFoundDTO.getColor());
-        lostFoundEntity.setSex(lostFoundDTO.getSex());
-        lostFoundEntity.setPetType(lostFoundDTO.getPetType());
-        lostFoundEntity.setHeader(lostFoundDTO.getHeader());
-        lostFoundEntity.setLatitude(lostFoundDTO.getLatitude());
-        lostFoundEntity.setLongitude(lostFoundDTO.getLongitude());
-        lostFoundEntity.setTags(lostFoundDTO.getTags());
+        animalHelpEntity.setAgeFrom(lostFoundDTO.getAgeFrom());
+        animalHelpEntity.setAgeUntil(lostFoundDTO.getAgeUntil());
+        animalHelpEntity.setCity(lostFoundDTO.getCity());
+        animalHelpEntity.setDescription(lostFoundDTO.getDescription());
+        animalHelpEntity.setBreed(lostFoundDTO.getBreed());
+        animalHelpEntity.setColor(lostFoundDTO.getColor());
+        animalHelpEntity.setSex(lostFoundDTO.getSex());
+        animalHelpEntity.setPetType(lostFoundDTO.getPetType());
+        animalHelpEntity.setHeader(lostFoundDTO.getHeader());
+        animalHelpEntity.setLatitude(lostFoundDTO.getLatitude());
+        animalHelpEntity.setLongitude(lostFoundDTO.getLongitude());
+        animalHelpEntity.setTags(lostFoundDTO.getTags());
 
         if (lostFoundDTO.getImages().stream().filter(AdvertisementImageDTO::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
-        lostFoundEntity.getImages().forEach(i -> i.setAdvertisement(null));
-        lostFoundEntity.getImages().clear();
-        lostFoundEntity.setImages(lostFoundDTO.getImages().stream().map(advertisementMapper::advertisementImageEntity).collect(Collectors.toList()));
+        animalHelpEntity.getImages().forEach(i -> i.setAdvertisement(null));
+        animalHelpEntity.getImages().clear();
+        animalHelpEntity.setImages(lostFoundDTO.getImages().stream().map(advertisementMapper::advertisementImageEntity).collect(Collectors.toList()));
 
-        repository.save(lostFoundEntity);
+        repository.save(animalHelpEntity);
     }
 
     public void deleteAdvertisement(Long id) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         repository.deleteByCreatorUserAndId(currentUser, id);
     }
-
 }

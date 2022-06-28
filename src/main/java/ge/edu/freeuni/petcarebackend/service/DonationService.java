@@ -6,7 +6,6 @@ import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.DonationRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
@@ -55,13 +54,11 @@ public class DonationService {
 
     public SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc,
                                                     String search, DonationAdvertisementType donationAdvertisementType,
-                                                    Color color, Sex applicableSex, Integer ageFrom, Integer ageUntil,
                                                     City city) {
 
         return donationRepository.search(
                 page, size, orderBy, asc, search,
-                donationAdvertisementType, color, applicableSex,
-                ageFrom, ageUntil, city
+                donationAdvertisementType, city
         );
     }
 
@@ -70,19 +67,13 @@ public class DonationService {
         DonationEntity existing = donationRepository.findByCreatorUserAndId(currentUser, donationEntity.getId())
                 .orElseThrow(BusinessException::new);
 
-        existing.setAgeFrom(donationEntity.getAgeFrom());
-        existing.setAgeUntil(donationEntity.getAgeUntil());
         existing.setCity(donationEntity.getCity());
         existing.setDescription(donationEntity.getDescription());
-        existing.setColor(donationEntity.getColor());
         existing.setHeader(donationEntity.getHeader());
         existing.setLatitude(donationEntity.getLatitude());
         existing.setLongitude(donationEntity.getLongitude());
         existing.setTags(donationEntity.getTags());
-        existing.setColor(donationEntity.getColor());
         existing.setDonationAdvertisementType(donationEntity.getDonationAdvertisementType());
-        existing.setApplicableSex(donationEntity.getApplicableSex());
-
 
         if (donationEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");

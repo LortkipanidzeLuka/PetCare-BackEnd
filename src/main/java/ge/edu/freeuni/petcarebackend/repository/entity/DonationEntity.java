@@ -32,24 +32,4 @@ public class DonationEntity extends AdvertisementEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "donation_advertisement_type")
     private DonationAdvertisementType donationAdvertisementType;
-
-    @Enumerated(EnumType.STRING)
-    private Color color;
-
-    @Min(0)
-    @Column(name = "age_from")
-    private Short ageFrom;
-
-    @Min(30)
-    @Column(name = "age_until")
-    private Short ageUntil;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "applicable_sex")
-    private Sex applicableSex;
-
-    @AssertTrue
-    private boolean isValidAge() {
-        return ageFrom == null || ageUntil == null || ageUntil >= ageFrom;
-    }
 }

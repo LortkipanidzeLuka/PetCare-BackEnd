@@ -7,10 +7,8 @@ import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.controller.mapper.PetServiceMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.PetServiceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,17 +58,12 @@ public class PetServiceController {
             @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
-            @RequestParam(name = "color") Optional<Color> color,
-            @RequestParam(name = "applicableSex") Optional<Sex> applicableSex,
-            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
-            @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
             @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<City> city
     ) {
         return petServiceService.search(
                 page, size, orderBy.orElse(null), ascending, search.orElse(""),
-                type, color.orElse(null), applicableSex.orElse(null),
-                ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
+                type, breed.orElse(null), city.orElse(null)
         );
     }
 

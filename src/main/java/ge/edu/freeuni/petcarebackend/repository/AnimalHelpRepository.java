@@ -3,10 +3,7 @@ package ge.edu.freeuni.petcarebackend.repository;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.entity.AdoptionEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
-import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
+import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.GenericSpecification;
 import ge.edu.freeuni.petcarebackend.repository.generic.search.SearchOperation;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
@@ -17,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,19 +21,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Repository
-public interface AdoptionRepository extends JpaRepository<AdoptionEntity, Long>, JpaSpecificationExecutor<AdoptionEntity> {
+public interface AnimalHelpRepository extends JpaRepository<AnimalHelpEntity, Long>, JpaSpecificationExecutor<AnimalHelpEntity> {
 
     void deleteByCreatorUserAndId(UserEntity creator, Long id);
 
-    Map<String, String> ADOPTION_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
+    Map<String, String> ANIMAL_HELP_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
 
 
     default SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search, PetType petType, Color color, Sex sex,
+            int page, int size, String orderBy, boolean asc, String search,
+            AnimalHelpType type, PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
-        GenericSpecification<AdoptionEntity> specification = new GenericSpecification<AdoptionEntity>()
+        GenericSpecification<AnimalHelpEntity> specification = new GenericSpecification<AnimalHelpEntity>()
+                .add("type", type, SearchOperation.EQUAL)
                 .add("petType", petType, SearchOperation.EQUAL)
                 .add("color", color, SearchOperation.EQUAL)
                 .add("sex", sex, SearchOperation.EQUAL)
@@ -56,7 +53,7 @@ public interface AdoptionRepository extends JpaRepository<AdoptionEntity, Long>,
 
         String orderByString = "createDate";
         if (orderBy != null) {
-            orderByString = this.ADOPTION_ORDER_BY_MAP.get(orderBy);
+            orderByString = this.ANIMAL_HELP_ORDER_BY_MAP.get(orderBy);
             if (orderByString == null) {
                 throw new BusinessException();
             }
@@ -64,7 +61,7 @@ public interface AdoptionRepository extends JpaRepository<AdoptionEntity, Long>,
 
         Pageable pageAndOrder = PageRequest.of(page - 1, size, Sort.by(asc ? Sort.Direction.ASC : Sort.Direction.DESC, orderByString));
 
-        Page<AdoptionEntity> result = this.findAll(specification, pageAndOrder);
+        Page<AnimalHelpEntity> result = this.findAll(specification, pageAndOrder);
 
         return new SearchResultDTO<>(
                 result.toList().stream().map(ad -> new AdvertisementDTO(ad, true)).collect(Collectors.toList()),
@@ -72,6 +69,6 @@ public interface AdoptionRepository extends JpaRepository<AdoptionEntity, Long>,
         );
     }
 
-    Optional<AdoptionEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
+    Optional<AnimalHelpEntity> findByCreatorUserAndId(UserEntity creatorUser, Long id);
 
 }
