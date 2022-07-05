@@ -53,6 +53,8 @@ public class AdvertisementDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserInfoDTO userInfo;
 
+    private boolean expired;
+
     private List<AdvertisementImageDTO> images = new ArrayList<>();
 
     public AdvertisementDTO(AdvertisementEntity advertisement, boolean needPrimaryImage) {
@@ -66,6 +68,7 @@ public class AdvertisementDTO {
         this.tags = advertisement.getTags();
         this.advertisementType = advertisement.getAdvertisementType();
         this.userInfo = new UserInfoDTO(advertisement.getCreatorUser());
+        this.expired = advertisement.isExpired();
         if (needPrimaryImage) {
             this.primaryImage = advertisement.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).findAny().map(AdvertisementImageDTO::new).orElseThrow(BusinessException::new);
         }

@@ -34,6 +34,7 @@ public interface LostFoundRepository extends JpaRepository<LostFoundEntity, Long
             Integer ageFrom, Integer ageUntil, String breed, City city
     ) {
         GenericSpecification<LostFoundEntity> specification = new GenericSpecification<LostFoundEntity>()
+                .add("expired", false, SearchOperation.EQUAL)
                 .add("type", type, SearchOperation.EQUAL)
                 .add("petType", petType, SearchOperation.EQUAL)
                 .add("color", color, SearchOperation.EQUAL)
