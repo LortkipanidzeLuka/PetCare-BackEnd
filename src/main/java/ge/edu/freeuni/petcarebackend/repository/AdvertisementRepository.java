@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,9 @@ import java.util.stream.Stream;
 
 public interface AdvertisementRepository extends JpaRepository<AdvertisementEntity, Long>, JpaSpecificationExecutor<AdvertisementEntity> {
 
-    List<AdvertisementEntity> findByCreatorUser(UserEntity user);
+    List<AdvertisementEntity> findByCreateDateBeforeAndExpired(LocalDate createDate, boolean expired);
 
     Map<String, String> ADVERTISEMENT_ORDER_BY_MAP = new HashMap<>(); // TODO: sortBy?
-
 
     default SearchResultDTO<AdvertisementDTO> search(
             int page, int size, String orderBy, boolean asc,
