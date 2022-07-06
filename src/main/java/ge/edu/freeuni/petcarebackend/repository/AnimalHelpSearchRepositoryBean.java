@@ -36,6 +36,7 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
                 enumEq(qAnimalHelpEntity.petType, petType),
                 enumEq(qAnimalHelpEntity.color, color),
                 enumEq(qAnimalHelpEntity.sex, sex),
+                boolEq(qAnimalHelpEntity.expired, false),
                 ageFrom == null ? True() : shortMoreOrEq(qAnimalHelpEntity.ageFrom, ageFrom.shortValue()),
                 ageUntil == null ? True() : shortLessOrEq(qAnimalHelpEntity.ageUntil, ageUntil.shortValue()),
                 stringLike(qAnimalHelpEntity.breed, breed),

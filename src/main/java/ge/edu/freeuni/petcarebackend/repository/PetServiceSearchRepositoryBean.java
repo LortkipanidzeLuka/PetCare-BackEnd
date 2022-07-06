@@ -33,6 +33,7 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
                                                  PetServiceType petServiceType, String breed, City city,
                                                  BigDecimal longitude, BigDecimal latitude) {
         BooleanExpression where = where(enumEq(qPetServiceEntity.petServiceType, petServiceType),
+                boolEq(qPetServiceEntity.expired, false),
                 enumEq(qPetServiceEntity.city, city),
                 or(stringLike(qPetServiceEntity.header, search),
                         stringLike(qPetServiceEntity.description, search)));

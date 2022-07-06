@@ -33,6 +33,7 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
                                                DonationAdvertisementType donationAdvertisementType, City city,
                                                BigDecimal longitude, BigDecimal latitude) {
         BooleanExpression where = where(enumEq(qDonationEntity.donationAdvertisementType, donationAdvertisementType),
+                boolEq(qDonationEntity.expired, false),
                 enumEq(qDonationEntity.city, city),
                 or(stringLike(qDonationEntity.header, search),
                         stringLike(qDonationEntity.description, search)));

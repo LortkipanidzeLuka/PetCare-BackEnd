@@ -32,6 +32,7 @@ public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRep
     ) {
 
         BooleanExpression where = where(enumEq(qAdvertisementEntity.advertisementType, type),
+                boolEq(qAdvertisementEntity.expired, false),
                 longEq(qAdvertisementEntity.creatorUser.id, creatorUser.getId()),
                 or(stringLike(qAdvertisementEntity.header, search),
                         stringLike(qAdvertisementEntity.description, search)));
