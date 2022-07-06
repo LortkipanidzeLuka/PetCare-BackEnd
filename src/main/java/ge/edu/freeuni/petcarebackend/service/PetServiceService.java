@@ -89,7 +89,7 @@ public class PetServiceService {
         }
         existing.getImages().forEach(i -> i.setAdvertisement(null));
         existing.getImages().clear();
-        existing.setImages(petServiceEntity.getImages()); // todo: image.setAdvertisement(existing)
+        existing.setImages(petServiceEntity.getImages());
         petServiceRepository.save(existing);
     }
 

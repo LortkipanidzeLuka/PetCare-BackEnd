@@ -66,6 +66,8 @@ public class AdvertisementEntity {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<AdvertisementImageEntity> images = new ArrayList<>();
 
+    private boolean expired;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -10,5 +10,5 @@ import java.util.List;
 public interface AdvertisementRepository extends
         JpaRepository<AdvertisementEntity, Long>, JpaSpecificationExecutor<AdvertisementEntity> {
 
-    List<AdvertisementEntity> findByCreatorUser(UserEntity user);
+    List<AdvertisementEntity> findByCreateDateBeforeAndExpired(LocalDate createDate, boolean expired);
 }
