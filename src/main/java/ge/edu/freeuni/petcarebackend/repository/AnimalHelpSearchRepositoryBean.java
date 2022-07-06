@@ -25,8 +25,11 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
 
     private final QAnimalHelpEntity qAnimalHelpEntity = QAnimalHelpEntity.animalHelpEntity;
 
-    @Autowired
-    private JPAQueryFactory qf;
+    private final JPAQueryFactory qf;
+
+    public AnimalHelpSearchRepositoryBean(JPAQueryFactory qf) {
+        this.qf = qf;
+    }
 
     @Override
     public SearchResultDTO<AnimalHelpDTO> search(int page, int size, boolean asc, String search,
@@ -37,16 +40,19 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
                 enumEq(qAnimalHelpEntity.petType, petType),
                 enumEq(qAnimalHelpEntity.color, color),
                 enumEq(qAnimalHelpEntity.sex, sex),
-                shortMoreOrEq(qAnimalHelpEntity.ageFrom, ageFrom.shortValue()),
-                shortLessOrEq(qAnimalHelpEntity.ageUntil, ageUntil.shortValue()),
+                ageFrom == null ? True() :shortMoreOrEq(qAnimalHelpEntity.ageFrom, ageFrom.shortValue()),
+                ageUntil == null ? True() :shortLessOrEq(qAnimalHelpEntity.ageUntil, ageUntil.shortValue()),
                 stringLike(qAnimalHelpEntity.breed, breed),
                 or(stringLike(qAnimalHelpEntity.header, search),
                         stringLike(qAnimalHelpEntity.description, search)));
 
+        long offset = (long) size * (page - 1);
+
         List<AnimalHelpEntity> animalHelpEntityList = qf.select(qAnimalHelpEntity)
+                .from(qAnimalHelpEntity)
                 .where(where)
                 .limit(size)
-                .offset(page)
+                .offset(offset)
                 .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc() ,
                       asc? qAnimalHelpEntity.createDate.asc() : qAnimalHelpEntity.createDate.desc())
                 .fetch();

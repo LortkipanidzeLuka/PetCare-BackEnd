@@ -3,14 +3,10 @@ package ge.edu.freeuni.petcarebackend.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.PetServiceDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.repository.entity.QDonationEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.QPetServiceEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -25,8 +21,11 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
 
     private final QPetServiceEntity qPetServiceEntity = QPetServiceEntity.petServiceEntity;
 
-    @Autowired
-    private JPAQueryFactory qf;
+    private final JPAQueryFactory qf;
+
+    public PetServiceSearchRepositoryBean(JPAQueryFactory qf) {
+        this.qf = qf;
+    }
 
     @Override
     public SearchResultDTO<PetServiceDTO> search(int page, int size, boolean asc, String search,
@@ -37,10 +36,13 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
                 or(stringLike(qPetServiceEntity.header, search),
                         stringLike(qPetServiceEntity.description, search)));
 
+        long offset = (long) size * (page - 1);
+
         List<PetServiceEntity> petServiceEntityList = qf.select(qPetServiceEntity)
+                .from(qPetServiceEntity)
                 .where(where)
                 .limit(size)
-                .offset(page)
+                .offset(offset)
                 .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc() ,
                         asc? qPetServiceEntity.createDate.asc() : qPetServiceEntity.createDate.desc())
                 .fetch();

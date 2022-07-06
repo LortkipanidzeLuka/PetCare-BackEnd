@@ -3,12 +3,10 @@ package ge.edu.freeuni.petcarebackend.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.repository.entity.QDonationEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -23,8 +21,11 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
 
     private final QDonationEntity qDonationEntity = QDonationEntity.donationEntity;
 
-    @Autowired
-    private JPAQueryFactory qf;
+    private final JPAQueryFactory qf;
+
+    public DonationSearchRepositoryBean(JPAQueryFactory qf) {
+        this.qf = qf;
+    }
 
     @Override
     public SearchResultDTO<DonationDTO> search(int page, int size, boolean asc, String search,
@@ -35,10 +36,13 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
                 or(stringLike(qDonationEntity.header, search),
                         stringLike(qDonationEntity.description, search)));
 
+        long offset = (long) size * (page - 1);
+
         List<DonationEntity> donationEntityList = qf.select(qDonationEntity)
+                .from(qDonationEntity)
                 .where(where)
                 .limit(size)
-                .offset(page)
+                .offset(offset)
                 .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc() ,
                         asc? qDonationEntity.createDate.asc() : qDonationEntity.createDate.desc())
                 .fetch();
