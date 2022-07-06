@@ -1,13 +1,13 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.AnimalHelpRepository;
+import ge.edu.freeuni.petcarebackend.repository.AnimalHelpSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
@@ -15,6 +15,7 @@ import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,15 +32,19 @@ public class AnimalHelpService {
 
     private final AdvertisementMapper advertisementMapper;
 
-    public AnimalHelpService(AnimalHelpRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementMapper advertisementMapper) {
+    private final AnimalHelpSearchRepository animalHelpSearchRepository;
+
+    public AnimalHelpService(AnimalHelpRepository repository, AdvertisementImageRepository imageRepository, SecurityService securityService, AdvertisementMapper advertisementMapper, AnimalHelpSearchRepository animalHelpSearchRepository) {
         this.repository = repository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
         this.advertisementMapper = advertisementMapper;
+        this.animalHelpSearchRepository = animalHelpSearchRepository;
     }
 
-    public LostFoundDTO lookupAdvertisement(Long id) {
-        return repository.findById(id).map(ad -> new LostFoundDTO(ad, false)).orElseThrow(BusinessException::new);
+
+    public AnimalHelpDTO lookupAdvertisement(Long id) {
+        return repository.findById(id).map(ad -> new AnimalHelpDTO(ad, false)).orElseThrow(BusinessException::new);
     }
 
     public AnimalHelpEntity lookup(Long id) {
@@ -51,15 +56,17 @@ public class AnimalHelpService {
         return imageRepository.findByAdvertisement(animalHelpEntity).stream().map(AdvertisementImageDTO::new).collect(Collectors.toList());
     }
 
-    public SearchResultDTO<AdvertisementDTO> search(
-            AnimalHelpType type, int page, int size, String orderBy, boolean asc, String search, // header or description
+    public SearchResultDTO<AnimalHelpDTO> search(
+            AnimalHelpType type, int page, int size, boolean asc, String search, // header or description
             PetType petType, Color color, Sex sex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
+            Integer ageFrom, Integer ageUntil, String breed, City city,
+            BigDecimal longitude, BigDecimal latitude
     ) {
-        return repository.search(
-                page, size, orderBy, asc, search,
+        return animalHelpSearchRepository.search(
+                page, size, asc, search,
                 type, petType, color, sex,
-                ageFrom, ageUntil, breed, city
+                ageFrom, ageUntil, breed, city,
+                longitude, latitude
         );
     }
 
@@ -75,29 +82,29 @@ public class AnimalHelpService {
         return repository.save(animalHelpEntity).getId();
     }
 
-    public void updateAdvertisement(Long id, LostFoundDTO lostFoundDTO) {
+    public void updateAdvertisement(Long id, AnimalHelpDTO animalHelpDTO) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         AnimalHelpEntity animalHelpEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(BusinessException::new);
 
-        animalHelpEntity.setAgeFrom(lostFoundDTO.getAgeFrom());
-        animalHelpEntity.setAgeUntil(lostFoundDTO.getAgeUntil());
-        animalHelpEntity.setCity(lostFoundDTO.getCity());
-        animalHelpEntity.setDescription(lostFoundDTO.getDescription());
-        animalHelpEntity.setBreed(lostFoundDTO.getBreed());
-        animalHelpEntity.setColor(lostFoundDTO.getColor());
-        animalHelpEntity.setSex(lostFoundDTO.getSex());
-        animalHelpEntity.setPetType(lostFoundDTO.getPetType());
-        animalHelpEntity.setHeader(lostFoundDTO.getHeader());
-        animalHelpEntity.setLatitude(lostFoundDTO.getLatitude());
-        animalHelpEntity.setLongitude(lostFoundDTO.getLongitude());
-        animalHelpEntity.setTags(lostFoundDTO.getTags());
+        animalHelpEntity.setAgeFrom(animalHelpDTO.getAgeFrom());
+        animalHelpEntity.setAgeUntil(animalHelpDTO.getAgeUntil());
+        animalHelpEntity.setCity(animalHelpDTO.getCity());
+        animalHelpEntity.setDescription(animalHelpDTO.getDescription());
+        animalHelpEntity.setBreed(animalHelpDTO.getBreed());
+        animalHelpEntity.setColor(animalHelpDTO.getColor());
+        animalHelpEntity.setSex(animalHelpDTO.getSex());
+        animalHelpEntity.setPetType(animalHelpDTO.getPetType());
+        animalHelpEntity.setHeader(animalHelpDTO.getHeader());
+        animalHelpEntity.setLatitude(animalHelpDTO.getLatitude());
+        animalHelpEntity.setLongitude(animalHelpDTO.getLongitude());
+        animalHelpEntity.setTags(animalHelpDTO.getTags());
 
-        if (lostFoundDTO.getImages().stream().filter(AdvertisementImageDTO::getIsPrimary).count() != 1) {
+        if (animalHelpDTO.getImages().stream().filter(AdvertisementImageDTO::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
         animalHelpEntity.getImages().forEach(i -> i.setAdvertisement(null));
         animalHelpEntity.getImages().clear();
-        animalHelpEntity.setImages(lostFoundDTO.getImages().stream().map(advertisementMapper::advertisementImageEntity).collect(Collectors.toList()));
+        animalHelpEntity.setImages(animalHelpDTO.getImages().stream().map(advertisementMapper::advertisementImageEntity).collect(Collectors.toList()));
 
         repository.save(animalHelpEntity);
     }

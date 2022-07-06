@@ -1,6 +1,8 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
+import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +26,10 @@ public class DonationDTO extends AdvertisementDTO {
     @NotNull
     @Enumerated(EnumType.STRING)
     private DonationAdvertisementType donationAdvertisementType;
+
+    public DonationDTO(DonationEntity donationEntity, boolean needPrimaryImage) {
+        super(donationEntity, needPrimaryImage);
+        this.applicablePetList = donationEntity.getApplicablePetList();
+        this.donationAdvertisementType = donationEntity.getDonationAdvertisementType();
+    }
 }

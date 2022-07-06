@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LostFoundDTO extends AdvertisementDTO {
+public class AnimalHelpDTO extends AdvertisementDTO {
 
     @NotNull
     private PetType petType;
@@ -39,7 +39,7 @@ public class LostFoundDTO extends AdvertisementDTO {
 
     private String breed;
 
-    public LostFoundDTO(AnimalHelpEntity lostFound, boolean needPrimaryImage) {
+    public AnimalHelpDTO(AnimalHelpEntity lostFound, boolean needPrimaryImage) {
         super(lostFound, needPrimaryImage);
         this.petType = lostFound.getPetType();
         this.color = lostFound.getColor();

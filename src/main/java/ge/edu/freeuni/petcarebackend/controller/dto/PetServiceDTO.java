@@ -1,6 +1,7 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,11 @@ public class PetServiceDTO extends AdvertisementDTO {
     @NotNull
     @Enumerated(EnumType.STRING)
     private PetServiceType petServiceType;
+
+    public PetServiceDTO(PetServiceEntity petServiceEntity, boolean needPrimaryImage) {
+        super(petServiceEntity, needPrimaryImage);
+        this.applicablePetList = petServiceEntity.getApplicablePetList();
+        this.petServiceType = petServiceEntity.getPetServiceType();
+    }
 }
 

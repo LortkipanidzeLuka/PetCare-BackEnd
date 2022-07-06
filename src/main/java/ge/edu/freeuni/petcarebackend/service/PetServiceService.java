@@ -1,10 +1,11 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.PetServiceDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.PetServiceRepository;
+import ge.edu.freeuni.petcarebackend.repository.PetServiceSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
@@ -12,6 +13,7 @@ import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,11 +27,15 @@ public class PetServiceService {
 
     private final SecurityService securityService;
 
-    public PetServiceService(PetServiceRepository petServiceRepository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
+    private final PetServiceSearchRepository petServiceSearchRepository;
+
+    public PetServiceService(PetServiceRepository petServiceRepository, AdvertisementImageRepository imageRepository, SecurityService securityService, PetServiceSearchRepository petServiceSearchRepository) {
         this.petServiceRepository = petServiceRepository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
+        this.petServiceSearchRepository = petServiceSearchRepository;
     }
+
 
     public PetServiceEntity getPetServiceById(long id) throws BusinessException {
         return petServiceRepository.findById(id).orElseThrow(this::getPetServiceDoesNotExistEx);
@@ -40,13 +46,15 @@ public class PetServiceService {
         return imageRepository.findByAdvertisement(petServiceEntity);
     }
 
-    public SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search,
-            PetServiceType petServiceType, String breed, City city
+    public SearchResultDTO<PetServiceDTO> search(
+            int page, int size, boolean asc, String search,
+            PetServiceType petServiceType, String breed, City city,
+            BigDecimal longitude, BigDecimal latitude
     ) {
-        return petServiceRepository.search(
-                page, size, orderBy, asc, search,
-                petServiceType, breed, city
+        return petServiceSearchRepository.search(
+                page, size, asc, search,
+                petServiceType, breed, city,
+                longitude, latitude
         );
     }
 

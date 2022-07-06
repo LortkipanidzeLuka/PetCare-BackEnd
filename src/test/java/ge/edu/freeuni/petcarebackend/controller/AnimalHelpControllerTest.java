@@ -3,7 +3,7 @@ package ge.edu.freeuni.petcarebackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ge.edu.freeuni.petcarebackend.TestUtils;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AnimalHelpRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
@@ -84,7 +84,7 @@ class AnimalHelpControllerTest {
     @Test
     @WithMockUser
     public void givenValidLostAdvertisement_whenCreate_thenSuccess() throws Exception {
-        LostFoundDTO lostFound = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpDTO lostFound = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
@@ -97,7 +97,7 @@ class AnimalHelpControllerTest {
     @Test
     @WithMockUser
     public void givenInvalidLostAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
-        LostFoundDTO lostFound = createDummyLostFoundAdvertisementDTO(AnimalHelpType.FOUND);
+        AnimalHelpDTO lostFound = createDummyLostFoundAdvertisementDTO(AnimalHelpType.FOUND);
         lostFound.setImages(Collections.emptyList());
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
@@ -115,13 +115,13 @@ class AnimalHelpControllerTest {
     public void givenInvalidAdvertisementIdAndUser_whenUpdate_thenBusinessException() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
         AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
         mockMvc.perform(MockMvcRequestBuilders.put(ANIMAL_HELP_ENDPOINT + animalHelpEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(animalHelpDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException));
     }
@@ -131,12 +131,12 @@ class AnimalHelpControllerTest {
     public void givenValidData_whenUpdate_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
         AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
         mockCurrentUserLookup(animalHelpEntity.getCreatorUser());
 
         mockMvc.perform(MockMvcRequestBuilders.put(ANIMAL_HELP_ENDPOINT + animalHelpEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(animalHelpDTO)))
                 .andExpect(status().isOk());
     }
 
@@ -145,13 +145,13 @@ class AnimalHelpControllerTest {
     public void givenInvalidAdvertisementIdAndUser_whenDelete_thenDoNothing() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
         AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
         mockMvc.perform(MockMvcRequestBuilders.delete(ANIMAL_HELP_ENDPOINT + animalHelpEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(animalHelpDTO)))
                 .andExpect(status().isOk());
         assertTrue(repository.existsById(animalHelpEntity.getId()));
     }
@@ -161,12 +161,12 @@ class AnimalHelpControllerTest {
     public void givenValidData_whenDelete_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
         AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        LostFoundDTO lostFoundDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
         mockCurrentUserLookup(animalHelpEntity.getCreatorUser());
 
         mockMvc.perform(MockMvcRequestBuilders.delete(ANIMAL_HELP_ENDPOINT + animalHelpEntity.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFoundDTO)))
+                        .content(objectMapper.writeValueAsBytes(animalHelpDTO)))
                 .andExpect(status().isOk());
         assertFalse(repository.existsById(animalHelpEntity.getId()));
     }
@@ -175,8 +175,8 @@ class AnimalHelpControllerTest {
         Mockito.doReturn(user).when(securityService).lookupCurrentUser();
     }
 
-    private LostFoundDTO createDummyLostFoundAdvertisementDTO(AnimalHelpType type) {
-        return LostFoundDTO.builder()
+    private AnimalHelpDTO createDummyLostFoundAdvertisementDTO(AnimalHelpType type) {
+        return AnimalHelpDTO.builder()
                 .header("test")
                 .city(City.RUSTAVI)
                 .description("test")

@@ -1,13 +1,13 @@
 package ge.edu.freeuni.petcarebackend.controller.mapper;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpEntity;
 import org.mapstruct.Mapper;
 
 @Mapper
 public interface LostFoundMapper {
 
-    AnimalHelpEntity lostFoundEntity(LostFoundDTO lostFoundDTO);
+    AnimalHelpEntity lostFoundEntity(AnimalHelpDTO animalHelpDTO);
 
-    LostFoundDTO lostFoundDTO(AnimalHelpEntity animalHelpEntity);
+    AnimalHelpDTO lostFoundDTO(AnimalHelpEntity animalHelpEntity);
 }

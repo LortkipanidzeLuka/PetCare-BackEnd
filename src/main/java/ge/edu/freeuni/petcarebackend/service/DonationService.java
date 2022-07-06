@@ -1,10 +1,11 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.DonationRepository;
+import ge.edu.freeuni.petcarebackend.repository.DonationSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
@@ -12,6 +13,7 @@ import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,11 +27,15 @@ public class DonationService {
 
     private final SecurityService securityService;
 
-    public DonationService(DonationRepository donationRepository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
+    private final DonationSearchRepository donationSearchRepository;
+
+    public DonationService(DonationRepository donationRepository, AdvertisementImageRepository imageRepository, SecurityService securityService, DonationSearchRepository donationSearchRepository) {
         this.donationRepository = donationRepository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
+        this.donationSearchRepository = donationSearchRepository;
     }
+
 
     public DonationEntity getDonationById(long id) throws BusinessException {
         return donationRepository.findById(id).orElseThrow(this::getDonationDoesNotExistEx);
@@ -52,13 +58,14 @@ public class DonationService {
         return donationRepository.save(donationEntity).getId();
     }
 
-    public SearchResultDTO<AdvertisementDTO> search(int page, int size, String orderBy, boolean asc,
-                                                    String search, DonationAdvertisementType donationAdvertisementType,
-                                                    City city) {
+    public SearchResultDTO<DonationDTO> search(int page, int size, boolean asc,
+                                               String search, DonationAdvertisementType donationAdvertisementType,
+                                               City city, BigDecimal longitude, BigDecimal latitude) {
 
-        return donationRepository.search(
-                page, size, orderBy, asc, search,
-                donationAdvertisementType, city
+        return donationSearchRepository.search(
+                page, size, asc, search,
+                donationAdvertisementType, city,
+                longitude, latitude
         );
     }
 

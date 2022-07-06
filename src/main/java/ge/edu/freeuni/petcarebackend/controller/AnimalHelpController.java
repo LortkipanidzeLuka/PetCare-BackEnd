@@ -2,12 +2,14 @@ package ge.edu.freeuni.petcarebackend.controller;
 
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
-import ge.edu.freeuni.petcarebackend.controller.dto.LostFoundDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.LostFoundMapper;
+import ge.edu.freeuni.petcarebackend.repository.AnimalHelpSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.AnimalHelpService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.beans.BeanInfo;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -36,7 +40,7 @@ public class AnimalHelpController {
     }
 
     @GetMapping("{id}")
-    public LostFoundDTO getById(@PathVariable Long id) {
+    public AnimalHelpDTO getById(@PathVariable Long id) {
         return service.lookupAdvertisement(id);
     }
 
@@ -46,10 +50,9 @@ public class AnimalHelpController {
     }
 
     @GetMapping("/search/{type}")
-    public SearchResultDTO<AdvertisementDTO> search(
+    public SearchResultDTO<AnimalHelpDTO> search(
             @PathVariable AnimalHelpType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
-            @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "petType") Optional<PetType> petType,
@@ -57,20 +60,23 @@ public class AnimalHelpController {
             @RequestParam(name = "sex") Optional<Sex> sex,
             @RequestParam(name = "ageFrom") Optional<Integer> ageFrom, @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
             @RequestParam(name = "breed") Optional<String> breed,
-            @RequestParam(name = "city") Optional<City> city
+            @RequestParam(name = "city") Optional<City> city,
+            @RequestParam(name = "longitude") Optional<BigDecimal> longitude,
+            @RequestParam(name = "latitude") Optional<BigDecimal> latitude
     ) {
         return service.search(
-                type, page, size, orderBy.orElse(null), ascending, search.orElse(""),
+                type, page, size, ascending, search.orElse(""),
                 petType.orElse(null), color.orElse(null), sex.orElse(null),
-                ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null)
+                ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null),
+                longitude.orElse(null), latitude.orElse(null)
         );
     }
 
     @PostMapping
     public ResponseEntity createAnimalHelpAdvertisement(
-            HttpServletRequest request, @Valid @RequestBody LostFoundDTO lostFoundDTO
+            HttpServletRequest request, @Valid @RequestBody AnimalHelpDTO animalHelpDTO
     ) {
-        AnimalHelpEntity entity = mapper.lostFoundEntity(lostFoundDTO);
+        AnimalHelpEntity entity = mapper.lostFoundEntity(animalHelpDTO);
         Long createdId = service.createAdvertisement(entity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))
@@ -83,9 +89,9 @@ public class AnimalHelpController {
     @PutMapping("{id}")
     public void updateAnimalHelpAdvertisement(
             @PathVariable Long id,
-            @Valid @RequestBody LostFoundDTO lostFoundDTO
+            @Valid @RequestBody AnimalHelpDTO animalHelpDTO
     ) {
-        service.updateAdvertisement(id, lostFoundDTO);
+        service.updateAdvertisement(id, animalHelpDTO);
     }
 
     @DeleteMapping("{id}")

@@ -5,7 +5,7 @@ import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
+import ge.edu.freeuni.petcarebackend.repository.AdvertisementSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
@@ -22,26 +22,27 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final AdvertisementRepository advertisementRepository;
+    private final AdvertisementSearchRepository advertisementSearchRepository;
 
     private final SecurityService securityService;
 
     private final OtpService otpService;
 
-    public UserService(UserRepository userRepository, AdvertisementRepository advertisementRepository, SecurityService securityService, OtpService otpService) {
+    public UserService(UserRepository userRepository, AdvertisementSearchRepository advertisementSearchRepository, SecurityService securityService, OtpService otpService) {
         this.userRepository = userRepository;
-        this.advertisementRepository = advertisementRepository;
+        this.advertisementSearchRepository = advertisementSearchRepository;
         this.securityService = securityService;
         this.otpService = otpService;
     }
 
+
     public SearchResultDTO<AdvertisementDTO> getMyAdvertisements(
             int page, int size,
-            String orderBy, boolean ascending,
+            boolean ascending,
             String search, AdvertisementType type
     ) {
         UserEntity user = securityService.lookupCurrentUser();
-        return advertisementRepository.search(page, size, orderBy, ascending, search, type, user);
+        return advertisementSearchRepository.search(page, size, ascending, search, type, user);
     }
 
     public UserDTO getUserInfo() {
