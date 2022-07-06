@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
 public interface AdvertisementRepository extends
-        JpaRepository<AdvertisementEntity, Long>, JpaSpecificationExecutor<AdvertisementEntity>{
+        JpaRepository<AdvertisementEntity, Long>, JpaSpecificationExecutor<AdvertisementEntity> {
 
     List<AdvertisementEntity> findByCreatorUser(UserEntity user);
 }

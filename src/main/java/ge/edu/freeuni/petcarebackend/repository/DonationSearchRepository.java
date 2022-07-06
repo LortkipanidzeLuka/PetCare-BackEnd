@@ -1,11 +1,9 @@
 package ge.edu.freeuni.petcarebackend.repository;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
-import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
 
 import java.math.BigDecimal;
 

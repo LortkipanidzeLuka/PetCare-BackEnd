@@ -1,6 +1,5 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
-import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;

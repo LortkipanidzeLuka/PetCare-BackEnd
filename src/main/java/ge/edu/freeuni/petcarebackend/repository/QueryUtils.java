@@ -1,32 +1,10 @@
 package ge.edu.freeuni.petcarebackend.repository;
 
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.BooleanPath;
-import com.querydsl.core.types.dsl.ComparableExpressionBase;
-import com.querydsl.core.types.dsl.DatePath;
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.EntityPathBase;
-import com.querydsl.core.types.dsl.EnumPath;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.MapPath;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.*;
 import org.apache.commons.lang3.StringUtils;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public final class QueryUtils {
@@ -117,6 +95,7 @@ public final class QueryUtils {
     public static BooleanExpression localDateEq(DatePath<LocalDate> dateField, LocalDate date) {
         return date == null ? True() : dateField.eq(date);
     }
+
     public static <T extends Enum<T>> BooleanExpression enumEq(EnumPath<T> enumField, T enumValue) {
         return enumValue == null ? True() : enumField.eq(enumValue);
     }

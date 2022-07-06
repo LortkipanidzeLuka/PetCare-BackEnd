@@ -1,8 +1,8 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
 import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpType;
+import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;

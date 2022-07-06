@@ -1,15 +1,12 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.LostFoundMapper;
-import ge.edu.freeuni.petcarebackend.repository.AnimalHelpSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.AnimalHelpService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.beans.BeanInfo;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;

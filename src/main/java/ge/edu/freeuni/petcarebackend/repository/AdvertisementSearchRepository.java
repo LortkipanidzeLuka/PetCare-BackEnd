@@ -1,6 +1,5 @@
 package ge.edu.freeuni.petcarebackend.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;

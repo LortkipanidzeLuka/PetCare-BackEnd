@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static ge.edu.freeuni.petcarebackend.repository.QueryUtils.*;
 
 @Repository
-public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRepository{
+public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRepository {
 
     private final JPAQueryFactory qf;
 

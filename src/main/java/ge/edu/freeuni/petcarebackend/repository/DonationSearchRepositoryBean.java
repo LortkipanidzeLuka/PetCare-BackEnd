@@ -5,7 +5,9 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
-import ge.edu.freeuni.petcarebackend.repository.entity.*;
+import ge.edu.freeuni.petcarebackend.repository.entity.City;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
+import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
 import ge.edu.freeuni.petcarebackend.repository.entity.QDonationEntity;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ge.edu.freeuni.petcarebackend.repository.QueryUtils.*;
-import static ge.edu.freeuni.petcarebackend.repository.QueryUtils.stringLike;
 
 @Repository
 public class DonationSearchRepositoryBean implements DonationSearchRepository {
@@ -29,8 +30,8 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
 
     @Override
     public SearchResultDTO<DonationDTO> search(int page, int size, boolean asc, String search,
-                                                  DonationAdvertisementType donationAdvertisementType, City city,
-                                                  BigDecimal longitude, BigDecimal latitude) {
+                                               DonationAdvertisementType donationAdvertisementType, City city,
+                                               BigDecimal longitude, BigDecimal latitude) {
         BooleanExpression where = where(enumEq(qDonationEntity.donationAdvertisementType, donationAdvertisementType),
                 enumEq(qDonationEntity.city, city),
                 or(stringLike(qDonationEntity.header, search),
@@ -43,18 +44,18 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
                 .where(where)
                 .limit(size)
                 .offset(offset)
-                .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc() ,
-                        asc? qDonationEntity.createDate.asc() : qDonationEntity.createDate.desc())
+                .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc(),
+                        asc ? qDonationEntity.createDate.asc() : qDonationEntity.createDate.desc())
                 .fetch();
 
-        return new SearchResultDTO<>( donationEntityList.stream()
+        return new SearchResultDTO<>(donationEntityList.stream()
                 .map(ad -> new DonationDTO(ad, true))
                 .collect(Collectors.toList()),
                 donationEntityList.size());
     }
 
     private NumberExpression<BigDecimal> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
-        if(longitude == null || latitude == null) {
+        if (longitude == null || latitude == null) {
             return qDonationEntity.latitude.multiply(0);
         }
         NumberExpression<BigDecimal> latitudeDifference = qDonationEntity.latitude.subtract(latitude);

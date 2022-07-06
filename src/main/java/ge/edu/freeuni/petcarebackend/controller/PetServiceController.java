@@ -1,6 +1,5 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.PetServiceDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
@@ -61,9 +60,8 @@ public class PetServiceController {
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<City> city,
-            @RequestParam(name = "longitude")Optional<BigDecimal> longitude,
-            @RequestParam(name = "latitude") Optional<BigDecimal> latitude)
-    {
+            @RequestParam(name = "longitude") Optional<BigDecimal> longitude,
+            @RequestParam(name = "latitude") Optional<BigDecimal> latitude) {
         return petServiceService.search(
                 page, size, ascending, search.orElse(""),
                 type, breed.orElse(null), city.orElse(null),

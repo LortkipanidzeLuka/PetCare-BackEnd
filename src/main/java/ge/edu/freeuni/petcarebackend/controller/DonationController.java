@@ -1,6 +1,5 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -59,7 +57,7 @@ public class DonationController {
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "city") Optional<City> city,
-            @RequestParam(name = "longitude")Optional<BigDecimal> longitude,
+            @RequestParam(name = "longitude") Optional<BigDecimal> longitude,
             @RequestParam(name = "latitude") Optional<BigDecimal> latitude) {
         return donationService.search(
                 page, size, ascending, search.orElse(""),
