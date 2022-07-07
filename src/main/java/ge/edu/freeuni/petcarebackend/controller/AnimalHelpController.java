@@ -3,7 +3,7 @@ package ge.edu.freeuni.petcarebackend.controller;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AnimalHelpDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
-import ge.edu.freeuni.petcarebackend.controller.mapper.LostFoundMapper;
+import ge.edu.freeuni.petcarebackend.controller.mapper.AnimalHelpMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.AnimalHelpService;
@@ -27,9 +27,9 @@ public class AnimalHelpController {
 
     private final AnimalHelpService service;
 
-    private final LostFoundMapper mapper;
+    private final AnimalHelpMapper mapper;
 
-    public AnimalHelpController(AnimalHelpService service, LostFoundMapper mapper) {
+    public AnimalHelpController(AnimalHelpService service, AnimalHelpMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -71,7 +71,7 @@ public class AnimalHelpController {
     public ResponseEntity createAnimalHelpAdvertisement(
             HttpServletRequest request, @Valid @RequestBody AnimalHelpDTO animalHelpDTO
     ) {
-        AnimalHelpEntity entity = mapper.lostFoundEntity(animalHelpDTO);
+        AnimalHelpEntity entity = mapper.animalHelpEntity(animalHelpDTO);
         Long createdId = service.createAdvertisement(entity);
         try {
             return ResponseEntity.created(new URI(request.getRequestURL().append("/").append(createdId.toString()).toString()))

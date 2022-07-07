@@ -5,9 +5,10 @@ import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpEntity;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface LostFoundMapper {
+public interface AnimalHelpMapper {
 
-    AnimalHelpEntity lostFoundEntity(AnimalHelpDTO animalHelpDTO);
+    AnimalHelpEntity animalHelpEntity(AnimalHelpDTO animalHelpDTO);
 
-    AnimalHelpDTO lostFoundDTO(AnimalHelpEntity animalHelpEntity);
+    AnimalHelpDTO animalHelpDTO(AnimalHelpEntity animalHelpEntity);
+
 }

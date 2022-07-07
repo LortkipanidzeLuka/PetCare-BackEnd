@@ -189,7 +189,7 @@ class AnimalHelpControllerTest {
 
     private AnimalHelpEntity createAndPersistDummyLostFoundAdvertisement(AnimalHelpType type, UserEntity creatorUser) {
         AnimalHelpEntity animalHelpEntity = new AnimalHelpEntity();
-        animalHelpEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
+        animalHelpEntity.setAdvertisementType(AdvertisementType.ANIMAL_HELP);
         animalHelpEntity.setHeader("test header");
         animalHelpEntity.setCity(City.TBILISI);
         animalHelpEntity.setDescription("test description");

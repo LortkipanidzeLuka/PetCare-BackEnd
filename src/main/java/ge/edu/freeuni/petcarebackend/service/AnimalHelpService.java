@@ -74,7 +74,7 @@ public class AnimalHelpService {
         UserEntity currentUser = securityService.lookupCurrentUser();
         animalHelpEntity.setCreateDate(LocalDate.now());
         animalHelpEntity.setCreatorUser(currentUser);
-        animalHelpEntity.setAdvertisementType(AdvertisementType.LOST_FOUND);
+        animalHelpEntity.setAdvertisementType(AdvertisementType.ANIMAL_HELP);
         if (animalHelpEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw new BusinessException("need_one_primary_image");
         }
