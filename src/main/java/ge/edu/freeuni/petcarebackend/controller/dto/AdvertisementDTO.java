@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -55,7 +56,7 @@ public class AdvertisementDTO {
 
     private boolean expired;
 
-    private List<AdvertisementImageDTO> images = new ArrayList<>();
+    private List<@Valid AdvertisementImageDTO> images = new ArrayList<>();
 
     public AdvertisementDTO(AdvertisementEntity advertisement, boolean needPrimaryImage) {
         this.id = advertisement.getId();
