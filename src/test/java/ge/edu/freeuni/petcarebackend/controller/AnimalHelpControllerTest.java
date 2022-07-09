@@ -10,6 +10,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ class AnimalHelpControllerTest {
                         .content(objectMapper.writeValueAsBytes(lostFound)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("need_one_primary_image", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test

@@ -8,6 +8,7 @@ import ge.edu.freeuni.petcarebackend.security.controller.dto.OtpDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.AuthUserDetails;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
+import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,7 +46,7 @@ public class SecurityService {
         try {
             repository.saveAndFlush(user);
         } catch (DataIntegrityViolationException ex) {
-            throw new BusinessException("email_used");
+            throw new BusinessException(ExceptionKeys.EMAIL_USED);
         }
     }
 
@@ -54,7 +55,7 @@ public class SecurityService {
         if (user.isPresent() && validateUserPassword(user.get(), loginDTO.password())) {
             return generateTokens(user.get());
         }
-        throw new BusinessException("invalid_credentials");
+        throw new BusinessException(ExceptionKeys.INVALID_CREDENTIALS);
     }
 
     public AuthorizationTokensDTO authenticateWithRefreshToken(String refreshToken) {
@@ -65,7 +66,7 @@ public class SecurityService {
                 return tokenService.generateTokens(user.get());
             }
         }
-        throw new BusinessException("invalid_refresh_token");
+        throw new BusinessException(ExceptionKeys.INVALID_REFRESH_TOKEN);
     }
 
     public void verifyOtpCode(OtpDTO otp) {
@@ -76,7 +77,7 @@ public class SecurityService {
             repository.save(user);
             return;
         }
-        throw new BusinessException("invalid_otp");
+        throw new BusinessException(ExceptionKeys.INVALID_OTP);
     }
 
     public void resendCode() {
@@ -89,7 +90,7 @@ public class SecurityService {
 
     public String encodePassword(String password) {
         if (new Zxcvbn().measure(password).getScore() < ZXCVBN_PASSWORD_STRENGTH) {
-            throw new BusinessException("weak_password");
+            throw new BusinessException(ExceptionKeys.WEAK_PASSWORD);
         }
         return new BCryptPasswordEncoder().encode(password);
     }

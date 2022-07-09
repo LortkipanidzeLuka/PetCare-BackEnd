@@ -12,6 +12,7 @@ import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,10 +63,10 @@ public class UserService {
     public void changeUserEmailSendCode(String email) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         if (email.equals(currentUser.getUsername())) {
-            throw new BusinessException("invalid_email");
+            throw new BusinessException(ExceptionKeys.INVALID_EMAIL);
         }
         if (userRepository.existsByUsername(email)) {
-            throw new BusinessException("email_used");
+            throw new BusinessException(ExceptionKeys.EMAIL_USED);
         }
         otpService.createAndSendEmailChangeOtp(currentUser, email);
     }
@@ -77,11 +78,11 @@ public class UserService {
             try {
                 userRepository.saveAndFlush(currentUser);
             } catch (DataIntegrityViolationException ex) {
-                throw new BusinessException("email_used");
+                throw new BusinessException(ExceptionKeys.EMAIL_USED);
             }
             return securityService.generateTokens(currentUser);
         } else {
-            throw new BusinessException("invalid_otp");
+            throw new BusinessException(ExceptionKeys.INVALID_OTP);
         }
     }
 
@@ -91,8 +92,7 @@ public class UserService {
             user.setPassword(securityService.encodePassword(passwordChangeDTO.getNewPassword()));
             userRepository.save(user);
         } else {
-            throw new BusinessException("invalid_old_password");
+            throw new BusinessException(ExceptionKeys.INVALID_OLD_PASSWORD);
         }
     }
-
 }

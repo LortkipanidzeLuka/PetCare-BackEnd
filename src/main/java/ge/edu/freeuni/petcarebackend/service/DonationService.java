@@ -52,7 +52,7 @@ public class DonationService {
         donationEntity.setCreatorUser(currentUser);
         donationEntity.setAdvertisementType(AdvertisementType.DONATION);
         if (donationEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         donationEntity.getImages().forEach(i -> i.setAdvertisement(donationEntity));
         return donationRepository.save(donationEntity).getId();
@@ -83,7 +83,7 @@ public class DonationService {
         existing.setDonationAdvertisementType(donationEntity.getDonationAdvertisementType());
 
         if (donationEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         existing.getImages().forEach(i -> i.setAdvertisement(null));
         existing.getImages().clear();
@@ -99,5 +99,9 @@ public class DonationService {
 
     private BusinessException getDonationDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.DONATION_DOES_NOT_EXIST);
+    }
+
+    public BusinessException getNeedOnePrimaryImage() {
+        return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
     }
 }

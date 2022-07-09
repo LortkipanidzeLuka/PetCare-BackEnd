@@ -12,6 +12,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,11 +45,11 @@ public class AnimalHelpService {
 
 
     public AnimalHelpDTO lookupAdvertisement(Long id) {
-        return repository.findById(id).map(ad -> new AnimalHelpDTO(ad, false)).orElseThrow(BusinessException::new);
+        return repository.findById(id).map(ad -> new AnimalHelpDTO(ad, false)).orElseThrow(this::getAdvertisementDoesNotExistEx);
     }
 
     public AnimalHelpEntity lookup(Long id) {
-        return repository.findById(id).orElseThrow(BusinessException::new);
+        return repository.findById(id).orElseThrow(this::getAdvertisementDoesNotExistEx);
     }
 
     public List<AdvertisementImageDTO> lookupImages(Long id) {
@@ -76,7 +77,7 @@ public class AnimalHelpService {
         animalHelpEntity.setCreatorUser(currentUser);
         animalHelpEntity.setAdvertisementType(AdvertisementType.ANIMAL_HELP);
         if (animalHelpEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         animalHelpEntity.getImages().forEach(i -> i.setAdvertisement(animalHelpEntity));
         return repository.save(animalHelpEntity).getId();
@@ -100,7 +101,7 @@ public class AnimalHelpService {
         animalHelpEntity.setTags(animalHelpDTO.getTags());
 
         if (animalHelpDTO.getImages().stream().filter(AdvertisementImageDTO::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         animalHelpEntity.getImages().forEach(i -> i.setAdvertisement(null));
         animalHelpEntity.getImages().clear();
@@ -112,5 +113,13 @@ public class AnimalHelpService {
     public void deleteAdvertisement(Long id) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         repository.deleteByCreatorUserAndId(currentUser, id);
+    }
+
+    public BusinessException getAdvertisementDoesNotExistEx() {
+        return new BusinessException(ExceptionKeys.ANIMAL_HELP_DOES_NOT_EXIST);
+    }
+
+    public BusinessException getNeedOnePrimaryImage() {
+        return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
     }
 }

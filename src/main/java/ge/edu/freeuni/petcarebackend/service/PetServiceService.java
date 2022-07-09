@@ -63,7 +63,7 @@ public class PetServiceService {
         petServiceEntity.setCreateDate(LocalDate.now());
         petServiceEntity.setCreatorUser(currentUser);
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         petServiceEntity.setAdvertisementType(AdvertisementType.PET_SERVICE);
         petServiceEntity.getImages().forEach(i -> i.setAdvertisement(petServiceEntity));
@@ -85,7 +85,7 @@ public class PetServiceService {
 
 
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         existing.getImages().forEach(i -> i.setAdvertisement(null));
         existing.getImages().clear();
@@ -101,5 +101,9 @@ public class PetServiceService {
 
     private BusinessException getPetServiceDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST);
+    }
+
+    public BusinessException getNeedOnePrimaryImage() {
+        return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
     }
 }
