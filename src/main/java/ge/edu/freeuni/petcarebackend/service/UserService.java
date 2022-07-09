@@ -5,13 +5,14 @@ import ge.edu.freeuni.petcarebackend.controller.dto.PasswordChangeDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.UserDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
-import ge.edu.freeuni.petcarebackend.repository.AdvertisementRepository;
+import ge.edu.freeuni.petcarebackend.repository.AdvertisementSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.AdvertisementType;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,26 +23,27 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final AdvertisementRepository advertisementRepository;
+    private final AdvertisementSearchRepository advertisementSearchRepository;
 
     private final SecurityService securityService;
 
     private final OtpService otpService;
 
-    public UserService(UserRepository userRepository, AdvertisementRepository advertisementRepository, SecurityService securityService, OtpService otpService) {
+    public UserService(UserRepository userRepository, AdvertisementSearchRepository advertisementSearchRepository, SecurityService securityService, OtpService otpService) {
         this.userRepository = userRepository;
-        this.advertisementRepository = advertisementRepository;
+        this.advertisementSearchRepository = advertisementSearchRepository;
         this.securityService = securityService;
         this.otpService = otpService;
     }
 
+
     public SearchResultDTO<AdvertisementDTO> getMyAdvertisements(
             int page, int size,
-            String orderBy, boolean ascending,
+            boolean ascending,
             String search, AdvertisementType type
     ) {
         UserEntity user = securityService.lookupCurrentUser();
-        return advertisementRepository.search(page, size, orderBy, ascending, search, type, user);
+        return advertisementSearchRepository.search(page, size, ascending, search, type, user);
     }
 
     public UserDTO getUserInfo() {
@@ -61,10 +63,10 @@ public class UserService {
     public void changeUserEmailSendCode(String email) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         if (email.equals(currentUser.getUsername())) {
-            throw new BusinessException("invalid_email");
+            throw new BusinessException(ExceptionKeys.INVALID_EMAIL);
         }
         if (userRepository.existsByUsername(email)) {
-            throw new BusinessException("email_used");
+            throw new BusinessException(ExceptionKeys.EMAIL_USED);
         }
         otpService.createAndSendEmailChangeOtp(currentUser, email);
     }
@@ -76,11 +78,11 @@ public class UserService {
             try {
                 userRepository.saveAndFlush(currentUser);
             } catch (DataIntegrityViolationException ex) {
-                throw new BusinessException("email_used");
+                throw new BusinessException(ExceptionKeys.EMAIL_USED);
             }
             return securityService.generateTokens(currentUser);
         } else {
-            throw new BusinessException("invalid_otp");
+            throw new BusinessException(ExceptionKeys.INVALID_OTP);
         }
     }
 
@@ -90,8 +92,7 @@ public class UserService {
             user.setPassword(securityService.encodePassword(passwordChangeDTO.getNewPassword()));
             userRepository.save(user);
         } else {
-            throw new BusinessException("invalid_old_password");
+            throw new BusinessException(ExceptionKeys.INVALID_OLD_PASSWORD);
         }
     }
-
 }

@@ -9,5 +9,4 @@ import java.util.List;
 public interface AdvertisementImageRepository extends JpaRepository<AdvertisementImageEntity, Long> {
 
     List<AdvertisementImageEntity> findByAdvertisement(AdvertisementEntity advertisement);
-
 }

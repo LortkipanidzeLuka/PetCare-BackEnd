@@ -7,9 +7,9 @@ import ge.edu.freeuni.petcarebackend.controller.dto.PetServiceDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.PetServiceRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ public class PetServiceControllerTest {
                         .content(objectMapper.writeValueAsBytes(petService)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("need_one_primary_image", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -183,8 +183,7 @@ public class PetServiceControllerTest {
                 .description("test")
                 .applicablePetList(List.of(PetType.DOG))
                 .petServiceType(type)
-                .applicableSex(Sex.MALE)
-                .images(Collections.singletonList(new AdvertisementImageDTO("image.png", "test", true)))
+                .images(Collections.singletonList(new AdvertisementImageDTO("image.png", testUtils.dummyImage, true)))
                 .build();
     }
 
@@ -195,7 +194,6 @@ public class PetServiceControllerTest {
         petServiceEntity.setCity(City.TBILISI);
         petServiceEntity.setDescription("test description");
         petServiceEntity.setPetServiceType(type);
-        petServiceEntity.setApplicableSex(Sex.MALE);
         petServiceEntity.setCreatorUser(creatorUser);
         petServiceEntity.setImages(Collections.singletonList(createAdvertisementImageEntity(petServiceEntity, true)));
         return repository.saveAndFlush(petServiceEntity);

@@ -8,6 +8,7 @@ import ge.edu.freeuni.petcarebackend.security.repository.entity.EmailChangeOtpEn
 import ge.edu.freeuni.petcarebackend.security.repository.entity.OtpEntity;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.service.MailSenderService;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +71,7 @@ public class OtpService {
     private void preventOtpAttack(UserEntity user) {
         long countUnusedOtpsWithin5Minutes = repository.countByUserAndUsedAndCreateTsIsAfter(user, false, LocalDateTime.now().minusMinutes(5));
         if (countUnusedOtpsWithin5Minutes >= OTP_RETRIES_LIMIT) {
-            throw new BusinessException("otp_retries_exceeded");
+            throw new BusinessException(ExceptionKeys.OTP_RETRIES_EXCEEDED);
         }
     }
 

@@ -14,6 +14,7 @@ import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.service.MailSenderService;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +117,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_email", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_EMAIL, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -134,7 +135,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("email_used", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.EMAIL_USED, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -171,7 +172,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("otp_retries_exceeded", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.OTP_RETRIES_EXCEEDED, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -187,7 +188,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeOtpDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_otp", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_OTP, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -203,7 +204,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeOtpDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_otp", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_OTP, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -220,7 +221,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeOtpDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_otp", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_OTP, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -238,7 +239,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(emailChangeOtpDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("email_used", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.EMAIL_USED, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser
@@ -274,7 +275,7 @@ public class UserControllerTests {
                         .content(objectMapper.writeValueAsBytes(passwordChangeDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_old_password", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_OLD_PASSWORD, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser

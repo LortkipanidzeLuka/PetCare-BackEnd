@@ -1,8 +1,8 @@
 package ge.edu.freeuni.petcarebackend.controller.dto;
 
+import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpEntity;
+import ge.edu.freeuni.petcarebackend.repository.entity.AnimalHelpType;
 import ge.edu.freeuni.petcarebackend.repository.entity.Color;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundEntity;
-import ge.edu.freeuni.petcarebackend.repository.entity.LostFoundType;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LostFoundDTO extends AdvertisementDTO {
+public class AnimalHelpDTO extends AdvertisementDTO {
 
     @NotNull
     private PetType petType;
@@ -32,14 +32,14 @@ public class LostFoundDTO extends AdvertisementDTO {
     private Short ageUntil;
 
     @NotNull
-    private LostFoundType type;
+    private AnimalHelpType type;
 
     @NotNull
     private Sex sex;
 
     private String breed;
 
-    public LostFoundDTO(LostFoundEntity lostFound, boolean needPrimaryImage) {
+    public AnimalHelpDTO(AnimalHelpEntity lostFound, boolean needPrimaryImage) {
         super(lostFound, needPrimaryImage);
         this.petType = lostFound.getPetType();
         this.color = lostFound.getColor();

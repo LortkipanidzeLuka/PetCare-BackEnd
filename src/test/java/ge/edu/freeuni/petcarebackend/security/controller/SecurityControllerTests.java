@@ -1,6 +1,6 @@
 package ge.edu.freeuni.petcarebackend.security.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+ import com.fasterxml.jackson.databind.ObjectMapper;
 import ge.edu.freeuni.petcarebackend.TestUtils;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
@@ -11,6 +11,7 @@ import ge.edu.freeuni.petcarebackend.security.service.JwtTokenService;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.service.MailSenderService;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class SecurityControllerTests {
                         .content(objectMapper.writeValueAsBytes(loginDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_credentials", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_CREDENTIALS, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -94,7 +95,7 @@ public class SecurityControllerTests {
                         .content(objectMapper.writeValueAsBytes(loginDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_credentials", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_CREDENTIALS, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -121,7 +122,7 @@ public class SecurityControllerTests {
                         .content(objectMapper.writeValueAsBytes(authorizationTokens)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_refresh_token", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_REFRESH_TOKEN, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -134,7 +135,7 @@ public class SecurityControllerTests {
                         .content(objectMapper.writeValueAsBytes(new AuthorizationTokensDTO(authorizationTokens.accessToken(), authorizationTokens.accessToken()))))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_refresh_token", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_REFRESH_TOKEN, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -163,7 +164,7 @@ public class SecurityControllerTests {
                         .content(objectMapper.writeValueAsBytes(otpDTO)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
-                .andExpect(result -> assertEquals("invalid_otp", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(ExceptionKeys.INVALID_OTP, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @WithMockUser

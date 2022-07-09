@@ -19,7 +19,7 @@ public class ExpiredAdvertisementJob {
         this.repository = repository;
     }
 
-    @Scheduled(cron = "0 0 * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void softDeleteExpiredAdvertisements() {
         LocalDate lastValidDate = LocalDate.now().minusDays(30);
         List<AdvertisementEntity> expiredAdvertisements = repository.findByCreateDateBeforeAndExpired(lastValidDate, false);

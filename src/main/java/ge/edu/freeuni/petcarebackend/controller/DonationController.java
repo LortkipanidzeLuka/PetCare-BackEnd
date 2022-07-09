@@ -1,16 +1,13 @@
 package ge.edu.freeuni.petcarebackend.controller;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementImageDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.controller.mapper.AdvertisementMapper;
 import ge.edu.freeuni.petcarebackend.controller.mapper.DonationMapper;
 import ge.edu.freeuni.petcarebackend.repository.entity.City;
-import ge.edu.freeuni.petcarebackend.repository.entity.Color;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationAdvertisementType;
 import ge.edu.freeuni.petcarebackend.repository.entity.DonationEntity;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.service.DonationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -54,21 +51,18 @@ public class DonationController {
     }
 
     @GetMapping("/search/{type}")
-    public SearchResultDTO<AdvertisementDTO> search(
+    public SearchResultDTO<DonationDTO> search(
             @PathVariable DonationAdvertisementType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
-            @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
-            @RequestParam(name = "color") Optional<Color> color,
-            @RequestParam(name = "applicableSex") Optional<Sex> applicableSex,
-            @RequestParam(name = "ageFrom") Optional<Integer> ageFrom,
-            @RequestParam(name = "ageUntil") Optional<Integer> ageUntil,
-            @RequestParam(name = "city") Optional<City> city) {
+            @RequestParam(name = "city") Optional<City> city,
+            @RequestParam(name = "longitude") Optional<BigDecimal> longitude,
+            @RequestParam(name = "latitude") Optional<BigDecimal> latitude) {
         return donationService.search(
-                page, size, orderBy.orElse(null), ascending, search.orElse(""),
-                type, color.orElse(null), applicableSex.orElse(null),
-                ageFrom.orElse(null), ageUntil.orElse(null), city.orElse(null)
+                page, size, ascending, search.orElse(""),
+                type, city.orElse(null),
+                longitude.orElse(null), latitude.orElse(null)
         );
     }
 

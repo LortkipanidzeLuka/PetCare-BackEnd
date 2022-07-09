@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Optional;
 
@@ -25,13 +24,12 @@ public class UserController {
     @GetMapping("advertisements")
     public SearchResultDTO<AdvertisementDTO> getMyAdvertisements(
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
-            @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
             @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "type") AdvertisementType type
     ) {
         return service.getMyAdvertisements(
-                page, size, orderBy.orElse(null), ascending, search.orElse(""), type
+                page, size, ascending, search.orElse(""), type
         );
     }
 

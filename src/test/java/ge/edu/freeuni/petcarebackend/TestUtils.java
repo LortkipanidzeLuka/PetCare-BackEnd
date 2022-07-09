@@ -3,15 +3,20 @@ package ge.edu.freeuni.petcarebackend;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
 
 
 @Service
 public class TestUtils {
 
-
     private final UserRepository userRepository;
+
+    @Value("${dummy.image}")
+    public String dummyImage;
 
     public TestUtils(UserRepository userRepository) {
         this.userRepository = userRepository;

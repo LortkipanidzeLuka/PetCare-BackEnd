@@ -1,18 +1,19 @@
 package ge.edu.freeuni.petcarebackend.service;
 
-import ge.edu.freeuni.petcarebackend.controller.dto.AdvertisementDTO;
+import ge.edu.freeuni.petcarebackend.controller.dto.PetServiceDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.repository.AdvertisementImageRepository;
 import ge.edu.freeuni.petcarebackend.repository.PetServiceRepository;
+import ge.edu.freeuni.petcarebackend.repository.PetServiceSearchRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,11 +27,15 @@ public class PetServiceService {
 
     private final SecurityService securityService;
 
-    public PetServiceService(PetServiceRepository petServiceRepository, AdvertisementImageRepository imageRepository, SecurityService securityService) {
+    private final PetServiceSearchRepository petServiceSearchRepository;
+
+    public PetServiceService(PetServiceRepository petServiceRepository, AdvertisementImageRepository imageRepository, SecurityService securityService, PetServiceSearchRepository petServiceSearchRepository) {
         this.petServiceRepository = petServiceRepository;
         this.imageRepository = imageRepository;
         this.securityService = securityService;
+        this.petServiceSearchRepository = petServiceSearchRepository;
     }
+
 
     public PetServiceEntity getPetServiceById(long id) throws BusinessException {
         return petServiceRepository.findById(id).orElseThrow(this::getPetServiceDoesNotExistEx);
@@ -41,15 +46,15 @@ public class PetServiceService {
         return imageRepository.findByAdvertisement(petServiceEntity);
     }
 
-    public SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, String orderBy, boolean asc, String search,
-            PetServiceType petServiceType, Color color, Sex applicableSex,
-            Integer ageFrom, Integer ageUntil, String breed, City city
+    public SearchResultDTO<PetServiceDTO> search(
+            int page, int size, boolean asc, String search,
+            PetServiceType petServiceType, String breed, City city,
+            BigDecimal longitude, BigDecimal latitude
     ) {
-        return petServiceRepository.search(
-                page, size, orderBy, asc, search,
-                petServiceType, color, applicableSex,
-                ageFrom, ageUntil, breed, city
+        return petServiceSearchRepository.search(
+                page, size, asc, search,
+                petServiceType, breed, city,
+                longitude, latitude
         );
     }
 
@@ -58,7 +63,7 @@ public class PetServiceService {
         petServiceEntity.setCreateDate(LocalDate.now());
         petServiceEntity.setCreatorUser(currentUser);
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         petServiceEntity.setAdvertisementType(AdvertisementType.PET_SERVICE);
         petServiceEntity.getImages().forEach(i -> i.setAdvertisement(petServiceEntity));
@@ -70,20 +75,17 @@ public class PetServiceService {
         PetServiceEntity existing = petServiceRepository.findByCreatorUserAndId(currentUser, petServiceEntity.getId())
                 .orElseThrow(BusinessException::new);
 
-        existing.setAgeFrom(petServiceEntity.getAgeFrom());
-        existing.setAgeUntil(petServiceEntity.getAgeUntil());
         existing.setCity(petServiceEntity.getCity());
         existing.setDescription(petServiceEntity.getDescription());
         existing.setHeader(petServiceEntity.getHeader());
         existing.setLatitude(petServiceEntity.getLatitude());
         existing.setLongitude(petServiceEntity.getLongitude());
         existing.setTags(petServiceEntity.getTags());
-        existing.setApplicableSex(petServiceEntity.getApplicableSex());
         existing.setPetServiceType(petServiceEntity.getPetServiceType());
 
 
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
-            throw new BusinessException("need_one_primary_image");
+            throw getNeedOnePrimaryImage();
         }
         existing.getImages().forEach(i -> i.setAdvertisement(null));
         existing.getImages().clear();
@@ -99,5 +101,9 @@ public class PetServiceService {
 
     private BusinessException getPetServiceDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST);
+    }
+
+    public BusinessException getNeedOnePrimaryImage() {
+        return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
     }
 }

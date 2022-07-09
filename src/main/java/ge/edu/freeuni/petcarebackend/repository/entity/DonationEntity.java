@@ -1,6 +1,5 @@
 package ge.edu.freeuni.petcarebackend.repository.entity;
 
-import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -32,24 +29,4 @@ public class DonationEntity extends AdvertisementEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "donation_advertisement_type")
     private DonationAdvertisementType donationAdvertisementType;
-
-    @Enumerated(EnumType.STRING)
-    private Color color;
-
-    @Min(0)
-    @Column(name = "age_from")
-    private Short ageFrom;
-
-    @Min(30)
-    @Column(name = "age_until")
-    private Short ageUntil;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "applicable_sex")
-    private Sex applicableSex;
-
-    @AssertTrue
-    private boolean isValidAge() {
-        return ageFrom == null || ageUntil == null || ageUntil >= ageFrom;
-    }
 }
