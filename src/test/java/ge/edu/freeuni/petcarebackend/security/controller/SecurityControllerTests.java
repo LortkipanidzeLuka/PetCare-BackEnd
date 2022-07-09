@@ -1,6 +1,6 @@
 package ge.edu.freeuni.petcarebackend.security.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+ import com.fasterxml.jackson.databind.ObjectMapper;
 import ge.edu.freeuni.petcarebackend.TestUtils;
 import ge.edu.freeuni.petcarebackend.exception.BusinessException;
 import ge.edu.freeuni.petcarebackend.security.controller.dto.AuthorizationTokensDTO;
@@ -11,7 +11,7 @@ import ge.edu.freeuni.petcarebackend.security.service.JwtTokenService;
 import ge.edu.freeuni.petcarebackend.security.service.OtpService;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
 import ge.edu.freeuni.petcarebackend.service.MailSenderService;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

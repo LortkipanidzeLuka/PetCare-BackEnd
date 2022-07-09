@@ -36,7 +36,7 @@ public class AdvertisementImageDTO {
         if (content == null) {
             return false;
         }
-        Matcher matcher = Pattern.compile("^data:image/(jpg|jpeg|png);base64,").matcher(content);
+        Matcher matcher = Pattern.compile("^data:image/(jpg|jpeg|png);base64,.*").matcher(content);
         if (!matcher.matches()) {
             return false;
         }

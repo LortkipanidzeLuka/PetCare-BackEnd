@@ -10,7 +10,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +70,9 @@ class AnimalHelpControllerTest {
     public void givenFilledTable_whenSearch_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
 
-        createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.FOUND, creatorUser);
-        createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
+        createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.LOST, creatorUser);
+        createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.FOUND, creatorUser);
+        createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.LOST, creatorUser);
 
         mockMvc.perform(MockMvcRequestBuilders.get(ANIMAL_HELP_SEARCH_ENDPOINT)
                         .param("page", "1")
@@ -85,27 +85,27 @@ class AnimalHelpControllerTest {
     @Test
     @WithMockUser
     public void givenValidLostAdvertisement_whenCreate_thenSuccess() throws Exception {
-        AnimalHelpDTO lostFound = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpDTO animalHelp = createDummyAnimalHelpAdvertisementDTO(AnimalHelpType.LOST);
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post(ANIMAL_HELP_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFound)))
+                        .content(objectMapper.writeValueAsBytes(animalHelp)))
                 .andExpect(status().isCreated());
     }
 
     @Test
     @WithMockUser
-    public void givenInvalidLostAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
-        AnimalHelpDTO lostFound = createDummyLostFoundAdvertisementDTO(AnimalHelpType.FOUND);
-        lostFound.setImages(Collections.emptyList());
+    public void givenInvalidFoundAdvertisementImages_whenCreate_thenBusinessException() throws Exception {
+        AnimalHelpDTO found = createDummyAnimalHelpAdvertisementDTO(AnimalHelpType.FOUND);
+        found.setImages(Collections.emptyList());
         UserEntity user = testUtils.createAndPersistDummyUser();
         mockCurrentUserLookup(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post(ANIMAL_HELP_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(lostFound)))
+                        .content(objectMapper.writeValueAsBytes(found)))
                 .andExpect(status().isConflict())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessException))
                 .andExpect(result -> assertEquals(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE, Objects.requireNonNull(result.getResolvedException()).getMessage()));
@@ -115,8 +115,8 @@ class AnimalHelpControllerTest {
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenUpdate_thenBusinessException() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
-        AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpEntity animalHelpEntity = createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.LOST, creatorUser);
+        AnimalHelpDTO animalHelpDTO = createDummyAnimalHelpAdvertisementDTO(AnimalHelpType.LOST);
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
@@ -131,8 +131,8 @@ class AnimalHelpControllerTest {
     @WithMockUser
     public void givenValidData_whenUpdate_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpEntity animalHelpEntity = createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.LOST, creatorUser);
+        AnimalHelpDTO animalHelpDTO = createDummyAnimalHelpAdvertisementDTO(AnimalHelpType.LOST);
         mockCurrentUserLookup(animalHelpEntity.getCreatorUser());
 
         mockMvc.perform(MockMvcRequestBuilders.put(ANIMAL_HELP_ENDPOINT + animalHelpEntity.getId())
@@ -145,8 +145,8 @@ class AnimalHelpControllerTest {
     @WithMockUser
     public void givenInvalidAdvertisementIdAndUser_whenDelete_thenDoNothing() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser("test1@gmail.com");
-        AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpEntity animalHelpEntity = createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.LOST, creatorUser);
+        AnimalHelpDTO animalHelpDTO = createDummyAnimalHelpAdvertisementDTO(AnimalHelpType.LOST);
         UserEntity invalidUser = testUtils.createAndPersistDummyUser("test2@gmail.com");
         mockCurrentUserLookup(invalidUser);
 
@@ -161,8 +161,8 @@ class AnimalHelpControllerTest {
     @WithMockUser
     public void givenValidData_whenDelete_thenSuccess() throws Exception {
         UserEntity creatorUser = testUtils.createAndPersistDummyUser();
-        AnimalHelpEntity animalHelpEntity = createAndPersistDummyLostFoundAdvertisement(AnimalHelpType.LOST, creatorUser);
-        AnimalHelpDTO animalHelpDTO = createDummyLostFoundAdvertisementDTO(AnimalHelpType.LOST);
+        AnimalHelpEntity animalHelpEntity = createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType.LOST, creatorUser);
+        AnimalHelpDTO animalHelpDTO = createDummyAnimalHelpAdvertisementDTO(AnimalHelpType.LOST);
         mockCurrentUserLookup(animalHelpEntity.getCreatorUser());
 
         mockMvc.perform(MockMvcRequestBuilders.delete(ANIMAL_HELP_ENDPOINT + animalHelpEntity.getId())
@@ -176,7 +176,7 @@ class AnimalHelpControllerTest {
         Mockito.doReturn(user).when(securityService).lookupCurrentUser();
     }
 
-    private AnimalHelpDTO createDummyLostFoundAdvertisementDTO(AnimalHelpType type) {
+    private AnimalHelpDTO createDummyAnimalHelpAdvertisementDTO(AnimalHelpType type) {
         return AnimalHelpDTO.builder()
                 .header("test")
                 .city(City.RUSTAVI)
@@ -184,11 +184,15 @@ class AnimalHelpControllerTest {
                 .petType(PetType.DOG)
                 .type(type)
                 .sex(Sex.MALE)
-                .images(Collections.singletonList(new AdvertisementImageDTO("image.png", "test", true)))
+                .images(Collections.singletonList(new AdvertisementImageDTO(
+                        "image.png",
+                        testUtils.dummyImage,
+                        true
+                )))
                 .build();
     }
 
-    private AnimalHelpEntity createAndPersistDummyLostFoundAdvertisement(AnimalHelpType type, UserEntity creatorUser) {
+    private AnimalHelpEntity createAndPersistDummyAnimalHelpAdvertisement(AnimalHelpType type, UserEntity creatorUser) {
         AnimalHelpEntity animalHelpEntity = new AnimalHelpEntity();
         animalHelpEntity.setAdvertisementType(AdvertisementType.ANIMAL_HELP);
         animalHelpEntity.setHeader("test header");

@@ -12,7 +12,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.Sex;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

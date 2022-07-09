@@ -8,7 +8,7 @@ import ge.edu.freeuni.petcarebackend.security.controller.dto.OtpDTO;
 import ge.edu.freeuni.petcarebackend.security.repository.UserRepository;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.AuthUserDetails;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;

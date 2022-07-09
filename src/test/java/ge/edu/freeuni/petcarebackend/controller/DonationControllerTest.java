@@ -9,7 +9,7 @@ import ge.edu.freeuni.petcarebackend.repository.DonationRepository;
 import ge.edu.freeuni.petcarebackend.repository.entity.*;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.security.service.SecurityService;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,7 +185,7 @@ public class DonationControllerTest {
                 .description("test")
                 .applicablePetList(List.of(PetType.DOG))
                 .donationAdvertisementType(type)
-                .images(Collections.singletonList(new AdvertisementImageDTO("image.png", "test", true)))
+                .images(Collections.singletonList(new AdvertisementImageDTO("image.png", testUtils.dummyImage, true)))
                 .build();
     }
 

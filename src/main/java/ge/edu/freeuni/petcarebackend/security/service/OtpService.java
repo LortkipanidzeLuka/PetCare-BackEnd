@@ -8,7 +8,7 @@ import ge.edu.freeuni.petcarebackend.security.repository.entity.EmailChangeOtpEn
 import ge.edu.freeuni.petcarebackend.security.repository.entity.OtpEntity;
 import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 import ge.edu.freeuni.petcarebackend.service.MailSenderService;
-import ge.edu.freeuni.petcarebackend.utils.ExceptionKeys;
+import ge.edu.freeuni.petcarebackend.exception.ExceptionKeys;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
