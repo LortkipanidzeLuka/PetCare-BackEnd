@@ -39,11 +39,10 @@ public class UserService {
 
     public SearchResultDTO<AdvertisementDTO> getMyAdvertisements(
             int page, int size,
-            boolean ascending,
             String search, AdvertisementType type
     ) {
         UserEntity user = securityService.lookupCurrentUser();
-        return advertisementSearchRepository.search(page, size, ascending, search, type, user);
+        return advertisementSearchRepository.search(page, size,  search, type, user);
     }
 
     public UserDTO getUserInfo() {

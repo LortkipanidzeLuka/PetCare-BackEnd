@@ -58,13 +58,13 @@ public class AnimalHelpService {
     }
 
     public SearchResultDTO<AnimalHelpDTO> search(
-            AnimalHelpType type, int page, int size, boolean asc, String search, // header or description
+            AnimalHelpType type, int page, int size,  String search, // header or description
             PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city,
             BigDecimal longitude, BigDecimal latitude
     ) {
         return animalHelpSearchRepository.search(
-                page, size, asc, search,
+                page, size,  search,
                 type, petType, color, sex,
                 ageFrom, ageUntil, breed, city,
                 longitude, latitude

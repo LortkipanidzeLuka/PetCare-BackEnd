@@ -29,7 +29,7 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
     }
 
     @Override
-    public SearchResultDTO<PetServiceDTO> search(int page, int size, boolean asc, String search,
+    public SearchResultDTO<PetServiceDTO> search(int page, int size, String search,
                                                  PetServiceType petServiceType, String breed, City city,
                                                  BigDecimal longitude, BigDecimal latitude) {
         BooleanExpression where = where(enumEq(qPetServiceEntity.petServiceType, petServiceType),
@@ -45,8 +45,7 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
                 .where(where)
                 .limit(size)
                 .offset(offset)
-                .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc(),
-                        asc ? qPetServiceEntity.createDate.asc() : qPetServiceEntity.createDate.desc())
+                .orderBy(getOrderByLocation(longitude, latitude).asc(), qPetServiceEntity.createDate.desc())
                 .fetch();
 
         List<Long> pageSize = qf.select(qPetServiceEntity.count())

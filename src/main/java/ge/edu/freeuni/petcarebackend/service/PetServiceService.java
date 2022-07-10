@@ -47,12 +47,12 @@ public class PetServiceService {
     }
 
     public SearchResultDTO<PetServiceDTO> search(
-            int page, int size, boolean asc, String search,
+            int page, int size, String search,
             PetServiceType petServiceType, String breed, City city,
             BigDecimal longitude, BigDecimal latitude
     ) {
         return petServiceSearchRepository.search(
-                page, size, asc, search,
+                page, size, search,
                 petServiceType, breed, city,
                 longitude, latitude
         );

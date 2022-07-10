@@ -54,13 +54,12 @@ public class DonationController {
     public SearchResultDTO<DonationDTO> search(
             @PathVariable DonationAdvertisementType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
-            @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "city") Optional<City> city,
             @RequestParam(name = "longitude") Optional<BigDecimal> longitude,
             @RequestParam(name = "latitude") Optional<BigDecimal> latitude) {
         return donationService.search(
-                page, size, ascending, search.orElse(""),
+                page, size,  search.orElse(""),
                 type, city.orElse(null),
                 longitude.orElse(null), latitude.orElse(null)
         );

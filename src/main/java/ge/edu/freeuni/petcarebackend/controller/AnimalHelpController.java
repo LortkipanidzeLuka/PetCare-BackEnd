@@ -48,7 +48,6 @@ public class AnimalHelpController {
     public SearchResultDTO<AnimalHelpDTO> search(
             @PathVariable AnimalHelpType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
-            @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "petType") Optional<PetType> petType,
             @RequestParam(name = "color") Optional<Color> color,
@@ -60,7 +59,7 @@ public class AnimalHelpController {
             @RequestParam(name = "latitude") Optional<BigDecimal> latitude
     ) {
         return service.search(
-                type, page, size, ascending, search.orElse(""),
+                type, page, size,  search.orElse(""),
                 petType.orElse(null), color.orElse(null), sex.orElse(null),
                 ageFrom.orElse(null), ageUntil.orElse(null), breed.orElse(null), city.orElse(null),
                 longitude.orElse(null), latitude.orElse(null)

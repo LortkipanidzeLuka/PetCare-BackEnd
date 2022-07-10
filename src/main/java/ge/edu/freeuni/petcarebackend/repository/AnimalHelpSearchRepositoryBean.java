@@ -28,7 +28,7 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
     }
 
     @Override
-    public SearchResultDTO<AnimalHelpDTO> search(int page, int size, boolean asc, String search,
+    public SearchResultDTO<AnimalHelpDTO> search(int page, int size, String search,
                                                  AnimalHelpType type, PetType petType, Color color, Sex sex,
                                                  Integer ageFrom, Integer ageUntil, String breed, City city,
                                                  BigDecimal longitude, BigDecimal latitude) {
@@ -50,8 +50,7 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
                 .where(where)
                 .limit(size)
                 .offset(offset)
-                .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc(),
-                        asc ? qAnimalHelpEntity.createDate.asc() : qAnimalHelpEntity.createDate.desc())
+                .orderBy(getOrderByLocation(longitude, latitude).asc(), qAnimalHelpEntity.createDate.desc())
                 .fetch();
 
         List<Long> pageSize = qf.select(qAnimalHelpEntity.count())

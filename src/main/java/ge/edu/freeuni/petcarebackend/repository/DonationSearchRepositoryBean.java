@@ -29,7 +29,7 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
     }
 
     @Override
-    public SearchResultDTO<DonationDTO> search(int page, int size, boolean asc, String search,
+    public SearchResultDTO<DonationDTO> search(int page, int size, String search,
                                                DonationAdvertisementType donationAdvertisementType, City city,
                                                BigDecimal longitude, BigDecimal latitude) {
         BooleanExpression where = where(enumEq(qDonationEntity.donationAdvertisementType, donationAdvertisementType),
@@ -45,8 +45,7 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
                 .where(where)
                 .limit(size)
                 .offset(offset)
-                .orderBy(asc ? getOrderByLocation(longitude, latitude).asc() : getOrderByLocation(longitude, latitude).desc(),
-                        asc ? qDonationEntity.createDate.asc() : qDonationEntity.createDate.desc())
+                .orderBy(getOrderByLocation(longitude, latitude).asc(), qDonationEntity.createDate.desc())
                 .fetch();
 
         List<Long> pageSize = qf.select(qDonationEntity.count())
