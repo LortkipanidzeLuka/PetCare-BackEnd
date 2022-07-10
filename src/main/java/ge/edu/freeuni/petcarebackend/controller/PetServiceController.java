@@ -41,9 +41,9 @@ public class PetServiceController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PetServiceDTO> getDonationById(@PathVariable long id) {
+    public ResponseEntity<PetServiceEntity> getDonationById(@PathVariable long id) {
         PetServiceEntity petServiceEntity = petServiceService.getPetServiceById(id);
-        return ResponseEntity.ok(petServiceMapper.petServiceDto(petServiceEntity));
+        return ResponseEntity.ok(petServiceEntity);
     }
 
     @GetMapping("{id}/images")

@@ -40,9 +40,9 @@ public class DonationController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DonationDTO> getDonationById(@PathVariable long id) {
+    public ResponseEntity<DonationEntity> getDonationById(@PathVariable long id) {
         DonationEntity donationEntity = donationService.getDonationById(id);
-        return ResponseEntity.ok(donationMapper.donationDto(donationEntity));
+        return ResponseEntity.ok(donationEntity);
     }
 
     @GetMapping("{id}/images")
