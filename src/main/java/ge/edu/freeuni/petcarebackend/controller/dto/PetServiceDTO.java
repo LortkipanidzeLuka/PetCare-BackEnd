@@ -6,6 +6,7 @@ import ge.edu.freeuni.petcarebackend.repository.entity.PetServiceType;
 import ge.edu.freeuni.petcarebackend.repository.entity.PetType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,14 +15,12 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PetServiceDTO extends AdvertisementDTO {
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
 
     @NotNull
     private List<PetType> applicablePetList;

@@ -82,7 +82,7 @@ public class PetServiceService {
         existing.setLongitude(petServiceEntity.getLongitude());
         existing.setTags(petServiceEntity.getTags());
         existing.setPetServiceType(petServiceEntity.getPetServiceType());
-
+        existing.setApplicablePetList(petServiceEntity.getApplicablePetList());
 
         if (petServiceEntity.getImages().stream().filter(AdvertisementImageEntity::getIsPrimary).count() != 1) {
             throw getNeedOnePrimaryImage();
@@ -98,6 +98,16 @@ public class PetServiceService {
         petServiceRepository.deleteByCreatorUserAndId(currentUser, id);
     }
 
+    public void refreshAdvertisement(Long id) {
+        UserEntity currentUser = securityService.lookupCurrentUser();
+        PetServiceEntity petServiceEntity = petServiceRepository.findByCreatorUserAndId(currentUser, id).orElseThrow(this::getPetServiceDoesNotExistEx);
+        if (!petServiceEntity.isExpired()){
+            throw getAdvertisementNotExpired();
+        }
+        petServiceEntity.setExpired(false);
+        petServiceEntity.setCreateDate(LocalDate.now());
+        petServiceRepository.save(petServiceEntity);
+    }
 
     private BusinessException getPetServiceDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.PET_SERVICE_DOES_NOT_EXIST);
@@ -105,5 +115,9 @@ public class PetServiceService {
 
     public BusinessException getNeedOnePrimaryImage() {
         return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
+    }
+
+    public BusinessException getAdvertisementNotExpired(){
+        return new BusinessException(ExceptionKeys.ADVERTISEMENT_NOT_EXPIRED);
     }
 }
