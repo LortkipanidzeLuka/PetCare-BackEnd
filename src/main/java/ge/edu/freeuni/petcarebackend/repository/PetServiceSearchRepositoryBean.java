@@ -49,10 +49,15 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
                         asc ? qPetServiceEntity.createDate.asc() : qPetServiceEntity.createDate.desc())
                 .fetch();
 
+        List<Long> pageSize = qf.select(qPetServiceEntity.count())
+                .from(qPetServiceEntity)
+                .where(where)
+                .fetch();
+
         return new SearchResultDTO<>(petServiceEntityList.stream()
                 .map(ad -> new PetServiceDTO(ad, true))
                 .collect(Collectors.toList()),
-                petServiceEntityList.size());
+                pageSize.get(0));
     }
 
     private NumberExpression<BigDecimal> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {

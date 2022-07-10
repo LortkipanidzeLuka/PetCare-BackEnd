@@ -49,10 +49,15 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
                         asc ? qDonationEntity.createDate.asc() : qDonationEntity.createDate.desc())
                 .fetch();
 
+        List<Long> pageSize = qf.select(qDonationEntity.count())
+                .from(qDonationEntity)
+                .where(where)
+                .fetch();
+
         return new SearchResultDTO<>(donationEntityList.stream()
                 .map(ad -> new DonationDTO(ad, true))
                 .collect(Collectors.toList()),
-                donationEntityList.size());
+                pageSize.get(0));
     }
 
     private NumberExpression<BigDecimal> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
