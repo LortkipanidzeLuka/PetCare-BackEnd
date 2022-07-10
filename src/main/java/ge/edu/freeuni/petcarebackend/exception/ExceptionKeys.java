@@ -25,4 +25,6 @@ public class ExceptionKeys {
     public static final String INVALID_REFRESH_TOKEN = "invalid_refresh_token";
 
     public static final String OTP_RETRIES_EXCEEDED = "otp_retries_exceeded";
+
+    public static final String ADVERTISEMENT_NOT_EXPIRED = "advertisement_not_expired";
 }

@@ -115,11 +115,26 @@ public class AnimalHelpService {
         repository.deleteByCreatorUserAndId(currentUser, id);
     }
 
+    public void refreshAdvertisement(Long id) {
+        UserEntity currentUser = securityService.lookupCurrentUser();
+        AnimalHelpEntity animalHelpEntity = repository.findByCreatorUserAndId(currentUser, id).orElseThrow(this::getAdvertisementDoesNotExistEx);
+        if (!animalHelpEntity.isExpired()){
+            throw getAdvertisementNotExpired();
+        }
+        animalHelpEntity.setExpired(false);
+        animalHelpEntity.setCreateDate(LocalDate.now());
+        repository.save(animalHelpEntity);
+    }
+
     public BusinessException getAdvertisementDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.ANIMAL_HELP_DOES_NOT_EXIST);
     }
 
     public BusinessException getNeedOnePrimaryImage() {
         return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
+    }
+
+    public BusinessException getAdvertisementNotExpired(){
+        return new BusinessException(ExceptionKeys.ADVERTISEMENT_NOT_EXPIRED);
     }
 }

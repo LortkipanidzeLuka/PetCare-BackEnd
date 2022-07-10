@@ -96,4 +96,11 @@ public class DonationController {
     ) {
         donationService.deleteAdvertisement(id);
     }
+
+    @PutMapping("{id}/refresh")
+    public void refreshDonation(
+            @PathVariable Long id
+    ) {
+        donationService.refreshAdvertisement(id);
+    }
 }
