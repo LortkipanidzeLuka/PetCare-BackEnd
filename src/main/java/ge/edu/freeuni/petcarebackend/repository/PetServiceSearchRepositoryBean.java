@@ -73,10 +73,11 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
         NumberPath<BigDecimal> lng = qPetServiceEntity.longitude;
 
         return (acos(cos(radians(Expressions.constant(latitude)))
-                .multiply(cos(radians(lat))
-                        .multiply(cos(radians(lng).subtract(radians(Expressions.constant(longitude)))
+                .multiply(cos(radians(lat)))
+                        .multiply(cos(radians(lng).subtract(radians(Expressions.constant(longitude)))))
+
                                 .add(sin(radians(Expressions.constant(latitude)))
-                                        .multiply(sin(radians(lat))))))))
+                                        .multiply(sin(radians(lat)))))
                 .multiply(Expressions.constant(6371)));
     }
 }

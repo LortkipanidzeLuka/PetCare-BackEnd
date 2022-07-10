@@ -73,10 +73,10 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
         NumberPath<BigDecimal> lng = qDonationEntity.longitude;
 
         return (acos(cos(radians(Expressions.constant(latitude)))
-                .multiply(cos(radians(lat))
-                        .multiply(cos(radians(lng).subtract(radians(Expressions.constant(longitude)))
-                                .add(sin(radians(Expressions.constant(latitude)))
-                                        .multiply(sin(radians(lat))))))))
+                .multiply(cos(radians(lat)))
+                .multiply(cos(radians(lng).subtract(radians(Expressions.constant(longitude)))))
+                .add(sin(radians(Expressions.constant(latitude)))
+                        .multiply(sin(radians(lat)))))
                 .multiply(Expressions.constant(6371)));
     }
 }
