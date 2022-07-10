@@ -1,6 +1,7 @@
 package ge.edu.freeuni.petcarebackend.security;
 
 import ge.edu.freeuni.petcarebackend.security.service.JwtTokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenService jwtUtil;
 
     private final UserDetailsService userDetailsService;
+
+    @Value("${API_PREFIX}")
+    private String SERVER_PREFIX;
 
     public AuthenticationFilter(JwtTokenService jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
@@ -51,14 +55,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().equals("swagger/**") && request.getMethod().equals("GET");
+        return request.getRequestURI().equals(SERVER_PREFIX + "/swagger/**") && request.getMethod().equals("GET");
     }
 
     private boolean isVerifyRequest(HttpServletRequest request, String token) {
         return !jwtUtil.extractIsVerified(token) &&
                 (
-                        (request.getRequestURI().equals("/auth/verify") && request.getMethod().equals("POST")) ||
-                                (request.getRequestURI().equals("/auth/verify/resend") && request.getMethod().equals("POST"))
+                        (request.getRequestURI().equals("/%s/auth/verify".formatted(SERVER_PREFIX)) && request.getMethod().equals("POST")) ||
+                                (request.getRequestURI().equals("/%s/auth/verify/resend".formatted(SERVER_PREFIX)) && request.getMethod().equals("POST"))
                 );
     }
 }
