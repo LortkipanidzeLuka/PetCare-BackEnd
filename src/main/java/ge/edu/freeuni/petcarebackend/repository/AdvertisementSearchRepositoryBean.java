@@ -32,7 +32,6 @@ public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRep
     ) {
 
         BooleanExpression where = where(enumEq(qAdvertisementEntity.advertisementType, type),
-                boolEq(qAdvertisementEntity.expired, false),
                 longEq(qAdvertisementEntity.creatorUser.id, creatorUser.getId()),
                 or(stringLike(qAdvertisementEntity.header, search),
                         stringLike(qAdvertisementEntity.description, search)));
@@ -47,9 +46,14 @@ public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRep
                 .orderBy(asc ? qAdvertisementEntity.createDate.asc() : qAdvertisementEntity.createDate.desc())
                 .fetch();
 
+        List<Long> pageSize = qf.select(qAdvertisementEntity.count())
+                .from(qAdvertisementEntity)
+                .where(where)
+                .fetch();
+
         return new SearchResultDTO<>(
                 advertisementEntityList.stream().map(ad -> new AdvertisementDTO(ad, true)).collect(Collectors.toList()),
-                advertisementEntityList.size()
+                pageSize.get(0)
         );
     }
 }
