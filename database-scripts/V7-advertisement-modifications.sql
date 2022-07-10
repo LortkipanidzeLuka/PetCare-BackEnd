@@ -21,3 +21,5 @@ drop column age_until;
 alter table pet_service_advertisement
 drop column applicable_sex;
 
+
+ALTER TABLE lost_found_advertisement RENAME  TO animal_help_advertisement;

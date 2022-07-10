@@ -54,10 +54,15 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
                         asc ? qAnimalHelpEntity.createDate.asc() : qAnimalHelpEntity.createDate.desc())
                 .fetch();
 
+        List<Long> pageSize = qf.select(qAnimalHelpEntity.count())
+                .from(qAnimalHelpEntity)
+                .where(where)
+                .fetch();
+
         return new SearchResultDTO<>(animalHelpEntityList.stream()
                 .map(ad -> new AnimalHelpDTO(ad, true))
                 .collect(Collectors.toList()),
-                animalHelpEntityList.size());
+                pageSize.get(0));
     }
 
     private NumberExpression<BigDecimal> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {

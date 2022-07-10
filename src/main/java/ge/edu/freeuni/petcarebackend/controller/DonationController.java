@@ -40,9 +40,9 @@ public class DonationController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DonationDTO> getDonationById(@PathVariable long id) {
+    public ResponseEntity<DonationEntity> getDonationById(@PathVariable long id) {
         DonationEntity donationEntity = donationService.getDonationById(id);
-        return ResponseEntity.ok(donationMapper.donationDto(donationEntity));
+        return ResponseEntity.ok(donationEntity);
     }
 
     @GetMapping("{id}/images")
@@ -95,5 +95,12 @@ public class DonationController {
             @PathVariable Long id
     ) {
         donationService.deleteAdvertisement(id);
+    }
+
+    @PutMapping("{id}/refresh")
+    public void refreshDonation(
+            @PathVariable Long id
+    ) {
+        donationService.refreshAdvertisement(id);
     }
 }

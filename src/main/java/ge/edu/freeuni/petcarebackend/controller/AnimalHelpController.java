@@ -68,7 +68,7 @@ public class AnimalHelpController {
     }
 
     @PostMapping
-    public ResponseEntity createAnimalHelpAdvertisement(
+    public ResponseEntity<?> createAnimalHelpAdvertisement(
             HttpServletRequest request, @Valid @RequestBody AnimalHelpDTO animalHelpDTO
     ) {
         AnimalHelpEntity entity = mapper.animalHelpEntity(animalHelpDTO);
@@ -94,6 +94,14 @@ public class AnimalHelpController {
             @PathVariable Long id
     ) {
         service.deleteAdvertisement(id);
+    }
+
+
+    @PutMapping("{id}/refresh")
+    public void refreshDonation(
+            @PathVariable Long id
+    ) {
+        service.refreshAdvertisement(id);
     }
 
 }

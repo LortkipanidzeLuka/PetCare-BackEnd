@@ -96,6 +96,16 @@ public class DonationService {
         donationRepository.deleteByCreatorUserAndId(currentUser, id);
     }
 
+    public void refreshAdvertisement(Long id) {
+        UserEntity currentUser = securityService.lookupCurrentUser();
+        DonationEntity donationEntity = donationRepository.findByCreatorUserAndId(currentUser, id).orElseThrow(this::getDonationDoesNotExistEx);
+        if (!donationEntity.isExpired()){
+            throw getAdvertisementNotExpired();
+        }
+        donationEntity.setExpired(false);
+        donationEntity.setCreateDate(LocalDate.now());
+        donationRepository.save(donationEntity);
+    }
 
     private BusinessException getDonationDoesNotExistEx() {
         return new BusinessException(ExceptionKeys.DONATION_DOES_NOT_EXIST);
@@ -103,5 +113,9 @@ public class DonationService {
 
     public BusinessException getNeedOnePrimaryImage() {
         return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
+    }
+
+    public BusinessException getAdvertisementNotExpired(){
+        return new BusinessException(ExceptionKeys.ADVERTISEMENT_NOT_EXPIRED);
     }
 }
