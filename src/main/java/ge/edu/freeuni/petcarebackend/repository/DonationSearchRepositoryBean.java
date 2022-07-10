@@ -1,7 +1,9 @@
 package ge.edu.freeuni.petcarebackend.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ge.edu.freeuni.petcarebackend.controller.dto.DonationDTO;
 import ge.edu.freeuni.petcarebackend.controller.dto.SearchResultDTO;
@@ -15,6 +17,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.querydsl.core.types.dsl.MathExpressions.acos;
+import static com.querydsl.core.types.dsl.MathExpressions.cos;
+import static com.querydsl.core.types.dsl.MathExpressions.radians;
+import static com.querydsl.core.types.dsl.MathExpressions.sin;
 import static ge.edu.freeuni.petcarebackend.repository.QueryUtils.*;
 
 @Repository
@@ -59,14 +65,18 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
                 pageSize.get(0));
     }
 
-    private NumberExpression<BigDecimal> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
+    private NumberExpression<Double> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
         if (longitude == null || latitude == null) {
-            return qDonationEntity.latitude.multiply(0);
+            return Expressions.asNumber(0.0);
         }
-        NumberExpression<BigDecimal> latitudeDifference = qDonationEntity.latitude.subtract(latitude);
-        NumberExpression<BigDecimal> longitudeDifference = qDonationEntity.longitude.subtract(longitude);
-        NumberExpression<BigDecimal> latitudeDifferenceSquared = latitudeDifference.multiply(latitudeDifference);
-        NumberExpression<BigDecimal> longitudeDifferenceSquared = longitudeDifference.multiply(longitudeDifference);
-        return longitudeDifferenceSquared.add(latitudeDifferenceSquared);
+        NumberPath<BigDecimal> lat = qDonationEntity.latitude;
+        NumberPath<BigDecimal> lng = qDonationEntity.longitude;
+
+        return (acos(cos(radians(Expressions.constant(latitude)))
+                .multiply(cos(radians(lat))
+                        .multiply(cos(radians(lng).subtract(radians(Expressions.constant(longitude)))
+                                .add(sin(radians(Expressions.constant(latitude)))
+                                        .multiply(sin(radians(lat))))))))
+                .multiply(Expressions.constant(6371)));
     }
 }
