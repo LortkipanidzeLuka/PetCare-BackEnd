@@ -55,15 +55,13 @@ public class PetServiceController {
     public SearchResultDTO<PetServiceDTO> search(
             @PathVariable PetServiceType type,
             @RequestParam("page") @Min(1) int page, @RequestParam("size") @Min(5) int size,
-            @RequestParam(name = "orderBy") @Pattern(regexp = "^[a-zA-Z0-9]{1,50}$") Optional<String> orderBy,
-            @RequestParam(name = "asc", required = false) boolean ascending,
             @RequestParam(name = "search", required = false) @Size(min = 1, max = 50) Optional<String> search,
             @RequestParam(name = "breed") Optional<String> breed,
             @RequestParam(name = "city") Optional<City> city,
             @RequestParam(name = "longitude") Optional<BigDecimal> longitude,
             @RequestParam(name = "latitude") Optional<BigDecimal> latitude) {
         return petServiceService.search(
-                page, size, ascending, search.orElse(""),
+                page, size,  search.orElse(""),
                 type, breed.orElse(null), city.orElse(null),
                 longitude.orElse(null), latitude.orElse(null)
         );

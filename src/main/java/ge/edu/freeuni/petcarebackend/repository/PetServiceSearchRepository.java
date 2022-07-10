@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public interface PetServiceSearchRepository {
 
     SearchResultDTO<PetServiceDTO> search(
-            int page, int size, boolean asc, String search,
+            int page, int size, String search,
             PetServiceType petServiceType, String breed, City city,
             BigDecimal longitude, BigDecimal latitude);
 }

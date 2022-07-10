@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 public interface AnimalHelpSearchRepository {
     SearchResultDTO<AnimalHelpDTO> search(
-            int page, int size, boolean asc, String search,
+            int page, int size,  String search,
             AnimalHelpType type, PetType petType, Color color, Sex sex,
             Integer ageFrom, Integer ageUntil, String breed, City city,
             BigDecimal longitude, BigDecimal latitude

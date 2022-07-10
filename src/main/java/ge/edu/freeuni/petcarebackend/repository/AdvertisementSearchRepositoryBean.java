@@ -27,7 +27,7 @@ public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRep
     }
 
     public SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, boolean asc,
+            int page, int size,
             String search, AdvertisementType type, UserEntity creatorUser
     ) {
 
@@ -43,7 +43,7 @@ public class AdvertisementSearchRepositoryBean implements AdvertisementSearchRep
                 .where(where)
                 .limit(size)
                 .offset(offset)
-                .orderBy(asc ? qAdvertisementEntity.createDate.asc() : qAdvertisementEntity.createDate.desc())
+                .orderBy(qAdvertisementEntity.createDate.desc())
                 .fetch();
 
         List<Long> pageSize = qf.select(qAdvertisementEntity.count())

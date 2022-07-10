@@ -58,12 +58,12 @@ public class DonationService {
         return donationRepository.save(donationEntity).getId();
     }
 
-    public SearchResultDTO<DonationDTO> search(int page, int size, boolean asc,
+    public SearchResultDTO<DonationDTO> search(int page, int size,
                                                String search, DonationAdvertisementType donationAdvertisementType,
                                                City city, BigDecimal longitude, BigDecimal latitude) {
 
         return donationSearchRepository.search(
-                page, size, asc, search,
+                page, size, search,
                 donationAdvertisementType, city,
                 longitude, latitude
         );
@@ -99,7 +99,7 @@ public class DonationService {
     public void refreshAdvertisement(Long id) {
         UserEntity currentUser = securityService.lookupCurrentUser();
         DonationEntity donationEntity = donationRepository.findByCreatorUserAndId(currentUser, id).orElseThrow(this::getDonationDoesNotExistEx);
-        if (!donationEntity.isExpired()){
+        if (!donationEntity.isExpired()) {
             throw getAdvertisementNotExpired();
         }
         donationEntity.setExpired(false);
@@ -115,7 +115,7 @@ public class DonationService {
         return new BusinessException(ExceptionKeys.NEED_ONE_PRIMARY_IMAGE);
     }
 
-    public BusinessException getAdvertisementNotExpired(){
+    public BusinessException getAdvertisementNotExpired() {
         return new BusinessException(ExceptionKeys.ADVERTISEMENT_NOT_EXPIRED);
     }
 }

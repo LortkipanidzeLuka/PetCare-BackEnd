@@ -8,7 +8,7 @@ import ge.edu.freeuni.petcarebackend.security.repository.entity.UserEntity;
 public interface AdvertisementSearchRepository {
 
     SearchResultDTO<AdvertisementDTO> search(
-            int page, int size, boolean asc,
+            int page, int size,
             String search, AdvertisementType type, UserEntity creatorUser
     );
 }
