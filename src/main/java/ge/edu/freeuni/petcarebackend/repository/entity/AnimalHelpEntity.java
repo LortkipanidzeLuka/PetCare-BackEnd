@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -32,7 +33,7 @@ public class AnimalHelpEntity extends AdvertisementEntity {
     @Column(name = "age_from")
     private Short ageFrom;
 
-    @Min(30)
+    @Max(99)
     @Column(name = "age_until")
     private Short ageUntil;
 

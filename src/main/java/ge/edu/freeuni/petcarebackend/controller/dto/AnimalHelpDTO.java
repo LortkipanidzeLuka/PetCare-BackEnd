@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -28,7 +29,7 @@ public class AnimalHelpDTO extends AdvertisementDTO {
     @Min(0)
     private Short ageFrom;
 
-    @Min(30)
+    @Max(99)
     private Short ageUntil;
 
     @NotNull
