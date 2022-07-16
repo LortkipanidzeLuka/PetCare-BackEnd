@@ -23,7 +23,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
-    @Value("${API_PREFIX}")
+    @Value("${server.servlet.context-path}")
     private String SERVER_PREFIX;
 
     public AuthenticationFilter(JwtTokenService jwtUtil, UserDetailsService userDetailsService) {
