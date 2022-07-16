@@ -61,8 +61,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private boolean isVerifyRequest(HttpServletRequest request, String token) {
         return !jwtUtil.extractIsVerified(token) &&
                 (
-                        (request.getRequestURI().equals("/%s/auth/verify".formatted(SERVER_PREFIX)) && request.getMethod().equals("POST")) ||
-                                (request.getRequestURI().equals("/%s/auth/verify/resend".formatted(SERVER_PREFIX)) && request.getMethod().equals("POST"))
+                        (request.getRequestURI().equals("%s/auth/verify".formatted(SERVER_PREFIX)) && request.getMethod().equals("POST")) ||
+                                (request.getRequestURI().equals("%s/auth/verify/resend".formatted(SERVER_PREFIX)) && request.getMethod().equals("POST"))
                 );
     }
 }
