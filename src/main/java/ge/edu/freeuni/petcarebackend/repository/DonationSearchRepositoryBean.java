@@ -67,7 +67,7 @@ public class DonationSearchRepositoryBean implements DonationSearchRepository {
 
     private NumberExpression<Double> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
         if (longitude == null || latitude == null) {
-            return Expressions.asNumber(0.0);
+            return qDonationEntity.latitude.multiply(0).castToNum(Double.class);
         }
         NumberPath<BigDecimal> lat = qDonationEntity.latitude;
         NumberPath<BigDecimal> lng = qDonationEntity.longitude;

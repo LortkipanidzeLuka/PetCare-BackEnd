@@ -67,7 +67,7 @@ public class PetServiceSearchRepositoryBean implements PetServiceSearchRepositor
 
     private NumberExpression<Double> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
         if (longitude == null || latitude == null) {
-            return Expressions.asNumber(0.0);
+            return qPetServiceEntity.latitude.multiply(0).castToNum(Double.class);
         }
         NumberPath<BigDecimal> lat = qPetServiceEntity.latitude;
         NumberPath<BigDecimal> lng = qPetServiceEntity.longitude;

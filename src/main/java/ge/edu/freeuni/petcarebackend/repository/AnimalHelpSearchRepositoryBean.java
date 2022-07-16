@@ -73,7 +73,7 @@ public class AnimalHelpSearchRepositoryBean implements AnimalHelpSearchRepositor
 
     private NumberExpression<Double> getOrderByLocation(BigDecimal longitude, BigDecimal latitude) {
         if (longitude == null || latitude == null) {
-            return Expressions.asNumber(0.0);
+            return qAnimalHelpEntity.latitude.multiply(0).castToNum(Double.class);
         }
         NumberPath<BigDecimal> lat = qAnimalHelpEntity.latitude;
         NumberPath<BigDecimal> lng = qAnimalHelpEntity.longitude;
